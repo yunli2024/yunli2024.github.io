@@ -2,98 +2,80 @@
 layout: page
 title: "About"
 description: "关于我"
-header-img: "img/post-about-me.jpg"
+header-img: "img/aniya.jpg"
 ---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VFX4CM3NKK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VFX4CM3NKK');
+</script>
+
+<style>
+  /* 设置header比例为2:1 */
+  .intro-header {
+    padding-bottom: 50%; /* 2:1比例 */
+    background-size: cover;
+    background-position: center;
+  }
+</style>
 
 <!-- Chinese Version -->
 <div class="zh post-container">
-
-    <!--copied from markdown -->
     <blockquote>
         <p>hey~</p>
-        
     </blockquote>
 
    
-
-    <h6>做一个有灵魂的程序员</h6>
-    <ol>
-        <li>很高兴你能来到这里！</li>
-        <li>我是李允臧，南方科技大学计算机科学与工程系大二学生，导师是张建国教授。</li>
-        <li>这是我的个人博客，会发布一些学习心得和各种各样奇怪的想法~</li>
-        <li>欢迎与我交流！我的qq是 2125243354</li>
-    </ol>
-
-  
+    
+    <p>
+        很高兴你能来到这里！<br>
+        我是<a href="https://github.com/yunli2024" target="_blank">李允臧</a>，南方科技大学计算机科学与工程系大二学生，导师是<a href="https://faculty.sustech.edu.cn/zhangjg/" target="_blank">张建国教授</a>。<br>
+        这是我的个人博客，会发布一些<a href="{{ site.baseurl }}/archive/">学习心得</a>和各种各样奇怪的想法~<br>
+        欢迎与我交流！我的QQ是2125243354</a>
+    </p>
 </div>
-
-
-<!-- 文章打赏功能 支持支付宝、微信打赏-->
-<script src='{{ "/js/ds.js" | prepend: site.baseurl }}'></script>
-<script>
-    new tctip({
-        top: '20%',
-        button: {
-            id: 6,
-            type: 'dashang'
-        },
-        list: [
-            {
-                type: 'alipay',
-                qrImg: '{{site.alipay_qr_img}}'
-            }, {
-                type: 'wechat',
-                qrImg: '{{site.wechat_qr_img}}'
-            }
-        ]
-    }).init()
-</script>
-
 
 <!-- Gitalk 评论 start  -->
 {% if site.gitalk.enable %}
-<!-- Gitalk link  -->
 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
 
 <div id="gitalk-container"></div>
-    <script type="text/javascript">
+<script type="text/javascript">
     var gitalk = new Gitalk({
-    clientID: '{{site.gitalk.clientID}}',
-    clientSecret: '{{site.gitalk.clientSecret}}',
-    repo: '{{site.gitalk.repo}}',
-    owner: '{{site.gitalk.owner}}',
-    admin: ['{{site.gitalk.admin}}'],
-    distractionFreeMode: '{{site.gitalk.distractionFreeMode}}',
-    id: 'about',
+        clientID: '{{site.gitalk.clientID}}',
+        clientSecret: '{{site.gitalk.clientSecret}}',
+        repo: '{{site.gitalk.repo}}',
+        owner: '{{site.gitalk.owner}}',
+        admin: ['{{site.gitalk.admin}}'],
+        distractionFreeMode: '{{site.gitalk.distractionFreeMode}}',
+        id: 'about',
     });
     gitalk.render('gitalk-container');
 </script>
 {% endif %}
 <!-- Gitalk end -->
 
- <!-- disqus 评论框 start  -->
+<!-- disqus 评论框 start  -->
 {% if site.disqus.enable %}
-
 <div class="comment">
-    <div id="disqus_thread" class="disqus-thread">
-    </div>
+    <div id="disqus_thread" class="disqus-thread"></div>
 </div>
-<!-- disqus 评论框 end -->
-
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "{{site.disqus.username}}";
     var disqus_identifier = "{{site.disqus.username}}/{{page.url}}";
     var disqus_url = "{{site.url}}{{page.url}}";
 
     (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var dsq = document.createElement('script'); 
+        dsq.type = 'text/javascript'; 
+        dsq.async = true;
         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<!-- disqus 公共JS代码 end -->
 {% endif %}
-
