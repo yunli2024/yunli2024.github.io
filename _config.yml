@@ -3,7 +3,7 @@ title: yunli's blog
 SEOTitle: 李允臧的博客
 header-img: img/post-bg-index.jpg
 email: 12410922@mail.sustech.edu.cn
-description: "Every failure is leading towards success."
+description: "你好！！！"
 keyword: "blog"
 url: "https://yunli2024.github.io/"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
@@ -17,13 +17,13 @@ sidebar-avatar: /img/will-wang.jpg      # use absolute URL, seeing it's used in 
 
 
 # SNS settings
-RSS: false
-weibo_username:     wzb1994
-zhihu_username:     zongguanxian
-github_username:    flyingwzb
+RSS: true
+weibo_username:     
+zhihu_username:     德体克劳德
+github_username:    yunli2024
 # facebook_username:  username
 # jianshu_username:   jianshu_id
-twitter_username:   wzbcode
+twitter_username:   
 
 
 # Build settings
@@ -90,13 +90,14 @@ service-worker: true
 
 
 # Friends
-friends: [
-{title: "书舟网",href: "http://kindle.archiew.top/"},
-{title: "阮一峰",href: "http://www.ruanyifeng.com/home.html"},
-{title: "阿里巴巴",href: "https://www.alibabagroup.com/cn/global/home"},
-{title: "腾讯",href: "https://www.tencent.com/zh-cn/index.html"},
-{title: "字节跳动",href: "https://www.bytedance.com/zh"}
-]
+
+#friends: [
+#{title: "书舟网",href: "http://kindle.archiew.top/"},
+#{title: "阮一峰",href: "http://www.ruanyifeng.com/home.html"},
+#{title: "阿里巴巴",href: "https://www.alibabagroup.com/cn/global/home"},
+#{title: "腾讯",href: "https://www.tencent.com/zh-cn/index.html"},
+#{title: "字节跳动",href: "https://www.bytedance.com/zh"}
+#]
 
 
 # 支付宝、微信打赏二维码
