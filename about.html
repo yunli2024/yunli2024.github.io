@@ -15,11 +15,18 @@ header-img: "img/aniya.jpg"
 </script>
 
 <style>
-  /* 设置header比例为2:1 */
+  /* 修改为固定高度，保持原图比例 */
   .intro-header {
-    padding-bottom: 50%; /* 2:1比例 */
+    height: 300px; /* 减小整体高度 */
     background-size: cover;
     background-position: center;
+  }
+  
+  /* 移动设备适配 */
+  @media (max-width: 768px) {
+    .intro-header {
+      height: 200px; /* 移动端更小高度 */
+    }
   }
 </style>
 
@@ -29,8 +36,6 @@ header-img: "img/aniya.jpg"
         <p>hey~</p>
     </blockquote>
 
-   
-    
     <p>
         很高兴你能来到这里！<br>
         我是<a href="https://github.com/yunli2024" target="_blank">李允臧</a>，南方科技大学计算机科学与工程系大二学生，导师是<a href="https://faculty.sustech.edu.cn/zhangjg/" target="_blank">张建国教授</a>。<br>
@@ -38,6 +43,8 @@ header-img: "img/aniya.jpg"
         欢迎与我交流！我的QQ是2125243354</a>
     </p>
 </div>
+
+<!-- 以下评论代码保持不变 -->
 
 <!-- Gitalk 评论 start  -->
 {% if site.gitalk.enable %}
