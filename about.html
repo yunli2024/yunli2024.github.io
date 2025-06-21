@@ -1,546 +1,325 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>李允臧的个人博客 - 关于我</title>
-    <style>
-        /* 基础样式 */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f8f9fa;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        /* 头部图片 */
-        .intro-header {
-            height: 400px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            margin-bottom: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            background-image: url('img/486.jpg');
-        }
-        
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(41,128,185,0.7) 0%, rgba(44,62,80,0.7) 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .header-content {
-            color: white;
-            max-width: 800px;
-        }
-        
-        .header-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .header-content p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        /* 内容区域 */
-        .content-section {
-            background: white;
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-            position: relative;
-        }
-        
-        .zh {
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-        
-        .zh blockquote {
-            border-left: 4px solid #3498db;
-            padding: 10px 20px;
-            margin: 20px 0;
-            background-color: #f8f9fa;
-            font-style: italic;
-            font-size: 1.3rem;
-        }
-        
-        .zh a {
-            color: #2980b9;
-            text-decoration: none;
-            transition: color 0.3s;
-            font-weight: 600;
-        }
-        
-        .zh a:hover {
-            color: #1a5276;
-            text-decoration: underline;
-        }
-        
-        /* 简历按钮 */
-        .cv-btn-container {
-            text-align: center;
-            margin: 40px 0;
-        }
-        
-        #viewCvBtn {
-            background: linear-gradient(135deg, #3498db, #1a5276);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(52,152,219,0.3);
-            font-weight: 600;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        #viewCvBtn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(52,152,219,0.4);
-        }
-        
-        #viewCvBtn:active {
-            transform: translateY(1px);
-        }
-        
-        #viewCvBtn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: rgba(255,255,255,0.1);
-            transform: rotate(30deg);
-            transition: all 0.6s ease;
-        }
-        
-        #viewCvBtn:hover::after {
-            transform: rotate(30deg) translate(20%, 20%);
-        }
-        
-        /* 模态框样式 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-            position: relative;
-            animation: modalOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        @keyframes modalOpen {
-            from {
-                opacity: 0;
-                transform: translateY(-60px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
-            cursor: pointer;
-            color: #7f8c8d;
-            transition: color 0.3s;
-        }
-        
-        .close-btn:hover {
-            color: #e74c3c;
-        }
-        
-        .modal-title {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #2c3e50;
-            font-size: 1.8rem;
-            position: relative;
-        }
-        
-        .modal-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(to right, #3498db, #1a5276);
-            margin: 10px auto;
-            border-radius: 3px;
-        }
-        
-        .input-group {
-            margin-bottom: 25px;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #34495e;
-            font-weight: 500;
-        }
-        
-        .input-group input {
-            width: 100%;
-            padding: 14px 20px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-        
-        .input-group input:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(52,152,219,0.2);
-        }
-        
-        #submitPassword {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #3498db, #1a5276);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        #submitPassword:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52,152,219,0.4);
-        }
-        
-        #submitPassword:active {
-            transform: translateY(1px);
-        }
-        
-        .message {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.95rem;
-            color: #e74c3c;
-            min-height: 25px;
-            transition: all 0.3s;
-        }
-        
-        .success-message {
-            color: #27ae60;
-            font-weight: 500;
-        }
-        
-        /* PDF预览容器 */
-        #pdfPreview {
-            display: none;
-            margin-top: 40px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            height: 600px;
-        }
-        
-        #pdfFrame {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        
-        /* 页脚 */
-        footer {
-            text-align: center;
-            padding: 30px 0;
-            margin-top: 40px;
-            color: #7f8c8d;
-            border-top: 1px solid #eee;
-            font-size: 0.95rem;
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .intro-header {
-                height: 200px;
-            }
-            
-            .header-content h1 {
-                font-size: 2.5rem;
-            }
-            
-            .content-section {
-                padding: 25px;
-            }
-            
-            .zh blockquote {
-                font-size: 1.1rem;
-            }
-            
-            .modal-content {
-                padding: 30px 20px;
-            }
-            
-            #pdfPreview {
-                height: 400px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .header-content h1 {
-                font-size: 2rem;
-            }
-            
-            .header-content p {
-                font-size: 1rem;
-            }
-            
-            #viewCvBtn {
-                padding: 12px 30px;
-                font-size: 1rem;
-            }
-            
-            #pdfPreview {
-                height: 300px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- 头部图片 -->
-        <div class="intro-header">
-            <div class="overlay">
-                <div class="header-content">
-                    <h1>李允臧的个人博客</h1>
-                    <p>记录学习心得与创新想法</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 关于我内容 -->
-        <div class="content-section">
-            <div class="zh post-container">
-                <blockquote>
-                    <p>hey~</p>
-                </blockquote>
-                
-                <p>
-                    很高兴你能来到这里！<br>
-                    我是<a href="https://github.com/yunli2024" target="_blank">李允臧</a>，南方科技大学计算机科学与工程系大二学生，导师是<a href="https://faculty.sustech.edu.cn/zhangjg/" target="_blank">张建国教授</a>。<br>
-                    这是我的个人博客，会发布一些<a href="#">学习心得</a>和各种各样奇怪的想法~<br>
-                    欢迎与我交流！我的QQ是2125243354
-                </p>
-            </div>
-            
-            <!-- 简历查看按钮 -->
-            <div class="cv-btn-container">
-                <button id="viewCvBtn">
-                    <i class="fas fa-file-pdf"></i> 查看我的简历
-                </button>
-            </div>
-            
-            <!-- PDF预览容器 -->
-            <div id="pdfPreview">
-                <iframe id="pdfFrame" src=""></iframe>
-            </div>
-        </div>
-        
-        <!-- 密码模态框 -->
-        <div id="passwordModal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn" id="closeModal">&times;</span>
-                <h2 class="modal-title">简历访问验证</h2>
-                <p style="text-align: center; margin-bottom: 25px; color: #7f8c8d;">
-                    请输入访问密码查看我的简历
-                </p>
-                <div class="input-group">
-                    <label for="passwordInput">访问密码</label>
-                    <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="off">
-                </div>
-                <button id="submitPassword">验证密码</button>
-                <div class="message" id="message"></div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 页脚 -->
-    <footer>
-        <div class="container">
-            <p>© 2024 李允臧的个人博客 | 南方科技大学</p>
-        </div>
-    </footer>
+---
+layout: page
+title: "About"
+description: "关于我"
+header-img: "img/486.jpg"
+---
 
-    <script>
-        // 密码验证功能
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('passwordModal');
-            const openBtn = document.getElementById('viewCvBtn');
-            const closeBtn = document.getElementById('closeModal');
-            const submitBtn = document.getElementById('submitPassword');
-            const passwordInput = document.getElementById('passwordInput');
-            const messageEl = document.getElementById('message');
-            const pdfPreview = document.getElementById('pdfPreview');
-            const pdfFrame = document.getElementById('pdfFrame');
-            
-            // 正确的密码（在实际应用中，这种前端验证仅适用于非敏感内容）
-            const CORRECT_PASSWORD = "sustech2024";
-            
-            // PDF文件路径（替换为您的PDF路径）
-            const PDF_PATH = "";
-            
-            // 打开模态框
-            openBtn.addEventListener('click', function() {
-                modal.style.display = 'flex';
-                passwordInput.value = '';
-                messageEl.textContent = '';
-                messageEl.className = 'message';
-                passwordInput.focus();
-            });
-            
-            // 关闭模态框
-            closeBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
-            });
-            
-            // 点击模态框外部关闭
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-            
-            // 提交密码
-            submitBtn.addEventListener('click', validatePassword);
-            
-            // 按回车键提交
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    validatePassword();
-                }
-            });
-            
-            // 验证密码函数
-            function validatePassword() {
-                const enteredPassword = passwordInput.value.trim();
-                
-                if (!enteredPassword) {
-                    showMessage('请输入密码', 'error');
-                    return;
-                }
-                
-                if (enteredPassword === CORRECT_PASSWORD) {
-                    showMessage('密码正确！正在加载简历...', 'success');
-                    
-                    // 模拟加载效果
-                    submitBtn.textContent = '验证成功';
-                    submitBtn.disabled = true;
-                    
-                    // 1.5秒后显示PDF
-                    setTimeout(function() {
-                        modal.style.display = 'none';
-                        
-                        // 设置PDF源并显示预览容器
-                        pdfFrame.src = PDF_PATH;
-                        pdfPreview.style.display = 'block';
-                        
-                        // 平滑滚动到PDF预览
-                        pdfPreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 1500);
-                } else {
-                    showMessage('密码错误，请重试', 'error');
-                    passwordInput.value = '';
-                    passwordInput.focus();
-                    
-                    // 添加抖动动画
-                    passwordInput.style.animation = 'shake 0.5s';
-                    setTimeout(() => {
-                        passwordInput.style.animation = '';
-                    }, 500);
-                }
-            }
-            
-            // 显示消息
-            function showMessage(text, type) {
-                messageEl.textContent = text;
-                messageEl.className = type === 'error' ? 'message' : 'message success-message';
-                
-                // 添加动画
-                messageEl.style.animation = 'fadeIn 0.3s';
-                setTimeout(() => {
-                    messageEl.style.animation = '';
-                }, 300);
-            }
-        });
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VFX4CM3NKK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VFX4CM3NKK');
+</script>
+
+<style>
+  /* 设置header比例为2:1 */
+  .intro-header {
+    padding-bottom: 75%; /* 2:1比例 */
+    background-size: cover;
+    background-position: center;
+  }
+  
+  /* 新增简历按钮样式 */
+  .cv-btn-container {
+    text-align: center;
+    margin: 30px 0;
+  }
+  
+  #viewCvBtn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  #viewCvBtn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  
+  /* 模态框样式 */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation: slideDown 0.4s ease;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #777;
+    transition: color 0.3s;
+  }
+  
+  .close-btn:hover {
+    color: #e74c3c;
+  }
+  
+  .input-group {
+    margin: 20px 0;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border 0.3s;
+  }
+  
+  .input-group input:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+  }
+  
+  #submitPassword {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 16px;
+    transition: background 0.3s;
+    width: 100%;
+  }
+  
+  #submitPassword:hover {
+    background: #2980b9;
+  }
+  
+  .message {
+    color: #e74c3c;
+    margin-top: 15px;
+    font-size: 14px;
+    min-height: 20px;
+  }
+  
+  .success {
+    color: #27ae60;
+  }
+</style>
+
+<!-- Chinese Version -->
+<div class="zh post-container">
+    <blockquote>
+        <p>hey~</p>
+    </blockquote>
+    
+    <p>
+        很高兴你能来到这里！<br>
+        我是<a href="https://github.com/yunli2024" target="_blank">李允臧</a>，南方科技大学计算机科学与工程系大二学生，导师是<a href="https://faculty.sustech.edu.cn/zhangjg/" target="_blank">张建国教授</a>。<br>
+        这是我的个人博客，会发布一些<a href="{{ site.baseurl }}/archive/">学习心得</a>和各种各样奇怪的想法~<br>
+        欢迎与我交流！我的QQ是2125243354
+    </p>
+    
+    <!-- 新增简历按钮 -->
+    <div class="cv-btn-container">
+        <button id="viewCvBtn">查看我的简历</button>
+    </div>
+</div>
+
+<!-- 密码模态框 -->
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h2>简历访问验证</h2>
+        <p>请输入访问密码查看我的简历</p>
+        <div class="input-group">
+            <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="off">
+        </div>
+        <button id="submitPassword">提交</button>
+        <div class="message" id="message"></div>
+    </div>
+</div>
+
+<!-- Gitalk 评论 start  -->
+{% if site.gitalk.enable %}
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '{{site.gitalk.clientID}}',
+        clientSecret: '{{site.gitalk.clientSecret}}',
+        repo: '{{site.gitalk.repo}}',
+        owner: '{{site.gitalk.owner}}',
+        admin: ['{{site.gitalk.admin}}'],
+        distractionFreeMode: '{{site.gitalk.distractionFreeMode}}',
+        id: 'about',
+    });
+    gitalk.render('gitalk-container');
+</script>
+{% endif %}
+<!-- Gitalk end -->
+
+<!-- disqus 评论框 start  -->
+{% if site.disqus.enable %}
+<div class="comment">
+    <div id="disqus_thread" class="disqus-thread"></div>
+</div>
+<script type="text/javascript">
+    var disqus_shortname = "{{site.disqus.username}}";
+    var disqus_identifier = "{{site.disqus.username}}/{{page.url}}";
+    var disqus_url = "{{site.url}}{{page.url}}";
+
+    (function() {
+        var dsq = document.createElement('script'); 
+        dsq.type = 'text/javascript'; 
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+{% endif %}
+
+<script>
+// 密码验证功能
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('passwordModal');
+    const openBtn = document.getElementById('viewCvBtn');
+    const closeBtn = document.getElementById('closeModal');
+    const submitBtn = document.getElementById('submitPassword');
+    const passwordInput = document.getElementById('passwordInput');
+    const messageEl = document.getElementById('message');
+    
+    // 正确的密码（请更改为您自己的密码）
+    const CORRECT_PASSWORD = "sustech2024";
+    
+    // PDF文件路径（替换为您的PDF路径）
+    const PDF_PATH = "https://github.com/yunli2024/yunli2024.github.io/raw/master/_posts/CV_Yunzang_Li.pdf";
+    
+    // 打开模态框
+    openBtn.addEventListener('click', function() {
+        modal.style.display = 'flex';
+        passwordInput.value = '';
+        messageEl.textContent = '';
+        messageEl.className = 'message';
+        passwordInput.focus();
+    });
+    
+    // 关闭模态框
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+    
+    // 点击模态框外部关闭
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    
+    // 提交密码
+    submitBtn.addEventListener('click', validatePassword);
+    
+    // 按回车键提交
+    passwordInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            validatePassword();
+        }
+    });
+    
+    // 验证密码函数
+    function validatePassword() {
+        const enteredPassword = passwordInput.value.trim();
         
-        // 添加抖动动画
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
-                20%, 40%, 60%, 80% { transform: translateX(8px); }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
-</body>
-</html>
+        if (!enteredPassword) {
+            showMessage('请输入密码', 'error');
+            return;
+        }
+        
+        if (enteredPassword === CORRECT_PASSWORD) {
+            showMessage('密码正确！正在跳转...', 'success');
+            
+            // 更改按钮状态
+            submitBtn.textContent = '验证成功';
+            submitBtn.disabled = true;
+            
+            // 1.5秒后跳转到PDF
+            setTimeout(function() {
+                window.location.href = PDF_PATH;
+            }, 1500);
+        } else {
+            showMessage('密码错误，请重试', 'error');
+            passwordInput.value = '';
+            passwordInput.focus();
+            
+            // 添加抖动效果
+            passwordInput.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                passwordInput.style.animation = '';
+            }, 500);
+        }
+    }
+    
+    // 显示消息
+    function showMessage(text, type) {
+        messageEl.textContent = text;
+        messageEl.className = type === 'error' ? 'message' : 'message success';
+    }
+});
+
+// 添加抖动动画
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+        20%, 40%, 60%, 80% { transform: translateX(8px); }
+    }
+`;
+document.head.appendChild(style);
+</script>
