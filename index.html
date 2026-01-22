@@ -23,33 +23,43 @@
     .hero p{margin:0;color:var(--muted)}
     .topmenu{position:relative}
     .menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer}
-    .menu-panel{position:absolute;right:0;top:44px;background:var(--card);border:1px solid rgba(255,255,255,0.04);padding:10px;border-radius:8px;display:none;min-width:160px}
+    .menu-panel{position:absolute;right:0;top:44px;background:var(--card);border:1px solid rgba(255,255,255,0.04);padding:10px;border-radius:8px;display:none;min-width:200px}
     .menu-panel a{display:block;color:var(--muted);padding:8px;border-radius:6px;text-decoration:none}
     .menu-panel a:hover{background:rgba(255,255,255,0.02);color:#fff}
     section{max-width:960px;margin:20px auto;padding:0 18px}
     footer{padding:28px;text-align:center;color:var(--muted)}
     @media(max-width:720px){.hero h1{font-size:22px}.menu-panel{right:10px}}
+
+    /* Light theme overrides */
+    body.light{background:linear-gradient(180deg,#f5f7fb,#fff);color:#0b1220}
+    body.light .hero{background:linear-gradient(180deg,rgba(2,6,23,0.02),transparent);border-color:rgba(2,6,23,0.04)}
+    body.light .menu-panel{background:#fff;border-color:rgba(2,6,23,0.06)}
+    body.light nav a{color:#334155}
+    body.light .brand{color:#0b1220}
+    body.light .menu-btn{color:#0b1220;border-color:rgba(2,6,23,0.06)}
   </style>
 </head>
 <body>
   <div class="site">
     <header>
-      <div class="brand">云立</div>
-      <nav>
-        <a href="#about">关于</a>
-        <a href="#projects">项目</a>
-        <a href="blog.html">博客</a>
-        <div class="topmenu">
-          <button class="menu-btn" id="menuBtn">菜单 ▾</button>
-          <div class="menu-panel" id="menuPanel">
-            <a href="#about">关于我</a>
-            <a href="#projects">项目</a>
-            <a href="blog.html">博客</a>
-            <a href="editor.html">写文章</a>
-            <a href="#contact">联系</a>
+        <div class="brand">云立</div>
+        <nav>
+          <a href="blog.html">Blog</a>
+          <a href="projects.html">Projects</a>
+          <a href="about.html">About</a>
+          <div class="topmenu">
+            <button class="menu-btn" id="menuBtn">菜单 ▾</button>
+            <div class="menu-panel" id="menuPanel">
+              <a href="blog.html">Blog</a>
+              <a href="projects.html">Projects</a>
+              <a href="about.html">About</a>
+              <a href="editor.html">写文章</a>
+              <a href="#contact">联系</a>
+              <hr style="border:0;border-top:1px solid rgba(255,255,255,0.04);margin:8px 0">
+              <button id="themeToggle" class="menu-btn" style="width:100%;text-align:left;padding:8px">切换日间/夜间模式</button>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
     </header>
 
     <main>
@@ -57,11 +67,6 @@
         <h1>你好，我是 云立</h1>
         <p>前端工程师 · 开源爱好者 · 写点东西记录生活。使用右上角菜单可快速导航到站点各部分，点击“写文章”可用 Markdown 撰写博客并导出。</p>
       </article>
-
-      <section id="about">
-        <h2>关于我</h2>
-        <p>这里放置个人简介或简历摘要。你可以编辑 `index.html` 自定义内容。</p>
-      </section>
 
       <section id="projects">
         <h2>项目</h2>
@@ -84,6 +89,20 @@
     const menuPanel = document.getElementById('menuPanel');
     menuBtn.addEventListener('click', ()=>{menuPanel.style.display = menuPanel.style.display === 'block' ? 'none' : 'block'});
     document.addEventListener('click', e=>{if(!menuBtn.contains(e.target) && !menuPanel.contains(e.target)){menuPanel.style.display='none'}});
+
+    // Theme toggle (persist in localStorage)
+    const themeToggle = document.getElementById('themeToggle');
+    function applyTheme(theme){
+      if(theme === 'light') document.body.classList.add('light'); else document.body.classList.remove('light');
+      try{localStorage.setItem('site-theme', theme)}catch(e){}
+    }
+    // initialize
+    (function(){
+      let t = 'dark';
+      try{const stored = localStorage.getItem('site-theme'); if(stored) t = stored;}catch(e){}
+      applyTheme(t);
+      if(themeToggle){themeToggle.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
+    })();
   </script>
 </body>
 </html>
