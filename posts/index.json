@@ -1,7 +1,16 @@
-[{
-  "file": "posts/sample-post.md",
-  "title": "示例文章：欢迎",
-  "date": "2026-01-22",
-  "tags": "示例,入门",
-  "excerpt": "这是一个示例文章，用来演示博客列表与文章查看。"
-}]
+[
+  {
+    "file": "posts/test.md",
+    "title": "test",
+    "date": "2026-01-22",
+    "tags": "测试",
+    "excerpt": "你好呀！~ **加粗**  ~~哈哈~~"
+  },
+  {
+    "file": "posts/sample-post.md",
+    "title": "示例文章：欢迎",
+    "date": "2026-01-22",
+    "tags": "示例,入门",
+    "excerpt": "这是一个示例文章，用来演示博客列表与文章查看。"
+  }
+]
