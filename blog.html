@@ -15,11 +15,29 @@
     .post h3{margin:0 0 6px}
     .controls{display:flex;gap:8px;justify-content:flex-end;margin-bottom:12px}
     .btn{background:var(--surface);padding:8px 12px;border-radius:8px;color:var(--text);text-decoration:none;border:1px solid var(--card-border)}
+
+    /* Header / nav (copied from index.html) */
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
+    .brand{font-weight:700;font-size:18px}
+    .nav-links{display:flex;gap:12px;align-items:center}
+    .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+    .nav-links a.primary{background:linear-gradient(180deg,var(--accent),#3b82f6);color:#fff}
+    .menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer;transition:color .18s,border-color .18s,background-color .18s}
+    .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
     .theme-toggle{position:fixed;right:14px;top:14px;background:var(--surface);color:var(--text);border:1px solid var(--card-border);padding:8px;border-radius:8px;cursor:pointer}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+  <header>
+    <div class="brand">云离</div>
+    <nav class="nav-links">
+      <a href="blog.html">Blog</a>
+      <a href="projects.html">Projects</a>
+      <a href="about.html">About</a>
+      <button id="themeSwitch" class="menu-btn" aria-label="切换主题" title="切换日/夜模式">🌙</button>
+    </nav>
+  </header>
   <div class="wrap">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
       <h1>博客</h1>
@@ -28,7 +46,7 @@
 
     <div id="list">加载中…</div>
   </div>
-
+  
   <script>
     async function tryFetch(url){
       try{
@@ -69,12 +87,22 @@
     }
     loadIndex();
   </script>
-  <button id="globalThemeBtn" class="theme-toggle" title="切换日/夜模式">🌙</button>
+
   <script>
-    // Theme persistence and toggle for this page
-    const gBtn = document.getElementById('globalThemeBtn');
-    function applyThemePage(t){ if(t==='light') document.body.classList.add('light'); else document.body.classList.remove('light'); gBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙'; try{localStorage.setItem('site-theme', t)}catch(e){} }
-    (function(){ let t='dark'; try{const s=localStorage.getItem('site-theme'); if(s) t=s;}catch(e){} applyThemePage(t); gBtn.addEventListener('click', ()=>{const cur=document.body.classList.contains('light')?'light':'dark'; applyThemePage(cur==='light'?'dark':'light');}); })();
+    // Theme control (persist in localStorage) — same as首页
+    const themeSwitch = document.getElementById('themeSwitch');
+    function applyTheme(theme){
+      if(theme === 'light'){
+        document.body.classList.add('light'); themeSwitch.textContent = '☀️';
+      } else { document.body.classList.remove('light'); themeSwitch.textContent = '🌙'; }
+      try{localStorage.setItem('site-theme', theme)}catch(e){}
+    }
+    (function(){
+      let t = 'dark';
+      try{const stored = localStorage.getItem('site-theme'); if(stored) t = stored;}catch(e){}
+      applyTheme(t);
+      if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
+    })();
   </script>
 </body>
 </html>

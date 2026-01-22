@@ -3,14 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Projects — 云立</title>
+  <title>Projects — 云离</title>
   <style>
     :root{--bg1:#071026;--bg2:#061027;--surface:#071026;--text:#e6eef8;--muted:#94a3b8;--accent:#60a5fa;--card-border:rgba(255,255,255,0.03)}
     body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s}
     body.light{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)}
     .wrap{max-width:1000px;margin:36px auto;padding:16px}
     a{color:var(--accent)}
-    .theme-toggle{position:fixed;right:14px;top:14px;background:var(--surface);color:var(--text);border:1px solid var(--card-border);padding:8px;border-radius:8px;cursor:pointer}
+
+    /* Header / nav (copied from index.html) */
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
+    .brand{font-weight:700;font-size:18px}
+    .nav-links{display:flex;gap:12px;align-items:center}
+    .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+    .nav-links a.primary{background:linear-gradient(180deg,var(--accent),#3b82f6);color:#fff}
+    .menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer;transition:color .18s,border-color .18s,background-color .18s}
+    .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
 
     /* Projects card grid */
     .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
@@ -26,26 +34,36 @@
   </style>
 </head>
 <body>
+  <header>
+    <div class="brand">云离</div>
+    <nav class="nav-links">
+      <a href="blog.html">Blog</a>
+      <a href="projects.html">Projects</a>
+      <a href="about.html">About</a>
+      <button id="themeSwitch" class="menu-btn" aria-label="切换主题" title="切换日/夜模式">🌙</button>
+    </nav>
+  </header>
   <div class="wrap">
     <h1>Projects</h1>
-    <p>下面以卡片形式列出项目。直接在此文件中复制并编辑卡片元素即可添加或修改项目。</p>
+    <p>主要是一些课程项目啦。</p>
 
-    <!-- 可编辑的项目网格：复制下面的 <article class="card"> 块来新增项目 -->
+    
     <div class="projects-grid">
       <article class="card">
-        <div class="media">示例封面（可替换为图片）</div>
+        <div class="media">
+           <img src="source/cs109_project_example.png" alt="Klotski Game 封面">
+        </div>
         <div>
-          <h3>示例项目：个人网站</h3>
-          <p>一个用静态页面和简单脚本构建的个人主页，展示博客与项目。</p>
+          <h3>CS109 25SPRING Project:Klotski Game</h3>
+          <p>计算机程序设计基础课程项目:三国华容道小游戏</p>
         </div>
         <div class="tags">
-          <span class="tag">HTML</span>
-          <span class="tag">CSS</span>
-          <span class="tag">静态站点</span>
+          <span class="tag">Java</span>
+          <span class="tag">Game</span>
+          <span class="tag">Swing</span>
         </div>
         <div class="links">
-          <a href="https://github.com/yunli2024" target="_blank" rel="noopener">源码</a>
-          <a href="/" target="_blank" rel="noopener">Demo</a>
+          <a href="https://github.com/yunli2024/25Spring_SUSTech_CS109_Project" target="_blank" rel="noopener">repository</a>
         </div>
       </article>
 
@@ -69,11 +87,21 @@
 
     <p style="margin-top:18px;color:var(--muted)">提示：直接在此文件中以 HTML 形式新增或编辑卡片。若想使用图片，将 <code class="muted">.media</code> 内容替换为 <code>&lt;img src="路径" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"/&gt;</code></p>
   </div>
-  <button id="globalThemeBtn" class="theme-toggle" title="切换日/夜模式">🌙</button>
   <script>
-    const gBtn = document.getElementById('globalThemeBtn');
-    function applyThemePage(t){ if(t==='light') document.body.classList.add('light'); else document.body.classList.remove('light'); gBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙'; try{localStorage.setItem('site-theme', t)}catch(e){} }
-    (function(){ let t='dark'; try{const s=localStorage.getItem('site-theme'); if(s) t=s;}catch(e){} applyThemePage(t); gBtn.addEventListener('click', ()=>{const cur=document.body.classList.contains('light')?'light':'dark'; applyThemePage(cur==='light'?'dark':'light');}); })();
+    // Theme control (persist in localStorage) — same as首页
+    const themeSwitch = document.getElementById('themeSwitch');
+    function applyTheme(theme){
+      if(theme === 'light'){
+        document.body.classList.add('light'); themeSwitch.textContent = '☀️';
+      } else { document.body.classList.remove('light'); themeSwitch.textContent = '🌙'; }
+      try{localStorage.setItem('site-theme', theme)}catch(e){}
+    }
+    (function(){
+      let t = 'dark';
+      try{const stored = localStorage.getItem('site-theme'); if(stored) t = stored;}catch(e){}
+      applyTheme(t);
+      if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
+    })();
   </script>
 </body>
 </html>

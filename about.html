@@ -11,18 +11,74 @@
     .wrap{max-width:760px;margin:36px auto;padding:16px}
     a{color:var(--accent)}
     .theme-toggle{position:fixed;right:14px;top:14px;background:var(--surface);color:var(--text);border:1px solid var(--card-border);padding:8px;border-radius:8px;cursor:pointer}
+
+    :root{--bg1:#071026;--bg2:#061027;--surface:#071026;--text:#e6eef8;--muted:#94a3b8;--accent:#60a5fa;--card-border:rgba(255,255,255,0.03)}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s}
+    body.light{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)}
+    .wrap{max-width:760px;margin:36px auto;padding:16px}
+    a{color:var(--accent)}
+
+    /* header/navigation (copied from index.html) */
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
+    .brand{font-weight:700;font-size:18px}
+    nav{display:flex;gap:12px;align-items:center}
+    nav a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+    nav a.primary{background:linear-gradient(180deg,var(--accent),#3b82f6);color:#fff}
+    .menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer;transition:color .18s,border-color .18s,background-color .18s}
+    .nav-links{display:flex;gap:12px;align-items:center}
+    .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+
+    .theme-toggle{position:fixed;right:14px;top:14px;background:var(--surface);color:var(--text);border:1px solid var(--card-border);padding:8px;border-radius:8px;cursor:pointer}
+    .menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer;transition:color .18s,border-color .18s,background-color .18s}
   </style>
 </head>
+  <header>
+    <div class="brand">云离</div>
+    <nav class="nav-links">
+      <a href="blog.html">Blog</a>
+      <a href="projects.html">Projects</a>
+      <a href="about.html">About</a>
+      <button id="themeSwitch" class="menu-btn" aria-label="切换主题" title="切换日/夜模式">🌙</button>
+    </nav>
+  </header>
 <body>
+  <header>
+    <div class="brand">云离</div>
+    <nav class="nav-links">
+  <script>
+    // Theme control (same as index.html)
+    const themeSwitch = document.getElementById('themeSwitch');
+    function applyTheme(theme){
+      if(theme === 'light'){ document.body.classList.add('light'); themeSwitch.textContent = '☀️'; }
+      else { document.body.classList.remove('light'); themeSwitch.textContent = '🌙'; }
+      try{localStorage.setItem('site-theme', theme)}catch(e){}
+    }
+    (function(){
+      let t = 'dark';
+      try{const stored = localStorage.getItem('site-theme'); if(stored) t = stored;}catch(e){}
+      applyTheme(t);
+      if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
+    })();
+  </script>
   <div class="wrap">
     <h1>About</h1>
     <p>这里是关于我的页面。你可以在此放置更详细的个人简介、技能、简历下载链接等。</p>
   </div>
-  <button id="globalThemeBtn" class="theme-toggle" title="切换日/夜模式">🌙</button>
   <script>
-    const gBtn = document.getElementById('globalThemeBtn');
-    function applyThemePage(t){ if(t==='light') document.body.classList.add('light'); else document.body.classList.remove('light'); gBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙'; try{localStorage.setItem('site-theme', t)}catch(e){} }
-    (function(){ let t='dark'; try{const s=localStorage.getItem('site-theme'); if(s) t=s;}catch(e){} applyThemePage(t); gBtn.addEventListener('click', ()=>{const cur=document.body.classList.contains('light')?'light':'dark'; applyThemePage(cur==='light'?'dark':'light');}); })();
+    // Theme control (persist in localStorage) — same behavior as首页
+    const themeSwitch = document.getElementById('themeSwitch');
+    function applyTheme(theme){
+      if(theme === 'light'){
+        document.body.classList.add('light'); themeSwitch.textContent = '☀️';
+      } else { document.body.classList.remove('light'); themeSwitch.textContent = '🌙'; }
+      try{localStorage.setItem('site-theme', theme)}catch(e){}
+    }
+    (function(){
+      let t = 'dark';
+      try{const stored = localStorage.getItem('site-theme'); if(stored) t = stored;}catch(e){}
+      applyTheme(t);
+      if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
+    })();
   </script>
 </body>
 </html>
