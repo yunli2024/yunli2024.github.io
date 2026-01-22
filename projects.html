@@ -46,6 +46,11 @@
     }
     .card h3{margin:0;font-size:1.05rem}
     .card p{margin:0;color:var(--muted);font-size:0.95rem}
+    /* 评分样式：Final Score: ⭐ 99 / 100 */
+    .score{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:0.95rem;margin-top:6px}
+    .score-label{font-weight:600;color:var(--muted)}
+    .score-star{font-size:1.05rem;color:#fbbf24}
+    .score-value{font-weight:700;color:var(--accent);margin:0 4px}
     .card .tags{display:flex;gap:8px;flex-wrap:wrap}
     .tag{background:rgba(255,255,255,0.03);padding:4px 8px;border-radius:999px;font-size:0.8rem;color:var(--muted);border:1px solid var(--card-border)}
     .card .links{margin-top:auto;display:flex;gap:10px}
@@ -76,6 +81,7 @@
         <div>
           <h3>CS109 25SPRING Project：Klotski Game</h3>
           <p>计算机程序设计基础课程项目：三国华容道小游戏</p>
+          <div class="score"><span class="score-label">Final Score:</span><span class="score-star">⭐</span><span class="score-value">104</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
         <div class="tags">
           <span class="tag">Java</span>
@@ -95,6 +101,7 @@
         <div>
           <h3>CS203 25FALL Project：Matrix calculator</h3>
           <p>数字逻辑课程项目：基于FPGA的矩阵计算器</p>
+          <div class="score"><span class="score-label">Final Score:</span><span class="score-star">⭐</span><span class="score-value">106</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
         <div class="tags">
           <span class="tag">FPGA</span>
@@ -114,6 +121,7 @@
         <div>
           <h3>CS307 25FALL ProjectI: SUSTC Recipe Management System</h3>
           <p>数据库原理课程项目I：SUSTC菜谱管理系统</p>
+          <div class="score"><span class="score-label">Final Score:</span><span class="score-star">⭐</span><span class="score-value">99</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
         <div class="tags">
           <span class="tag">PostgreSQL</span>
@@ -132,6 +140,7 @@
         <div>
           <h3>CS307 25FALL ProjectII：SUSTC Recipe Database System</h3>
           <p>数据库原理课程项目II：SUSTC菜谱数据库系统</p>
+          <div class="score"><span class="score-label">Final Score:</span><span class="score-star">⭐</span><span class="score-value">110+</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
         <div class="tags">
           <span class="tag">Java</span>
@@ -164,3 +173,7 @@
   </script>
 </body>
 </html>
+<!-- 鼠标点击爱心特效 -->
+<script>
+!function(e,t,a){function r(){for(var e=0;e<s.length;e++)s[e].alpha<=0?(t.body.removeChild(s[e].el),s.splice(e,1)):(s[e].y--,s[e].scale+=.004,s[e].alpha-=.013,s[e].el.style.cssText="left:"+s[e].x+"px;top:"+s[e].y+"px;opacity:"+s[e].alpha+";transform:scale("+s[e].scale+","+s[e].scale+") rotate(45deg);background:"+s[e].color+";z-index:99999");requestAnimationFrame(r)}function n(){var t="function"==typeof e.onclick&&e.onclick;e.onclick=function(e){t&&t(),o(e)}}function o(e){var a=t.createElement("div");a.className="heart",s.push({el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:c()}),t.body.appendChild(a)}function i(e){var a=t.createElement("style");a.type="text/css";try{a.appendChild(t.createTextNode(e))}catch(t){a.styleSheet.cssText=e}t.getElementsByTagName("head")[0].appendChild(a)}function c(){return"rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"}var s=[];e.requestAnimationFrame=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,1e3/60)},i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"),n(),r()}(window,document);
+</script>
