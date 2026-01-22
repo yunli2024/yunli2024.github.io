@@ -21,21 +21,29 @@
     .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
 
     /* Projects card grid — 强制每行两列，窄屏回退为一列；保持卡片等高 */
-    .projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:18px;align-items:stretch}
-    .projects-grid > .card{height:100%}
+    .projects-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-auto-rows:1fr;gap:18px;margin-top:18px;align-items:stretch}
+    .projects-grid > .card{height:100%;display:flex;flex-direction:column}
+    /* 保证在浏览器不支持 grid-auto-rows 时仍有一致的高度 */
+    .card{min-height:320px}
     @media (max-width:880px){
       .projects-grid{grid-template-columns:1fr}
+      .card{min-height:unset}
     }
     .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid var(--card-border);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.3);display:flex;flex-direction:column;gap:12px}
-     /* media: use a stable aspect ratio so images render predictably
-       - modern browsers: use aspect-ratio to keep consistent frame
-       - fallback: min-height keeps a usable box on older browsers */
-     .card .media{aspect-ratio:16/9;min-height:120px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(96,165,250,0.02));display:block;color:var(--muted)}
-     .card .media img{width:100%;height:100%;object-fit:cover;display:block}
-     /* SVGs or images that require exact rendering: avoid cropping */
-     .card .media img[src$='.svg']{object-fit:contain;background:transparent}
-     /* allow images that are naturally narrow/tall to center nicely */
-     .card .media img{object-position:center center}
+    /* 固定卡片与封面高度以保证每行两个卡片等高显示 */
+    .projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:18px;align-items:stretch}
+    .projects-grid > .card{height:360px;display:flex;flex-direction:column}
+    /* 封面区域固定高度，图片覆盖并居中裁剪 */
+    .card .media{height:180px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(96,165,250,0.02));display:block;color:var(--muted)}
+    .card .media img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block}
+    /* 对 SVG 使用 contain 避免被裁剪 */
+    .card .media img[src$='.svg']{object-fit:contain;background:transparent}
+    /* 移动端回退为单列并移除固定高度 */
+    @media (max-width:880px){
+      .projects-grid{grid-template-columns:1fr}
+      .projects-grid > .card{height:auto}
+      .card .media{height:140px}
+    }
     .card h3{margin:0;font-size:1.05rem}
     .card p{margin:0;color:var(--muted);font-size:0.95rem}
     .card .tags{display:flex;gap:8px;flex-wrap:wrap}
@@ -98,9 +106,8 @@
           <a href="#" target="_blank" rel="noopener">演示</a>
         </div>
       </article>
-    </div>
-
-    <article class="card">
+      
+      <article class="card">
         <div class="media">
           <img src="source/cs307_project1_example.png" alt="DataBase1">
         </div>
@@ -114,12 +121,11 @@
           <span class="tag">JDBC</span>
         </div>
         <div class="links">
-          <a href="https://github.com/yunli2024/CS307_DATABASE_Project_1_25FALL" target="_blank" rel="noopener">repository</a>
+          <a href="https://github.com/yunli2024/CS307_DATABASE_PROJECT_1_25FALL" target="_blank" rel="noopener">repository</a>
         </div>
       </article>
-    </div>
 
-    <article class="card">
+      <article class="card">
         <div class="media">
           <img src="source/cs307_project2_example.png" alt="DataBase2">
         </div>
