@@ -36,6 +36,15 @@
 		@media (max-width:768px) and (hover:none){.glass-card{-webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);background-color:rgba(255,255,255,0.16)}}
 		@media (prefers-reduced-transparency: reduce){.glass-card{-webkit-backdrop-filter:none;backdrop-filter:none;background-color:rgba(255,255,255,0.92);color:#0b1220}}
 		@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text)}}
+
+		/* 技能小标签样式 */
+		.skills{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:8px 0 0;list-style:none}
+		.skills li{background:rgba(11,18,32,0.04);padding:6px 10px;border-radius:10px;font-size:14px;color:var(--text)}
+
+		/* 关于区右侧照片样式 */
+		.about-top{display:flex;gap:18px;align-items:flex-start}
+		.about-photo img{width:clamp(96px,20vw,180px);height:clamp(96px,20vw,180px);object-fit:cover;border-radius:10px;cursor:pointer}
+		@media(max-width:760px){.about-top{flex-direction:column}.about-photo{align-self:center}}
 	</style>
 </head>
 <body>
@@ -53,17 +62,57 @@
 
 		<main>
 			<section class="glass-card wrap">
-				<h1>关于我</h1>
-				<p>这里是关于我的页面。你可以在此放置更详细的个人简介、技能、简历下载链接等。</p>
-				<p>GitHub: <a href="https://github.com/yunli2024">yunli2024</a></p>
+				<div class="about-top">
+					<div class="about-text" style="flex:1;min-width:0">
+						<h1>关于「云离」</h1>
+						<p>我是李允臧，南科大24级学生。</p>
+						<p>在这个网站，我会分享南科大部分课程的心得，cs学习体会和生活日常~</p>
+						<p>由于平时比较忙，而且拖延症非常严重，所以只能随缘更新喵</p>
+						<p>GitHub: <a href="https://github.com/yunli2024">yunli2024</a></p>
+					</div>
+					<div class="about-photo" style="flex:0 0 auto;margin-left:12px">
+						<img id="about-photo" src="source/photo1.png" alt="云离的照片" style="width:clamp(96px,20vw,180px);height:clamp(96px,20vw,180px);object-fit:cover;border-radius:10px;cursor:pointer;transition:opacity .22s,transform .18s;display:block" />
+						<div style="font-size:12px;color:var(--muted);text-align:center;margin-top:6px">点击切换照片</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="glass-card wrap">
+				<h2>CV</h2>
+				<p><strong>School：</strong> <a href="https://www.sustech.edu.cn" target="_blank" rel="noopener">SUSTech 南方科技大学</a></p>
+				<p><strong>Department：</strong> <a href="https://cse.sustech.edu.cn" target="_blank" rel="noopener">CSE 计算机科学与工程系</a></p>
+        <p><strong>Base：深圳</strong></p>
+				<p style="margin-top:8px"><strong>技能：</strong></p>
+				<ul class="skills">
+					<li>☕️ Java</li>
+					<li>🐍 Python</li>
+					<li>⚙️ C++</li>
+					<li>🧠 Algorithm</li>
+					<li>🗄️ SQL</li>
+					<li>🌐 Web</li>
+				</ul>
+        <p>GitHub: <a href="https://github.com/yunli2024">yunli2024</a></p>
+				<p>出于隐私，我不能把正式的CV与成绩单放在这里，请通过12410922@mail.sustech.edu.cn联系获取</p>
+			</section>
+
+			<section class="glass-card wrap">
+				<h2>Research</h2>
+				<p>研究方向：Computer Vision / Deep Learning</p>
+				<p><strong>导师：</strong> <a href="https://www.sustech.edu.cn/zh/faculties/zhangjianguo.html" id="advisor-link">Prof. JianGuo Zhang</a></p>
+        <p>还没有pub，因为科研做得比较少。由于上述的拖延症呜呜。</p>
+			</section>
+
+			<section class="glass-card wrap">
+				<h2>Others</h2>
+				<p>等待开发……</p>
 			</section>
 		</main>
 
 		<footer style="padding:28px;text-align:center;color:var(--muted)">© 云离 — 个人站点</footer>
 	</div>
 
+	<!-- 清理后的主题脚本（确保页面主题开关工作） -->
 	<script>
-		// Theme control (persist in localStorage)
 		const themeSwitch = document.getElementById('themeSwitch');
 		function applyTheme(theme){
 			if(theme === 'light'){
@@ -80,6 +129,24 @@
 			try{const stored = localStorage.getItem('site-theme'); if(stored) t = stored;}catch(e){}
 			applyTheme(t);
 			if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
+		})();
+	</script>
+	<script>
+		// about page photo toggle between photo1 and photo2 (robust)
+		(function(){
+			const photo = document.getElementById('about-photo');
+			if(!photo) return;
+			const imgs = ['source/photo1.png','source/photo2.png'];
+			let idx = imgs.indexOf(photo.getAttribute('src'));
+			if(idx === -1) idx = 0;
+			photo.addEventListener('click', ()=>{
+				photo.style.opacity = '0';
+				setTimeout(()=>{
+					idx = (idx + 1) % imgs.length;
+					photo.src = imgs[idx];
+					photo.style.opacity = '1';
+				}, 180);
+			});
 		})();
 	</script>
 
