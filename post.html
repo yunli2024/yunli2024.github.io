@@ -22,9 +22,10 @@
   <div class="wrap">
     <a href="blog.html">← 返回博客</a>
     <article id="content" class="glass-card">  加载中…</article>
-    <div id="likePanel" class="glass-card" style="margin-top:14px;display:flex;align-items:center;gap:12px">
+    <div id="likePanel" class="glass-card" style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
       <button id="likeBtn" style="padding:8px 14px;border-radius:999px;border:1px solid rgba(11,18,32,0.08);background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));cursor:pointer">👍 点赞</button>
       <span id="likeCount" style="color:var(--muted)">likes: 0</span>
+      <span id="likeMsg" style="color:var(--muted)"></span>
     </div>
   </div>
 
@@ -74,11 +75,20 @@
     }
     async function sendLike(file){
       if(!file) return;
+      const btn = document.getElementById('likeBtn');
+      const msg = document.getElementById('likeMsg');
+      if(btn){btn.disabled = true; btn.textContent = '已点赞';}
       const res = await fetch(`${LIKE_API}?id=${encodeURIComponent(file)}`, {method:'POST'});
       if(res.ok){
         const data = await res.json();
         document.getElementById('likeCount').textContent = `likes: ${data.likes}`;
+        if(data.throttled && msg){
+          msg.textContent = '操作太快啦';
+        } else if(msg){
+          msg.textContent = '';
+        }
       }
+      setTimeout(()=>{ if(btn){btn.disabled = false; btn.textContent = '👍 点赞';} }, 800);
     }
     (function(){
       let file = qs('file');

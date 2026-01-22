@@ -94,6 +94,8 @@
       }
     }
 
+    const LIKE_API = 'https://homepagelike.12410922.workers.dev/like';
+
     function normalizeTags(tags){
       if(!tags) return [];
       if(Array.isArray(tags)) return tags.map(t=>String(t).toLowerCase());
@@ -107,21 +109,25 @@
       return tags.find(t=>known.includes(t)) || 'uncategorized';
     }
 
-    function scoreItem(item, query){
-      if(!query) return 0;
+    function matchesQuery(item, query){
+      if(!query) return true;
       const q = query.toLowerCase().trim();
-      if(!q) return 0;
+      if(!q) return true;
       const words = q.split(/[\s,]+/).filter(Boolean);
       const title = String(item.title || '').toLowerCase();
       const tags = normalizeTags(item.tags).join(' ');
-      let score = 0;
-      if(title === q) score += 20;
-      if(tags === q) score += 14;
-      words.forEach(w=>{
-        if(title.includes(w)) score += 8;
-        if(tags.includes(w)) score += 5;
-      });
-      return score;
+      return words.every(w => title.includes(w) || tags.includes(w));
+    }
+
+    async function getLikeCount(file){
+      try{
+        const res = await fetch(`${LIKE_API}?id=${encodeURIComponent(file)}`);
+        if(!res.ok) return 0;
+        const data = await res.json();
+        return Number(data.likes) || 0;
+      }catch(e){
+        return 0;
+      }
     }
 
     function renderList(items){
@@ -131,13 +137,16 @@
         return;
       }
       list.innerHTML='';
-      items.forEach((item, i)=>{
+      items.forEach((entry, i)=>{
+        const item = entry.item || entry;
+        const likes = typeof entry.likes === 'number' ? entry.likes : 0;
         const el = document.createElement('section'); el.className='glass-card post pop-in';
         // normalize file path: remove leading slash to keep relative path
         let filePath = item.file || '';
         if(filePath.startsWith('/')) filePath = filePath.slice(1);
         el.innerHTML = ` <h3 style="margin:0 0 6px"><a href="post.html?file=${encodeURIComponent(filePath)}">${item.title}</a></h3>
                           <div style="color:var(--muted);margin-top:6px">${item.date} · ${item.tags||''}</div>
+                          <div style="color:var(--muted);margin-top:6px">👍 ${likes}</div>
                           <p style="margin-top:10px">${item.excerpt||''}</p>`;
         el.style.animationDelay = `${140 + i * 180}ms`;
         list.appendChild(el);
@@ -163,20 +172,23 @@
 
       const categorySelect = document.getElementById('categorySelect');
       const searchInput = document.getElementById('searchInput');
-      function applyFilter(){
+      async function applyFilter(){
         const value = categorySelect ? categorySelect.value : 'all';
         const query = searchInput ? searchInput.value : '';
         let filtered = value === 'all'
           ? idx
           : idx.filter(item => getCategory(item) === value || normalizeTags(item.tags).includes(value));
-        if(query && query.trim()){
-          filtered = filtered
-            .map(item => ({ item, score: scoreItem(item, query) }))
-            .filter(r => r.score > 0)
-            .sort((a,b)=> b.score - a.score)
-            .map(r => r.item);
-        }
-        renderList(filtered);
+        filtered = filtered.filter(item => matchesQuery(item, query));
+
+        const withLikes = await Promise.all(filtered.map(async item => {
+          let filePath = item.file || '';
+          if(filePath.startsWith('/')) filePath = filePath.slice(1);
+          const likes = await getLikeCount(filePath);
+          return { item, likes };
+        }));
+
+        withLikes.sort((a,b) => b.likes - a.likes);
+        renderList(withLikes);
       }
       if(categorySelect){
         categorySelect.addEventListener('change', applyFilter);
