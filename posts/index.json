@@ -1,10 +1,10 @@
 [
   {
-    "file": "posts/test.md",
+    "file": "posts/posts_test.md",
     "title": "test",
     "date": "2026-01-22",
     "tags": "测试",
-    "excerpt": "你好呀！~ **加粗**  ~~哈哈~~"
+    "excerpt": "你好呀！~"
   },
   {
     "file": "posts/sample-post.md",
