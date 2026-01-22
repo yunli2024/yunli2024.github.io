@@ -30,21 +30,11 @@
         <button class="btn" id="download">下载 .md</button>
         <button class="btn" id="copyHtml">复制 HTML</button>
       </div>
-      <p class="muted">说明：此编辑器支持本地导出 Markdown。要直接发布到 GitHub，可使用个人访问令牌（PAT），但请谨慎处理。</p>
-
-      <div style="margin-top:12px;border-top:1px dashed var(--card-border);padding-top:12px">
-        <div style="margin-bottom:8px;color:var(--muted)">可选：直接发布到 GitHub（会在目标仓库创建/更新 posts/*.md 并修改 posts/index.json）。</div>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <input id="ghOwner" placeholder="owner（例如 yunli2024）" value="yunli2024" style="width:160px">
-          <input id="ghRepo" placeholder="repo（例如 yunli2024.github.io）" value="yunli2024.github.io" style="width:220px">
-          <input id="ghBranch" placeholder="branch（例如 main）" value="main" style="width:120px">
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-          <input id="ghToken" placeholder="GitHub Personal Access Token (写入权限)" type="password" style="flex:1">
-          <button class="btn" id="publishBtn">发布到 GitHub</button>
-        </div>
-        <div style="color:var(--muted);font-size:13px">注意：在浏览器中使用个人访问令牌（PAT）有安全风险。请仅在可信环境下使用。</div>
+      <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+        <input id="existingIndex" type="file" accept="application/json" title="可选：上传当前 posts/index.json 以合并">
+        <button class="btn" id="downloadAll">下载 MD 并生成 index.json</button>
       </div>
+      <p class="muted">说明：此编辑器仅支持本地导出 Markdown（下载 .md 并手动上传到仓库）。</p>
     </div>
 
     <div class="panel">
@@ -77,69 +67,43 @@
       try{await navigator.clipboard.writeText(html); alert('已复制 HTML 到剪贴板');}catch(e){alert('复制失败：'+e)}
     });
 
-    // --- GitHub publish logic ---
-    function toBase64Unicode(str){return btoa(unescape(encodeURIComponent(str)))}
-    function fromBase64Unicode(b64){return decodeURIComponent(escape(atob(b64)))}
-
-    async function ghGet(path, owner, repo, branch, token){
-      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
-      const res = await fetch(url, {headers: token ? {Authorization: 'token '+token} : {}});
-      if(res.status === 404) return null;
-      if(!res.ok) throw new Error('GET Failed '+res.status);
-      return await res.json();
-    }
-
-    async function ghPut(path, owner, repo, branch, token, contentStr, message, sha){
-      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
-      const body = {message: message || `Add ${path}`, content: toBase64Unicode(contentStr), branch};
-      if(sha) body.sha = sha;
-      const res = await fetch(url, {method:'PUT', headers:{Authorization: 'token '+token,'Content-Type':'application/json'}, body: JSON.stringify(body)});
-      if(!res.ok) throw new Error('PUT Failed '+res.status);
-      return await res.json();
-    }
-
-    document.getElementById('publishBtn').addEventListener('click', async ()=>{
-      const owner = document.getElementById('ghOwner').value.trim();
-      const repo = document.getElementById('ghRepo').value.trim();
-      const branch = document.getElementById('ghBranch').value.trim() || 'main';
-      const token = document.getElementById('ghToken').value.trim();
-      if(!owner || !repo){alert('请填写 owner 与 repo');return}
-      if(!token){ if(!confirm('未提供 PAT，无法直接推送。要继续仅下载请点击取消。')) return }
-
+    // 下载 MD 并生成/合并 index.json（本地下载，用于手动 push）
+    document.getElementById('downloadAll').addEventListener('click', async ()=>{
       const title = (titleEl.value||'untitled').trim();
       const slug = title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||('post-'+Date.now());
       const path = `posts/${slug}.md`;
       const front = `---\ntitle: ${title}\ndate: ${new Date().toISOString()}\ntags: [${tagsEl.value}]\n---\n\n`;
       const mdContent = front + mdEl.value;
 
-      try{
-        // create or update the markdown file
-        const existing = await ghGet(path, owner, repo, branch, token);
-        const sha = existing ? existing.sha : undefined;
-        await ghPut(path, owner, repo, branch, token, mdContent, `Publish ${slug}.md`, sha);
-
-        // update posts/index.json
-        const idxPath = 'posts/index.json';
-        let idxObj = [];
-        const idxExisting = await ghGet(idxPath, owner, repo, branch, token);
-        if(idxExisting && idxExisting.content){
-          try{ idxObj = JSON.parse(fromBase64Unicode(idxExisting.content)); }catch(e){ idxObj = [] }
-        }
-        // add new entry at front
-        const entry = {file: path, title: title, date: (new Date()).toISOString().slice(0,10), tags: (tagsEl.value||'').split(',').map(s=>s.trim()).filter(Boolean).join(','), excerpt: (mdEl.value||'').slice(0,140)};
-        // remove existing same file if present
-        idxObj = idxObj.filter(it=>it.file !== path);
-        idxObj.unshift(entry);
-        // put back
-        const idxSha = idxExisting ? idxExisting.sha : undefined;
-        await ghPut(idxPath, owner, repo, branch, token, JSON.stringify(idxObj, null, 2), `Update posts/index.json (add ${slug})`, idxSha);
-
-        alert('已发布到 GitHub：' + owner + '/' + repo + ' @ ' + branch);
-      }catch(e){
-        console.error(e);
-        alert('发布失败：'+e.message);
+      // 读取可选的现有 index.json
+      const input = document.getElementById('existingIndex');
+      let idxArr = [];
+      if(input && input.files && input.files.length>0){
+        try{
+          const txt = await input.files[0].text();
+          const parsed = JSON.parse(txt);
+          if(Array.isArray(parsed)) idxArr = parsed;
+        }catch(e){alert('读取上传的 index.json 失败，将生成新的 index.json')}
       }
+
+      // 创建条目并合并（去重后置首位）
+      const entry = {file: path, title: title, date: (new Date()).toISOString().slice(0,10), tags: (tagsEl.value||'').split(',').map(s=>s.trim()).filter(Boolean).join(','), excerpt: (mdEl.value||'').slice(0,140)};
+      idxArr = idxArr.filter(it=>it.file !== path);
+      idxArr.unshift(entry);
+
+      // 触发两个文件的下载：md 与 index.json
+      const mdBlob = new Blob([mdContent], {type:'text/markdown;charset=utf-8'});
+      const mdUrl = URL.createObjectURL(mdBlob);
+      const a1 = document.createElement('a'); a1.href = mdUrl; a1.download = path; document.body.appendChild(a1); a1.click(); a1.remove(); URL.revokeObjectURL(mdUrl);
+
+      const jsonBlob = new Blob([JSON.stringify(idxArr, null, 2)], {type:'application/json;charset=utf-8'});
+      const jUrl = URL.createObjectURL(jsonBlob);
+      const a2 = document.createElement('a'); a2.href = jUrl; a2.download = 'posts/index.json'; document.body.appendChild(a2); a2.click(); a2.remove(); URL.revokeObjectURL(jUrl);
+
+      alert('已生成并下载：' + path + '，以及 posts/index.json。请将它们放到仓库并 push。');
     });
+
+    
   </script>
   <button id="globalThemeBtn" class="theme-toggle" title="切换日/夜模式">🌙</button>
   <script>
