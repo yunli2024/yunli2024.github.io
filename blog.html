@@ -13,9 +13,16 @@
     a{color:var(--accent)}
     .post{padding:18px;border-radius:12px;margin-bottom:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.04);}
     .post h3{margin:0 0 6px}
-    .controls{display:flex;gap:8px;justify-content:flex-end;margin-bottom:12px}
-    .btn{background:var(--surface);padding:8px 12px;border-radius:8px;color:var(--text);text-decoration:none;border:1px solid var(--card-border)}
-    .filter-select{background:var(--surface);padding:8px 10px;border-radius:8px;color:var(--text);border:1px solid var(--card-border)}
+    .controls{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+    .search-input{background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:8px 14px;border-radius:999px;color:var(--text);border:1px solid rgba(214,106,150,0.22);box-shadow:0 10px 22px rgba(214,106,150,0.18);transition:transform .18s,box-shadow .18s,border-color .18s;min-width:180px}
+    .search-input:focus{outline:none;border-color:#f472b6;animation:jelly 420ms ease}
+    .btn{background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:8px 12px;border-radius:999px;color:var(--text);text-decoration:none;border:1px solid rgba(214,106,150,0.18);box-shadow:0 8px 20px rgba(214,106,150,0.12);transition:transform .18s,box-shadow .18s}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(214,106,150,0.18)}
+    .controls label{background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:6px 12px;border-radius:999px;color:var(--muted);border:1px solid rgba(214,106,150,0.18);box-shadow:0 6px 18px rgba(214,106,150,0.10)}
+    .filter-select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:8px 36px 8px 14px;border-radius:999px;color:var(--text);border:1px solid rgba(214,106,150,0.22);box-shadow:0 10px 22px rgba(214,106,150,0.18);transition:transform .18s,box-shadow .18s,border-color .18s;cursor:pointer;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d9467a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 12px center}
+    .filter-select:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(214,106,150,0.22)}
+    .filter-select:focus{outline:none;border-color:#f472b6;animation:jelly 420ms ease}
+    @keyframes jelly{0%{transform:scale(1)}40%{transform:scale(1.04,0.96)}70%{transform:scale(0.98,1.02)}100%{transform:scale(1)}}
 
     /* Header / nav (copied from index.html) */
     header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
@@ -56,6 +63,7 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
       <h1>Blog</h1>
       <div class="controls">
+        <input id="searchInput" class="search-input" type="search" placeholder="搜索标题/标签..." />
         <label for="categorySelect" style="color:var(--muted)">分类</label>
         <select id="categorySelect" class="filter-select">
           <option value="all">all</option>
@@ -96,6 +104,23 @@
       return tags.find(t=>known.includes(t)) || 'uncategorized';
     }
 
+    function scoreItem(item, query){
+      if(!query) return 0;
+      const q = query.toLowerCase().trim();
+      if(!q) return 0;
+      const words = q.split(/[\s,]+/).filter(Boolean);
+      const title = String(item.title || '').toLowerCase();
+      const tags = normalizeTags(item.tags).join(' ');
+      let score = 0;
+      if(title === q) score += 20;
+      if(tags === q) score += 14;
+      words.forEach(w=>{
+        if(title.includes(w)) score += 8;
+        if(tags.includes(w)) score += 5;
+      });
+      return score;
+    }
+
     function renderList(items){
       const list = document.getElementById('list');
       if(!items || items.length===0){
@@ -128,21 +153,33 @@
         try{ idx = await tryFetch(url); break }catch(e){}
       }
       if(!idx){
-        list.innerHTML = '<p>读取文章索引失败（请检查 posts/index.json 是否存在并可通过网络访问；打开控制台查看详细错误）。</p>';
+        list.innerHTML = '<p>读取文章索引失败。哦买噶怎么还有bug……请先检查你的网络，如果没问题就告知开发者一声。</p>';
         return;
       }
       if(!Array.isArray(idx) || idx.length===0){list.innerHTML='<p>暂无文章。</p>';return}
 
       const categorySelect = document.getElementById('categorySelect');
+      const searchInput = document.getElementById('searchInput');
       function applyFilter(){
         const value = categorySelect ? categorySelect.value : 'all';
-        const filtered = value === 'all'
+        const query = searchInput ? searchInput.value : '';
+        let filtered = value === 'all'
           ? idx
           : idx.filter(item => getCategory(item) === value || normalizeTags(item.tags).includes(value));
+        if(query && query.trim()){
+          filtered = filtered
+            .map(item => ({ item, score: scoreItem(item, query) }))
+            .filter(r => r.score > 0)
+            .sort((a,b)=> b.score - a.score)
+            .map(r => r.item);
+        }
         renderList(filtered);
       }
       if(categorySelect){
         categorySelect.addEventListener('change', applyFilter);
+      }
+      if(searchInput){
+        searchInput.addEventListener('input', applyFilter);
       }
       applyFilter();
     }
