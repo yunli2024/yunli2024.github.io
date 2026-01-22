@@ -23,8 +23,20 @@
   <script>
     function qs(name){const u=new URL(location.href);return u.searchParams.get(name)}
     async function load(){
-      const file = qs('file'); if(!file){document.getElementById('content').innerText='未指定文章文件';return}
-      try{const res=await fetch(file); if(!res.ok) throw 0; const md=await res.text(); document.getElementById('content').innerHTML = marked.parse(md)}catch(e){document.getElementById('content').innerText='读取文章失败'}
+      let file = qs('file');
+      if(!file){document.getElementById('content').innerText='未指定文章文件';return}
+      try{
+        // decode in case the query was encoded
+        file = decodeURIComponent(file);
+      }catch(e){}
+      // Basic safety: do not allow attempts to fetch outside posts/ directory
+      if(!file.startsWith('posts/')){document.getElementById('content').innerText='文章路径不合法';return}
+      try{
+        const res = await fetch(file);
+        if(!res.ok) throw 0;
+        const md = await res.text();
+        document.getElementById('content').innerHTML = marked.parse(md);
+      }catch(e){document.getElementById('content').innerText='读取文章失败'}
     }
     load();
   </script>

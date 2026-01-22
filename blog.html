@@ -39,7 +39,8 @@
         list.innerHTML='';
         idx.forEach(item=>{
           const el = document.createElement('div'); el.className='post';
-          el.innerHTML=`<h3><a href="post.html?file=${encodeURIComponent(item.file)}">${item.title}</a></h3><div style="color:#94a3b8">${item.date} · ${item.tags||''}</div><p>${item.excerpt||''}</p>`;
+          // use plain file path in query (will be decoded by post.html)
+          el.innerHTML=`<h3><a href="post.html?file=${item.file}">${item.title}</a></h3><div style="color:#94a3b8">${item.date} · ${item.tags||''}</div><p>${item.excerpt||''}</p>`;
           list.appendChild(el);
         })
       }catch(e){document.getElementById('list').innerHTML='<p>读取文章索引失败。</p>'}
