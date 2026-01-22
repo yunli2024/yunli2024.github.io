@@ -31,6 +31,20 @@
         <button class="btn" id="copyHtml">复制 HTML</button>
       </div>
       <p class="muted">说明：此编辑器支持本地导出 Markdown。要直接发布到 GitHub，可使用个人访问令牌（PAT），但请谨慎处理。</p>
+
+      <div style="margin-top:12px;border-top:1px dashed var(--card-border);padding-top:12px">
+        <div style="margin-bottom:8px;color:var(--muted)">可选：直接发布到 GitHub（会在目标仓库创建/更新 posts/*.md 并修改 posts/index.json）。</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input id="ghOwner" placeholder="owner（例如 yunli2024）" value="yunli2024" style="width:160px">
+          <input id="ghRepo" placeholder="repo（例如 yunli2024.github.io）" value="yunli2024.github.io" style="width:220px">
+          <input id="ghBranch" placeholder="branch（例如 main）" value="main" style="width:120px">
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+          <input id="ghToken" placeholder="GitHub Personal Access Token (写入权限)" type="password" style="flex:1">
+          <button class="btn" id="publishBtn">发布到 GitHub</button>
+        </div>
+        <div style="color:var(--muted);font-size:13px">注意：在浏览器中使用个人访问令牌（PAT）有安全风险。请仅在可信环境下使用。</div>
+      </div>
     </div>
 
     <div class="panel">
@@ -61,6 +75,70 @@
     document.getElementById('copyHtml').addEventListener('click', async ()=>{
       const html = marked.parse(mdEl.value||'');
       try{await navigator.clipboard.writeText(html); alert('已复制 HTML 到剪贴板');}catch(e){alert('复制失败：'+e)}
+    });
+
+    // --- GitHub publish logic ---
+    function toBase64Unicode(str){return btoa(unescape(encodeURIComponent(str)))}
+    function fromBase64Unicode(b64){return decodeURIComponent(escape(atob(b64)))}
+
+    async function ghGet(path, owner, repo, branch, token){
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
+      const res = await fetch(url, {headers: token ? {Authorization: 'token '+token} : {}});
+      if(res.status === 404) return null;
+      if(!res.ok) throw new Error('GET Failed '+res.status);
+      return await res.json();
+    }
+
+    async function ghPut(path, owner, repo, branch, token, contentStr, message, sha){
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+      const body = {message: message || `Add ${path}`, content: toBase64Unicode(contentStr), branch};
+      if(sha) body.sha = sha;
+      const res = await fetch(url, {method:'PUT', headers:{Authorization: 'token '+token,'Content-Type':'application/json'}, body: JSON.stringify(body)});
+      if(!res.ok) throw new Error('PUT Failed '+res.status);
+      return await res.json();
+    }
+
+    document.getElementById('publishBtn').addEventListener('click', async ()=>{
+      const owner = document.getElementById('ghOwner').value.trim();
+      const repo = document.getElementById('ghRepo').value.trim();
+      const branch = document.getElementById('ghBranch').value.trim() || 'main';
+      const token = document.getElementById('ghToken').value.trim();
+      if(!owner || !repo){alert('请填写 owner 与 repo');return}
+      if(!token){ if(!confirm('未提供 PAT，无法直接推送。要继续仅下载请点击取消。')) return }
+
+      const title = (titleEl.value||'untitled').trim();
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||('post-'+Date.now());
+      const path = `posts/${slug}.md`;
+      const front = `---\ntitle: ${title}\ndate: ${new Date().toISOString()}\ntags: [${tagsEl.value}]\n---\n\n`;
+      const mdContent = front + mdEl.value;
+
+      try{
+        // create or update the markdown file
+        const existing = await ghGet(path, owner, repo, branch, token);
+        const sha = existing ? existing.sha : undefined;
+        await ghPut(path, owner, repo, branch, token, mdContent, `Publish ${slug}.md`, sha);
+
+        // update posts/index.json
+        const idxPath = 'posts/index.json';
+        let idxObj = [];
+        const idxExisting = await ghGet(idxPath, owner, repo, branch, token);
+        if(idxExisting && idxExisting.content){
+          try{ idxObj = JSON.parse(fromBase64Unicode(idxExisting.content)); }catch(e){ idxObj = [] }
+        }
+        // add new entry at front
+        const entry = {file: path, title: title, date: (new Date()).toISOString().slice(0,10), tags: (tagsEl.value||'').split(',').map(s=>s.trim()).filter(Boolean).join(','), excerpt: (mdEl.value||'').slice(0,140)};
+        // remove existing same file if present
+        idxObj = idxObj.filter(it=>it.file !== path);
+        idxObj.unshift(entry);
+        // put back
+        const idxSha = idxExisting ? idxExisting.sha : undefined;
+        await ghPut(idxPath, owner, repo, branch, token, JSON.stringify(idxObj, null, 2), `Update posts/index.json (add ${slug})`, idxSha);
+
+        alert('已发布到 GitHub：' + owner + '/' + repo + ' @ ' + branch);
+      }catch(e){
+        console.error(e);
+        alert('发布失败：'+e.message);
+      }
     });
   </script>
   <button id="globalThemeBtn" class="theme-toggle" title="切换日/夜模式">🌙</button>
