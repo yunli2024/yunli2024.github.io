@@ -22,6 +22,10 @@
   <div class="wrap">
     <a href="blog.html">← 返回博客</a>
     <article id="content" class="glass-card">  加载中…</article>
+    <div id="likePanel" class="glass-card" style="margin-top:14px;display:flex;align-items:center;gap:12px">
+      <button id="likeBtn" style="padding:8px 14px;border-radius:999px;border:1px solid rgba(11,18,32,0.08);background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));cursor:pointer">👍 点赞</button>
+      <span id="likeCount" style="color:var(--muted)">likes: 0</span>
+    </div>
   </div>
 
   <script>
@@ -57,6 +61,34 @@
       }
     }
     load();
+  </script>
+  <script>
+    const LIKE_API = 'https://homepagelike.12410922.workers.dev/like';
+    async function refreshLikes(file){
+      if(!file) return;
+      const res = await fetch(`${LIKE_API}?id=${encodeURIComponent(file)}`);
+      if(res.ok){
+        const data = await res.json();
+        document.getElementById('likeCount').textContent = `likes: ${data.likes}`;
+      }
+    }
+    async function sendLike(file){
+      if(!file) return;
+      const res = await fetch(`${LIKE_API}?id=${encodeURIComponent(file)}`, {method:'POST'});
+      if(res.ok){
+        const data = await res.json();
+        document.getElementById('likeCount').textContent = `likes: ${data.likes}`;
+      }
+    }
+    (function(){
+      let file = qs('file');
+      if(!file) return;
+      try{ file = decodeURIComponent(file); }catch(e){}
+      if(file.startsWith('/')) file = file.slice(1);
+      const btn = document.getElementById('likeBtn');
+      refreshLikes(file);
+      if(btn){btn.addEventListener('click', ()=> sendLike(file));}
+    })();
   </script>
   <button id="globalThemeBtn" class="theme-toggle" title="切换日/夜模式">🌙</button>
   <script>
