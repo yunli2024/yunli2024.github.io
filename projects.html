@@ -23,8 +23,15 @@
     /* Projects card grid */
     .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
     .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid var(--card-border);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.3);display:flex;flex-direction:column;gap:12px}
-    .card .media{height:120px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(96,165,250,0.02));display:flex;align-items:center;justify-content:center;color:var(--muted)}
-    .card .media img{width:100%;height:100%;object-fit:cover;display:block}
+     /* media: use a stable aspect ratio so images render predictably
+       - modern browsers: use aspect-ratio to keep consistent frame
+       - fallback: min-height keeps a usable box on older browsers */
+     .card .media{aspect-ratio:16/9;min-height:120px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(96,165,250,0.02));display:block;color:var(--muted)}
+     .card .media img{width:100%;height:100%;object-fit:cover;display:block}
+     /* SVGs or images that require exact rendering: avoid cropping */
+     .card .media img[src$='.svg']{object-fit:contain;background:transparent}
+     /* allow images that are naturally narrow/tall to center nicely */
+     .card .media img{object-position:center center}
     .card h3{margin:0;font-size:1.05rem}
     .card p{margin:0;color:var(--muted);font-size:0.95rem}
     .card .tags{display:flex;gap:8px;flex-wrap:wrap}
@@ -70,7 +77,9 @@
 
       <!-- 用这个模板添加更多项目：复制并修改标题、描述、标签与链接 -->
       <article class="card">
-        <div class="media">项目封面</div>
+        <div class="media">
+          <img src="source/cs207_project_example.png" alt="FPGA">
+        </div>
         <div>
           <h3>CS203 25FALL Project:Matrix calculator</h3>
           <p>数字逻辑课程项目：基于FPGA的矩阵计算器</p>
