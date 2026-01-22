@@ -31,6 +31,12 @@
     @media (max-width:768px) and (hover:none){.glass-card{-webkit-backdrop-filter:blur(6px) saturate(140%);backdrop-filter:blur(6px) saturate(140%);background-color:rgba(255,255,255,0.08)}}
     @media (prefers-reduced-transparency: reduce){.glass-card{-webkit-backdrop-filter:none;backdrop-filter:none;background-color:rgba(255,255,255,0.92);color:#0b1220}}
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.06);-webkit-backdrop-filter:blur(10px) saturate(150%);backdrop-filter:blur(10px) saturate(150%)}}
+    @keyframes popInUp {
+      0% {opacity:0; transform:translateY(24px) scale(0.98)}
+      60% {opacity:1; transform:translateY(-4px) scale(1.01)}
+      100% {opacity:1; transform:translateY(0) scale(1)}
+    }
+    .pop-in{opacity:0;animation:popInUp 1200ms ease-out forwards}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -82,14 +88,15 @@
       }
       if(!Array.isArray(idx) || idx.length===0){list.innerHTML='<p>暂无文章。</p>';return}
       list.innerHTML='';
-      idx.forEach(item=>{
-        const el = document.createElement('section'); el.className='glass-card post';
+      idx.forEach((item, i)=>{
+        const el = document.createElement('section'); el.className='glass-card post pop-in';
         // normalize file path: remove leading slash to keep relative path
         let filePath = item.file || '';
         if(filePath.startsWith('/')) filePath = filePath.slice(1);
         el.innerHTML = ` <h3 style="margin:0 0 6px"><a href="post.html?file=${encodeURIComponent(filePath)}">${item.title}</a></h3>
                           <div style="color:var(--muted);margin-top:6px">${item.date} · ${item.tags||''}</div>
                           <p style="margin-top:10px">${item.excerpt||''}</p>`;
+        el.style.animationDelay = `${140 + i * 180}ms`;
         list.appendChild(el);
       })
     }
@@ -111,6 +118,12 @@
       applyTheme(t);
       if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
     })();
+  </script>
+  <script>
+    // Reveal animation on load
+    window.addEventListener('load', () => {
+      document.body.classList.add('reveal');
+    });
   </script>
 <!-- 鼠标点击爱心特效 -->
 <script>

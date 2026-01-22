@@ -41,6 +41,23 @@
       --bg1:#f5f7fb;--bg2:#ffffff;--surface:#ffffff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)
     }
     .hero, .site, section, footer{transition:background-color .2s,border-color .18s,color .18s}
+    @keyframes popInUp {
+      0% {opacity:0; transform:translateY(24px) scale(0.98)}
+      60% {opacity:1; transform:translateY(-4px) scale(1.01)}
+      100% {opacity:1; transform:translateY(0) scale(1)}
+    }
+    .reveal .cards-grid .hero{
+      opacity:0;
+      animation: popInUp 1200ms ease-out forwards;
+    }
+    .reveal .cards-grid .hero:nth-child(1){animation-delay:140ms}
+    .reveal .cards-grid .hero:nth-child(2){animation-delay:320ms}
+    .reveal .cards-grid .hero:nth-child(3){animation-delay:500ms}
+    .reveal .cards-grid .hero:nth-child(4){animation-delay:680ms}
+    .sponsor-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px}
+    .sponsor-text{text-align:left}
+    .sponsor-image{display:flex;justify-content:center;align-items:center}
+    @media(max-width:720px){.sponsor-row{grid-template-columns:1fr}.sponsor-image{justify-content:center;margin-top:10px}}
     /* 背景层：图片（虚化）与渐变分层，图片位于更下方以避免影响文字 */
     .bg-image{position:fixed;inset:0;background-image:url("source/index_bg_image.png");background-size:cover;background-position:center;background-repeat:no-repeat;filter:blur(10px);transform:scale(1.03);z-index:-2;pointer-events:none}
     /* 背景与玻璃卡片样式 (渐变叠加在图片之上) */
@@ -100,8 +117,14 @@
 
         <article class="hero">
           <h1>赞助我</h1>
-          <p>如果你喜欢我的内容，可以通过赞助支持我（PayPal/支付宝）。</p>
-          <p style="margin-top:8px;color:var(--muted)">（此处可放置赞助二维码或链接）</p>
+          <div class="sponsor-row">
+            <div class="sponsor-text">
+              <p>如果你喜欢我的内容，可以通过赞助支持我喵。</p>
+            </div>
+            <div class="sponsor-image">
+              <img src="source/alipay.png" alt="支付宝赞助" style="width:clamp(140px,22vw,220px);height:clamp(140px,22vw,220px);object-fit:contain;border-radius:10px;box-shadow:0 8px 22px rgba(2,6,23,0.14)" />
+            </div>
+          </div>
         </article>
       </div>
       </section>
@@ -127,6 +150,12 @@
       applyTheme(t);
       if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
     })();
+  </script>
+  <script>
+    // Reveal animation on load
+    window.addEventListener('load', () => {
+      document.body.classList.add('reveal');
+    });
   </script>
 </body>
 </html>

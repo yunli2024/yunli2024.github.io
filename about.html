@@ -45,6 +45,16 @@
 		.about-top{display:flex;gap:18px;align-items:flex-start}
 		.about-photo img{width:clamp(96px,20vw,180px);height:clamp(96px,20vw,180px);object-fit:cover;border-radius:10px;cursor:pointer}
 		@media(max-width:760px){.about-top{flex-direction:column}.about-photo{align-self:center}}
+		@keyframes popInUp {
+			0% {opacity:0; transform:translateY(24px) scale(0.98)}
+			60% {opacity:1; transform:translateY(-4px) scale(1.01)}
+			100% {opacity:1; transform:translateY(0) scale(1)}
+		}
+		.reveal .glass-card{opacity:0;animation:popInUp 1200ms ease-out forwards}
+		.reveal .glass-card:nth-of-type(1){animation-delay:140ms}
+		.reveal .glass-card:nth-of-type(2){animation-delay:320ms}
+		.reveal .glass-card:nth-of-type(3){animation-delay:500ms}
+		.reveal .glass-card:nth-of-type(4){animation-delay:680ms}
 	</style>
 </head>
 <body>
@@ -82,7 +92,7 @@
 				<p><strong>School：</strong> <a href="https://www.sustech.edu.cn" target="_blank" rel="noopener">SUSTech 南方科技大学</a></p>
 				<p><strong>Department：</strong> <a href="https://cse.sustech.edu.cn" target="_blank" rel="noopener">CSE 计算机科学与工程系</a></p>
         <p><strong>Base：深圳</strong></p>
-				<p style="margin-top:8px"><strong>技能：</strong></p>
+				<p style="margin-top:8px"><strong>Skills：</strong></p>
 				<ul class="skills">
 					<li>☕️ Java</li>
 					<li>🐍 Python</li>
@@ -97,7 +107,7 @@
 
 			<section class="glass-card wrap">
 				<h2>Research</h2>
-				<p>研究方向：Computer Vision / Deep Learning</p>
+				<p><strong>研究方向：Computer Vision / Deep Learning</strong></p>
 				<p><strong>导师：</strong> <a href="https://www.sustech.edu.cn/zh/faculties/zhangjianguo.html" id="advisor-link">Prof. JianGuo Zhang</a></p>
         <p>还没有pub，因为科研做得比较少。由于上述的拖延症呜呜。</p>
 			</section>
@@ -148,6 +158,12 @@
 				}, 180);
 			});
 		})();
+	</script>
+	<script>
+		// Reveal animation on load
+		window.addEventListener('load', () => {
+			document.body.classList.add('reveal');
+		});
 	</script>
 
 	<!-- 鼠标点击爱心特效 -->

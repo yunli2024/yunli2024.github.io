@@ -56,6 +56,16 @@
     .card .links{margin-top:auto;display:flex;gap:10px}
     .card a{font-weight:600}
     @media (max-width:420px){ .card .media{height:90px} }
+    @keyframes popInUp {
+      0% {opacity:0; transform:translateY(24px) scale(0.98)}
+      60% {opacity:1; transform:translateY(-4px) scale(1.01)}
+      100% {opacity:1; transform:translateY(0) scale(1)}
+    }
+    .reveal .projects-grid .card{opacity:0;animation:popInUp 1200ms ease-out forwards}
+    .reveal .projects-grid .card:nth-child(1){animation-delay:140ms}
+    .reveal .projects-grid .card:nth-child(2){animation-delay:320ms}
+    .reveal .projects-grid .card:nth-child(3){animation-delay:500ms}
+    .reveal .projects-grid .card:nth-child(4){animation-delay:680ms}
   </style>
 </head>
 <body>
@@ -170,6 +180,12 @@
       applyTheme(t);
       if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
     })();
+  </script>
+  <script>
+    // Reveal animation on load
+    window.addEventListener('load', () => {
+      document.body.classList.add('reveal');
+    });
   </script>
 </body>
 </html>
