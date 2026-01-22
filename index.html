@@ -120,6 +120,25 @@
         </article>
 
         <article class="hero">
+          <h1>统计量</h1>
+          <p style="color:var(--muted)">来自 posts/index.json 与所有 Markdown 文章。</p>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px">
+            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px">
+              <div style="color:var(--muted);font-size:12px">活跃天数</div>
+              <div id="stat-active-days" style="font-size:20px;font-weight:700">—</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px">
+              <div style="color:var(--muted);font-size:12px">上次更新时间</div>
+              <div id="stat-last-update" style="font-size:20px;font-weight:700">—</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px">
+              <div style="color:var(--muted);font-size:12px">总字数</div>
+              <div id="stat-total-words" style="font-size:20px;font-weight:700">—</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="hero">
           <h1>赞助我</h1>
           <div class="sponsor-row">
             <div class="sponsor-text">
@@ -175,6 +194,48 @@
       applyTheme(t);
       if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
     })();
+  </script>
+  <script>
+    async function loadBlogStats(){
+      const activeEl = document.getElementById('stat-active-days');
+      const lastEl = document.getElementById('stat-last-update');
+      const totalEl = document.getElementById('stat-total-words');
+      try{
+        const res = await fetch('posts/index.json');
+        if(!res.ok) throw new Error('index.json not found');
+        const idx = await res.json();
+        if(!Array.isArray(idx) || idx.length === 0) throw new Error('empty index');
+
+        const dates = idx.map(i => i.date).filter(Boolean);
+        const uniqueDates = Array.from(new Set(dates));
+        const lastDate = dates.sort().slice(-1)[0] || '—';
+
+        const files = idx.map(i => i.file).filter(Boolean);
+        let totalCount = 0;
+        const contents = await Promise.all(files.map(async f => {
+          const path = f.startsWith('/') ? f.slice(1) : f;
+          const r = await fetch(path);
+          return r.ok ? r.text() : '';
+        }));
+        contents.forEach(text => {
+          const cleaned = text
+            .replace(/```[\s\S]*?```/g, '')
+            .replace(/`[^`]*`/g, '')
+            .replace(/[#>*_~\-]+/g, '')
+            .replace(/\s+/g, '');
+          totalCount += cleaned.length;
+        });
+
+        if(activeEl) activeEl.textContent = String(uniqueDates.length || 0);
+        if(lastEl) lastEl.textContent = lastDate;
+        if(totalEl) totalEl.textContent = String(totalCount);
+      }catch(e){
+        if(activeEl) activeEl.textContent = '—';
+        if(lastEl) lastEl.textContent = '—';
+        if(totalEl) totalEl.textContent = '—';
+      }
+    }
+    loadBlogStats();
   </script>
   <script>
     // Reveal animation on load
