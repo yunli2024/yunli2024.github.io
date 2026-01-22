@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>云离 — 个人主页</title>
-  <meta name="description" content="云立的个人主页">
+  <meta name="description" content="云离的个人主页">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
   <style>
     :root{
@@ -40,9 +41,18 @@
       --bg1:#f5f7fb;--bg2:#ffffff;--surface:#ffffff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)
     }
     .hero, .site, section, footer{transition:background-color .2s,border-color .18s,color .18s}
+    /* 背景与玻璃卡片样式 (可在 background-image 中填入 url("...")) */
+    .bg{position:fixed;inset:0;background-image: url("");background-size:cover;background-position:center;background-repeat:no-repeat;background:radial-gradient(1200px 600px at 20% 10%, rgba(96,165,250,.25), transparent 60%),radial-gradient(900px 500px at 70% 30%, rgba(167,139,250,.22), transparent 55%),linear-gradient(180deg,#071026,#061027);z-index:-1}
+    .glass-card{max-width:960px;margin:32px auto;padding:20px 22px;border-radius:14px;background-color:rgba(255,255,255,0.12);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,0.20);box-shadow:0 12px 30px rgba(2,6,23,0.35);color:var(--text);will-change:backdrop-filter;transform:translateZ(0)}
+    @media (max-width:768px) and (hover:none){.glass-card{-webkit-backdrop-filter:blur(8px) saturate(160%);backdrop-filter:blur(8px) saturate(160%);background-color:rgba(255,255,255,0.16)}}
+    @media (prefers-reduced-transparency: reduce){.glass-card{-webkit-backdrop-filter:none;backdrop-filter:none;background-color:rgba(255,255,255,0.92);color:#0b1220}}
+    /* 进阶支持：只有支持 backdrop-filter 时启用虚化效果 */
+    .glass-card{background-color:rgba(255,255,255,0.85);color:#0b1220}
+    @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%)}}
   </style>
 </head>
 <body>
+  <div class="bg"></div>
   <div class="site">
     <header>
       <a href="index.html" class="brand">云离</a>
@@ -55,16 +65,42 @@
     </header>
 
     <main>
-      <article class="hero">
-        <h1>你好，我是云离</h1>
-        <p>南方科技大学2024级本科生 计算机科学与工程系</p>
-        <p>顶部导航About了解更多~</p>
-      </article>
+      <style>
+        /* 四块卡片改为每块占一行（1 列），保持响应式 */
+        .cards-grid{max-width:960px;margin:32px auto;display:grid;grid-template-columns:1fr;gap:18px;padding:0}
+        .cards-grid .hero{margin:0;padding:28px;min-height:140px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+        .cards-grid .hero h1{font-size:32px;margin-bottom:8px}
+        /* 首块标题使用花体字体与渐变色，突出显示 */
+        .cards-grid .hero:first-child h1{font-family:'Playfair Display',serif;font-size:44px;line-height:1.05;margin-bottom:6px;background:linear-gradient(90deg,#60a5fa,#a78bfa);-webkit-background-clip:text;color:transparent}
+        .cards-grid .hero:first-child p{color:rgba(255,255,255,0.9)}
+      </style>
 
+      <section class="glass-card">
+      <div class="cards-grid">
+        <article class="hero">
+          <h1>你好，我是云离~</h1>
+          <p>南方科技大学2024级本科生 计算机科学与工程系</p>
+          <p>顶部导航About了解更多~</p>
+        </article>
 
-      <section id="contact">
-        <h2>联系</h2>
-        <p>12410922@mail.sustech.edu.cn</p>
+        <article class="hero">
+          <h1>网站说明</h1>
+          <p>本站为个人主页，展示博客、项目与一些学习笔记。内容以静态页面为主，源码托管在 GitHub。</p>
+          <p style="margin-top:8px"><a href="README.md" style="color:var(--accent)">查看项目仓库说明</a></p>
+        </article>
+
+        <article class="hero">
+          <h1>联系我</h1>
+          <p>有问题或合作请发邮件：<a href="mailto:12410922@mail.sustech.edu.cn" style="color:var(--accent)">12410922@mail.sustech.edu.cn</a></p>
+          <p style="margin-top:8px">也可以在 <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a> 找到我。</p>
+        </article>
+
+        <article class="hero">
+          <h1>赞助我</h1>
+          <p>如果你喜欢我的内容，可以通过赞助支持我（PayPal/支付宝）。</p>
+          <p style="margin-top:8px;color:var(--muted)">（此处可放置赞助二维码或链接）</p>
+        </article>
+      </div>
       </section>
     </main>
 

@@ -6,12 +6,12 @@
   <title>博客 — 云立</title>
   <meta name="description" content="云立的博客">
   <style>
-    :root{--bg1:#071026;--bg2:#061027;--surface:#071026;--text:#e6eef8;--muted:#94a3b8;--accent:#60a5fa;--card-border:rgba(255,255,255,0.03)}
+    :root{--bg1:#fff6f8;--bg2:#fff0f4;--surface:#fff8fb;--text:#0b1220;--muted:#6b6b6b;--accent:#d9467a;--card-border:rgba(11,18,32,0.06)}
     body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s}
     body.light{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)}
     .wrap{max-width:900px;margin:36px auto;padding:16px}
     a{color:var(--accent)}
-    .post{padding:14px;border-bottom:1px solid var(--card-border)}
+    .post{padding:18px;border-radius:12px;margin-bottom:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.04);}
     .post h3{margin:0 0 6px}
     .controls{display:flex;gap:8px;justify-content:flex-end;margin-bottom:12px}
     .btn{background:var(--surface);padding:8px 12px;border-radius:8px;color:var(--text);text-decoration:none;border:1px solid var(--card-border)}
@@ -25,6 +25,12 @@
     .menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer;transition:color .18s,border-color .18s,background-color .18s}
     .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
     .theme-toggle{position:fixed;right:14px;top:14px;background:var(--surface);color:var(--text);border:1px solid var(--card-border);padding:8px;border-radius:8px;cursor:pointer}
+    /* 背景与玻璃卡片样式 */
+    .bg{position:fixed;inset:0;background-image: url("");background-size:cover;background-position:center;background-repeat:no-repeat;background:radial-gradient(1000px 500px at 20% 10%, rgba(255,192,203,.12), transparent 55%),radial-gradient(700px 380px at 80% 30%, rgba(255,160,180,.08), transparent 50%),linear-gradient(180deg,var(--bg1),var(--bg2));z-index:-1}
+    .glass-card{max-width:900px;margin:18px auto;padding:18px;border-radius:12px;background-color:rgba(255,255,255,0.06);-webkit-backdrop-filter:blur(10px) saturate(150%);backdrop-filter:blur(10px) saturate(150%);border:1px solid rgba(255,255,255,0.04);box-shadow:0 8px 20px rgba(2,6,23,0.25);color:var(--text);will-change:backdrop-filter}
+    @media (max-width:768px) and (hover:none){.glass-card{-webkit-backdrop-filter:blur(6px) saturate(140%);backdrop-filter:blur(6px) saturate(140%);background-color:rgba(255,255,255,0.08)}}
+    @media (prefers-reduced-transparency: reduce){.glass-card{-webkit-backdrop-filter:none;backdrop-filter:none;background-color:rgba(255,255,255,0.92);color:#0b1220}}
+    @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.06);-webkit-backdrop-filter:blur(10px) saturate(150%);backdrop-filter:blur(10px) saturate(150%)}}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -77,11 +83,13 @@
       if(!Array.isArray(idx) || idx.length===0){list.innerHTML='<p>暂无文章。</p>';return}
       list.innerHTML='';
       idx.forEach(item=>{
-        const el = document.createElement('div'); el.className='post';
+        const el = document.createElement('section'); el.className='glass-card post';
         // normalize file path: remove leading slash to keep relative path
         let filePath = item.file || '';
         if(filePath.startsWith('/')) filePath = filePath.slice(1);
-        el.innerHTML=`<h3><a href="post.html?file=${encodeURIComponent(filePath)}">${item.title}</a></h3><div style="color:#94a3b8">${item.date} · ${item.tags||''}</div><p>${item.excerpt||''}</p>`;
+        el.innerHTML = ` <h3 style="margin:0 0 6px"><a href="post.html?file=${encodeURIComponent(filePath)}">${item.title}</a></h3>
+                          <div style="color:var(--muted);margin-top:6px">${item.date} · ${item.tags||''}</div>
+                          <p style="margin-top:10px">${item.excerpt||''}</p>`;
         list.appendChild(el);
       })
     }
