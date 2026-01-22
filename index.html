@@ -46,6 +46,10 @@
       60% {opacity:1; transform:translateY(-4px) scale(1.01)}
       100% {opacity:1; transform:translateY(0) scale(1)}
     }
+    .preload .cards-grid .hero{
+      opacity:0;
+      transform:translateY(24px) scale(0.98);
+    }
     .reveal .cards-grid .hero{
       opacity:0;
       animation: popInUp 1200ms ease-out forwards;
@@ -70,7 +74,7 @@
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%)}}
   </style>
 </head>
-<body>
+<body class="preload">
   <div class="bg-image" aria-hidden="true"></div>
   <div class="bg"></div>
   <div class="site">
@@ -155,6 +159,7 @@
     // Reveal animation on load
     window.addEventListener('load', () => {
       document.body.classList.add('reveal');
+      document.body.classList.remove('preload');
     });
   </script>
 </body>

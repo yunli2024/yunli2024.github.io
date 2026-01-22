@@ -50,6 +50,7 @@
 			60% {opacity:1; transform:translateY(-4px) scale(1.01)}
 			100% {opacity:1; transform:translateY(0) scale(1)}
 		}
+		.preload .glass-card{opacity:0;transform:translateY(24px) scale(0.98)}
 		.reveal .glass-card{opacity:0;animation:popInUp 1200ms ease-out forwards}
 		.reveal .glass-card:nth-of-type(1){animation-delay:140ms}
 		.reveal .glass-card:nth-of-type(2){animation-delay:320ms}
@@ -57,7 +58,7 @@
 		.reveal .glass-card:nth-of-type(4){animation-delay:680ms}
 	</style>
 </head>
-<body>
+<body class="preload">
 	<div class="bg"></div>
 	<div class="site">
 		<header>
@@ -163,6 +164,7 @@
 		// Reveal animation on load
 		window.addEventListener('load', () => {
 			document.body.classList.add('reveal');
+			document.body.classList.remove('preload');
 		});
 	</script>
 
