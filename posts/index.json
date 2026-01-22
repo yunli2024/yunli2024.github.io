@@ -3,24 +3,16 @@
     "file": "posts/posts_test.md",
     "title": "test",
     "date": "2026-01-22",
-    "category": "course",
-    "tags": "测试,course",
-    "excerpt": "你好呀！~"
-  },
-  {
-    "file": "posts/sample-post.md",
-    "title": "示例文章：欢迎",
-    "date": "2026-01-22",
     "category": "daily-life",
-    "tags": "示例,入门,daily-life",
-    "excerpt": "这是一个示例文章，用来演示博客列表与文章查看。"
+    "tags": "daily-life",
+    "excerpt": "你好呀！~"
   },
   {
     "file": "posts/EOE100 地球科学概论 经验帖.md",
     "title": "EOE100 地球科学概论 经验帖",
-    "date": "2026-01-22",
+    "date": "2026-01-07",
     "category": "course",
-    "tags": "course",
+    "tags": "course,others",
     "excerpt": "关于低钙如何用较少的时间拿到高分。"
   }
 ]
