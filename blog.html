@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>博客 — 云立</title>
+  <meta name="description" content="云立的博客">
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:#071026;color:#e6eef8}
+    .wrap{max-width:900px;margin:36px auto;padding:16px}
+    a{color:#60a5fa}
+    .post{padding:14px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .post h3{margin:0 0 6px}
+    .controls{display:flex;gap:8px;justify-content:flex-end;margin-bottom:12px}
+    .btn{background:#0b1220;padding:8px 12px;border-radius:8px;color:#cfe8ff;text-decoration:none}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <h1>博客</h1>
+      <div class="controls"><a class="btn" href="editor.html">写文章</a></div>
+    </div>
+
+    <div id="list">加载中…</div>
+  </div>
+
+  <script>
+    async function loadIndex(){
+      try{
+        const res = await fetch('posts/index.json');
+        const idx = await res.json();
+        const list = document.getElementById('list');
+        if(!Array.isArray(idx) || idx.length===0){list.innerHTML='<p>暂无文章。</p>';return}
+        list.innerHTML='';
+        idx.forEach(item=>{
+          const el = document.createElement('div'); el.className='post';
+          el.innerHTML=`<h3><a href="post.html?file=${encodeURIComponent(item.file)}">${item.title}</a></h3><div style="color:#94a3b8">${item.date} · ${item.tags||''}</div><p>${item.excerpt||''}</p>`;
+          list.appendChild(el);
+        })
+      }catch(e){document.getElementById('list').innerHTML='<p>读取文章索引失败。</p>'}
+    }
+    loadIndex();
+  </script>
+</body>
+</html>

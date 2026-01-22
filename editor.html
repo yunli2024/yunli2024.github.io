@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>写文章 — Markdown 编辑器</title>
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:#061027;color:#e6eef8}
+    .wrap{max-width:1100px;margin:20px auto;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+    .panel{background:#071026;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)}
+    input,textarea{width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    textarea{height:420px;font-family:ui-monospace,monospace}
+    .row{display:flex;gap:8px;margin-bottom:8px}
+    .btn{background:#0b1220;padding:8px 12px;border-radius:8px;color:#cfe8ff;text-decoration:none;border:none;cursor:pointer}
+    .muted{color:#94a3b8}
+    @media(max-width:900px){.wrap{grid-template-columns:1fr}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <div class="row"><input id="title" placeholder="文章标题"></div>
+      <div class="row"><input id="tags" placeholder="标签，逗号分隔"></div>
+      <textarea id="md" placeholder="# 在这里写 Markdown"></textarea>
+      <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn" id="download">下载 .md</button>
+        <button class="btn" id="copyHtml">复制 HTML</button>
+      </div>
+      <p class="muted">说明：此编辑器支持本地导出 Markdown。要直接发布到 GitHub，可使用个人访问令牌（PAT），但请谨慎处理。</p>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>实时预览</strong><a href="posts/" class="muted">/posts/</a></div>
+      <div id="preview" style="overflow:auto;height:520px;padding:6px;background:#041025;border-radius:6px"></div>
+    </div>
+  </div>
+
+  <script>
+    const mdEl = document.getElementById('md');
+    const prev = document.getElementById('preview');
+    const titleEl = document.getElementById('title');
+    const tagsEl = document.getElementById('tags');
+    function render(){prev.innerHTML = marked.parse(mdEl.value||'');}
+    mdEl.addEventListener('input', render); titleEl.addEventListener('input', ()=>{});
+    render();
+
+    document.getElementById('download').addEventListener('click', ()=>{
+      const title = (titleEl.value||'untitled').trim();
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||'post';
+      const filename = `posts/${slug}.md`;
+      const front = `---\ntitle: ${title}\ndate: ${new Date().toISOString()}\ntags: [${tagsEl.value}]\n---\n\n`;
+      const blob = new Blob([front + mdEl.value], {type:'text/markdown;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('copyHtml').addEventListener('click', async ()=>{
+      const html = marked.parse(mdEl.value||'');
+      try{await navigator.clipboard.writeText(html); alert('已复制 HTML 到剪贴板');}catch(e){alert('复制失败：'+e)}
+    });
+  </script>
+</body>
+</html>
