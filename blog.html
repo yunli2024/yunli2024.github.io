@@ -30,20 +30,39 @@
   </div>
 
   <script>
-    async function loadIndex(){
+    async function tryFetch(url){
       try{
-        const res = await fetch('posts/index.json');
-        const idx = await res.json();
-        const list = document.getElementById('list');
-        if(!Array.isArray(idx) || idx.length===0){list.innerHTML='<p>暂无文章。</p>';return}
-        list.innerHTML='';
-        idx.forEach(item=>{
-          const el = document.createElement('div'); el.className='post';
-          // use plain file path in query (will be decoded by post.html)
-          el.innerHTML=`<h3><a href="post.html?file=${item.file}">${item.title}</a></h3><div style="color:#94a3b8">${item.date} · ${item.tags||''}</div><p>${item.excerpt||''}</p>`;
-          list.appendChild(el);
-        })
-      }catch(e){document.getElementById('list').innerHTML='<p>读取文章索引失败。</p>'}
+        const res = await fetch(url);
+        if(!res.ok) throw res;
+        return await res.json();
+      }catch(e){
+        console.error('fetch failed for', url, e);
+        throw e;
+      }
+    }
+
+    async function loadIndex(){
+      const list = document.getElementById('list');
+      const candidates = [
+        'posts/index.json',
+        '/posts/index.json',
+        location.origin + '/posts/index.json'
+      ];
+      let idx = null;
+      for(const url of candidates){
+        try{ idx = await tryFetch(url); break }catch(e){}
+      }
+      if(!idx){
+        list.innerHTML = '<p>读取文章索引失败（请检查 posts/index.json 是否存在并可通过网络访问；打开控制台查看详细错误）。</p>';
+        return;
+      }
+      if(!Array.isArray(idx) || idx.length===0){list.innerHTML='<p>暂无文章。</p>';return}
+      list.innerHTML='';
+      idx.forEach(item=>{
+        const el = document.createElement('div'); el.className='post';
+        el.innerHTML=`<h3><a href="post.html?file=${encodeURIComponent(item.file)}">${item.title}</a></h3><div style="color:#94a3b8">${item.date} · ${item.tags||''}</div><p>${item.excerpt||''}</p>`;
+        list.appendChild(el);
+      })
     }
     loadIndex();
   </script>
