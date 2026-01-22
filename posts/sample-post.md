@@ -1,12 +1,7 @@
----
-title: 示例文章：欢迎
-date: 2026-01-22
-tags: [示例, 入门]
----
 
-# 欢迎
+# 使用说明
 
-欢迎使用云立的博客系统示例。这篇文章展示了如何用 Markdown 撰写并通过 `editor.html` 导出文章文件到 `posts/` 目录，然后在 `blog.html` 中列出并在 `post.html` 中查看。
+欢迎使用云离的博客系统示例。这篇文章展示了如何用 Markdown 撰写并通过 `editor.html` 导出文章文件到 `posts/` 目录，然后在 `blog.html` 中列出并在 `post.html` 中查看。
 
 你可以：
 
@@ -14,3 +9,4 @@ tags: [示例, 入门]
 - 编辑 `posts/index.json` 添加新文章元数据（title、file、date、tags、excerpt）。
 
 祝写作愉快！
+
