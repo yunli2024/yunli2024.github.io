@@ -24,6 +24,7 @@
     .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
     .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid var(--card-border);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.3);display:flex;flex-direction:column;gap:12px}
     .card .media{height:120px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(96,165,250,0.02));display:flex;align-items:center;justify-content:center;color:var(--muted)}
+    .card .media img{width:100%;height:100%;object-fit:cover;display:block}
     .card h3{margin:0;font-size:1.05rem}
     .card p{margin:0;color:var(--muted);font-size:0.95rem}
     .card .tags{display:flex;gap:8px;flex-wrap:wrap}
@@ -54,8 +55,8 @@
            <img src="source/cs109_project_example.png" alt="Klotski Game 封面">
         </div>
         <div>
-          <h3>CS109 25SPRING Project:Klotski Game</h3>
-          <p>计算机程序设计基础课程项目:三国华容道小游戏</p>
+          <h3>CS109 25SPRING Project：Klotski Game</h3>
+          <p>计算机程序设计基础课程项目：三国华容道小游戏</p>
         </div>
         <div class="tags">
           <span class="tag">Java</span>
@@ -71,21 +72,22 @@
       <article class="card">
         <div class="media">项目封面</div>
         <div>
-          <h3>项目名称</h3>
-          <p>简短的一句描述，说明此项目的核心功能或目标。</p>
+          <h3>CS203 25FALL Project:Matrix calculator</h3>
+          <p>数字逻辑课程项目：基于FPGA的矩阵计算器</p>
         </div>
         <div class="tags">
-          <span class="tag">标签1</span>
-          <span class="tag">标签2</span>
+          <span class="tag">FPGA</span>
+          <span class="tag">Verilog</span>
+          <span class="tag">Digital Logic</span>
         </div>
         <div class="links">
-          <a href="#" target="_blank" rel="noopener">源码</a>
+          <a href="https://github.com/CS207DigitalLogic/final-project-o" target="_blank" rel="noopener">repository</a>
           <a href="#" target="_blank" rel="noopener">演示</a>
         </div>
       </article>
     </div>
 
-    <p style="margin-top:18px;color:var(--muted)">提示：直接在此文件中以 HTML 形式新增或编辑卡片。若想使用图片，将 <code class="muted">.media</code> 内容替换为 <code>&lt;img src="路径" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"/&gt;</code></p>
+  
   </div>
   <script>
     // Theme control (persist in localStorage) — same as首页
