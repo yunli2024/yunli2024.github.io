@@ -20,8 +20,12 @@
     .menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer;transition:color .18s,border-color .18s,background-color .18s}
     .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
 
-    /* Projects card grid */
-    .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
+    /* Projects card grid — 强制每行两列，窄屏回退为一列；保持卡片等高 */
+    .projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:18px;align-items:stretch}
+    .projects-grid > .card{height:100%}
+    @media (max-width:880px){
+      .projects-grid{grid-template-columns:1fr}
+    }
     .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid var(--card-border);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.3);display:flex;flex-direction:column;gap:12px}
      /* media: use a stable aspect ratio so images render predictably
        - modern browsers: use aspect-ratio to keep consistent frame
