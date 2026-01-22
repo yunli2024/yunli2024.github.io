@@ -4,7 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Projects — 云立</title>
-  <style>body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:#071026;color:#e6eef8}.wrap{max-width:1000px;margin:36px auto;padding:16px} a{color:#60a5fa}</style>
+  <style>
+    :root{--bg1:#071026;--bg2:#061027;--surface:#071026;--text:#e6eef8;--muted:#94a3b8;--accent:#60a5fa;--card-border:rgba(255,255,255,0.03)}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s}
+    body.light{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)}
+    .wrap{max-width:1000px;margin:36px auto;padding:16px}
+    a{color:var(--accent)}
+    .theme-toggle{position:fixed;right:14px;top:14px;background:var(--surface);color:var(--text);border:1px solid var(--card-border);padding:8px;border-radius:8px;cursor:pointer}
+  </style>
 </head>
 <body>
   <div class="wrap">
@@ -14,5 +21,11 @@
       <li><a href="https://github.com/yunli2024">GitHub 个人仓库</a></li>
     </ul>
   </div>
+  <button id="globalThemeBtn" class="theme-toggle" title="切换日/夜模式">🌙</button>
+  <script>
+    const gBtn = document.getElementById('globalThemeBtn');
+    function applyThemePage(t){ if(t==='light') document.body.classList.add('light'); else document.body.classList.remove('light'); gBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙'; try{localStorage.setItem('site-theme', t)}catch(e){} }
+    (function(){ let t='dark'; try{const s=localStorage.getItem('site-theme'); if(s) t=s;}catch(e){} applyThemePage(t); gBtn.addEventListener('click', ()=>{const cur=document.body.classList.contains('light')?'light':'dark'; applyThemePage(cur==='light'?'dark':'light');}); })();
+  </script>
 </body>
 </html>
