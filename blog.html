@@ -60,7 +60,10 @@
       list.innerHTML='';
       idx.forEach(item=>{
         const el = document.createElement('div'); el.className='post';
-        el.innerHTML=`<h3><a href="post.html?file=${encodeURIComponent(item.file)}">${item.title}</a></h3><div style="color:#94a3b8">${item.date} · ${item.tags||''}</div><p>${item.excerpt||''}</p>`;
+        // normalize file path: remove leading slash to keep relative path
+        let filePath = item.file || '';
+        if(filePath.startsWith('/')) filePath = filePath.slice(1);
+        el.innerHTML=`<h3><a href="post.html?file=${encodeURIComponent(filePath)}">${item.title}</a></h3><div style="color:#94a3b8">${item.date} · ${item.tags||''}</div><p>${item.excerpt||''}</p>`;
         list.appendChild(el);
       })
     }

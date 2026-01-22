@@ -32,11 +32,17 @@
       if(!file.startsWith('posts/')){document.getElementById('content').innerText='文章路径不合法（必须在 posts/ 目录下）';console.error('Invalid post path:', file);return}
 
       try{
-        const res = await fetch(file);
-        if(!res.ok){
-          const msg = `读取文章失败：HTTP ${res.status} ${res.statusText}`;
+        // try multiple relative forms to avoid absolute-path issues
+        const candidates = [file, './' + file, '/' + file, location.origin + '/' + file];
+        let res = null;
+        for(const u of candidates){
+          try{ res = await fetch(u); if(res && res.ok) break }catch(err){ console.warn('fetch candidate failed', u, err) }
+        }
+        if(!res || !res.ok){
+          const status = res ? `${res.status} ${res.statusText}` : 'network error';
+          const msg = `读取文章失败：${status}`;
           document.getElementById('content').innerText = msg;
-          console.error('Fetch failed for', file, res);
+          console.error('All fetch candidates failed for', file, res);
           return;
         }
         const md = await res.text();
