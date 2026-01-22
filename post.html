@@ -25,18 +25,26 @@
     async function load(){
       let file = qs('file');
       if(!file){document.getElementById('content').innerText='未指定文章文件';return}
-      try{
-        // decode in case the query was encoded
-        file = decodeURIComponent(file);
-      }catch(e){}
-      // Basic safety: do not allow attempts to fetch outside posts/ directory
-      if(!file.startsWith('posts/')){document.getElementById('content').innerText='文章路径不合法';return}
+      try{ file = decodeURIComponent(file); }catch(e){}
+
+      // Allow paths like 'posts/xxx.md' or '/posts/xxx.md'
+      if(file.startsWith('/')) file = file.slice(1);
+      if(!file.startsWith('posts/')){document.getElementById('content').innerText='文章路径不合法（必须在 posts/ 目录下）';console.error('Invalid post path:', file);return}
+
       try{
         const res = await fetch(file);
-        if(!res.ok) throw 0;
+        if(!res.ok){
+          const msg = `读取文章失败：HTTP ${res.status} ${res.statusText}`;
+          document.getElementById('content').innerText = msg;
+          console.error('Fetch failed for', file, res);
+          return;
+        }
         const md = await res.text();
         document.getElementById('content').innerHTML = marked.parse(md);
-      }catch(e){document.getElementById('content').innerText='读取文章失败'}
+      }catch(e){
+        document.getElementById('content').innerText='读取文章失败（网络或跨域错误）';
+        console.error('Fetch error for', file, e);
+      }
     }
     load();
   </script>
