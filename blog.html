@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>博客 — 云立</title>
-  <meta name="description" content="云立的博客">
+  <title>Blog</title>
+  <meta name="description" content="云离的博客">
   <style>
     :root{--bg1:#fff6f8;--bg2:#fff0f4;--surface:#fff8fb;--text:#0b1220;--muted:#6b6b6b;--accent:#d9467a;--card-border:rgba(11,18,32,0.06)}
     body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s}
@@ -15,6 +15,7 @@
     .post h3{margin:0 0 6px}
     .controls{display:flex;gap:8px;justify-content:flex-end;margin-bottom:12px}
     .btn{background:var(--surface);padding:8px 12px;border-radius:8px;color:var(--text);text-decoration:none;border:1px solid var(--card-border)}
+    .filter-select{background:var(--surface);padding:8px 10px;border-radius:8px;color:var(--text);border:1px solid var(--card-border)}
 
     /* Header / nav (copied from index.html) */
     header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
@@ -53,8 +54,18 @@
   </header>
   <div class="wrap">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <h1>博客</h1>
-      <div class="controls"><a class="btn" href="editor.html">写文章</a></div>
+      <h1>Blog</h1>
+      <div class="controls">
+        <label for="categorySelect" style="color:var(--muted)">分类</label>
+        <select id="categorySelect" class="filter-select">
+          <option value="all">all</option>
+          <option value="course">course</option>
+          <option value="academic">academic</option>
+          <option value="reflection">reflection</option>
+          <option value="daily-life">daily-life</option>
+        </select>
+        <a class="btn" href="editor.html">写文章</a>
+      </div>
     </div>
 
     <div id="list">加载中…</div>
@@ -70,6 +81,39 @@
         console.error('fetch failed for', url, e);
         throw e;
       }
+    }
+
+    function normalizeTags(tags){
+      if(!tags) return [];
+      if(Array.isArray(tags)) return tags.map(t=>String(t).toLowerCase());
+      return String(tags).split(/[,\s]+/).map(t=>t.toLowerCase()).filter(Boolean);
+    }
+
+    function getCategory(item){
+      if(item.category) return String(item.category).toLowerCase();
+      const tags = normalizeTags(item.tags);
+      const known = ['course','academic','reflection','daily-life'];
+      return tags.find(t=>known.includes(t)) || 'uncategorized';
+    }
+
+    function renderList(items){
+      const list = document.getElementById('list');
+      if(!items || items.length===0){
+        list.innerHTML = '<p>该分类暂无文章。</p>';
+        return;
+      }
+      list.innerHTML='';
+      items.forEach((item, i)=>{
+        const el = document.createElement('section'); el.className='glass-card post pop-in';
+        // normalize file path: remove leading slash to keep relative path
+        let filePath = item.file || '';
+        if(filePath.startsWith('/')) filePath = filePath.slice(1);
+        el.innerHTML = ` <h3 style="margin:0 0 6px"><a href="post.html?file=${encodeURIComponent(filePath)}">${item.title}</a></h3>
+                          <div style="color:var(--muted);margin-top:6px">${item.date} · ${item.tags||''}</div>
+                          <p style="margin-top:10px">${item.excerpt||''}</p>`;
+        el.style.animationDelay = `${140 + i * 180}ms`;
+        list.appendChild(el);
+      });
     }
 
     async function loadIndex(){
@@ -88,18 +132,19 @@
         return;
       }
       if(!Array.isArray(idx) || idx.length===0){list.innerHTML='<p>暂无文章。</p>';return}
-      list.innerHTML='';
-      idx.forEach((item, i)=>{
-        const el = document.createElement('section'); el.className='glass-card post pop-in';
-        // normalize file path: remove leading slash to keep relative path
-        let filePath = item.file || '';
-        if(filePath.startsWith('/')) filePath = filePath.slice(1);
-        el.innerHTML = ` <h3 style="margin:0 0 6px"><a href="post.html?file=${encodeURIComponent(filePath)}">${item.title}</a></h3>
-                          <div style="color:var(--muted);margin-top:6px">${item.date} · ${item.tags||''}</div>
-                          <p style="margin-top:10px">${item.excerpt||''}</p>`;
-        el.style.animationDelay = `${140 + i * 180}ms`;
-        list.appendChild(el);
-      })
+
+      const categorySelect = document.getElementById('categorySelect');
+      function applyFilter(){
+        const value = categorySelect ? categorySelect.value : 'all';
+        const filtered = value === 'all'
+          ? idx
+          : idx.filter(item => getCategory(item) === value || normalizeTags(item.tags).includes(value));
+        renderList(filtered);
+      }
+      if(categorySelect){
+        categorySelect.addEventListener('change', applyFilter);
+      }
+      applyFilter();
     }
     loadIndex();
   </script>
