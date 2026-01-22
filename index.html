@@ -1,7 +1,5 @@
 <!doctype html>
 <html lang="zh-CN">
-<!doctype html>
-<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -29,48 +27,37 @@
     .hero{max-width:960px;margin:48px auto;padding:28px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
     .hero h1{margin:0 0 8px;font-size:32px}
     .hero p{margin:0;color:var(--muted)}
-    .topmenu{position:relative}
     .menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer;transition:color .18s,border-color .18s,background-color .18s}
-    .menu-panel{position:absolute;right:0;top:44px;background:var(--surface);border:1px solid var(--card-border);padding:10px;border-radius:8px;display:none;min-width:200px;transition:background-color .18s,border-color .18s}
-    .menu-panel a{display:block;color:var(--muted);padding:8px;border-radius:6px;text-decoration:none}
-    .menu-panel a:hover{background:rgba(255,255,255,0.02);color:var(--text)}
+    .nav-links{display:flex;gap:12px;align-items:center}
+    .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+    .nav-links a.primary{background:linear-gradient(180deg,var(--accent),#3b82f6);color:#fff}
     section{max-width:960px;margin:20px auto;padding:0 18px}
     footer{padding:28px;text-align:center;color:var(--muted)}
-    @media(max-width:720px){.hero h1{font-size:22px}.menu-panel{right:10px}}
+    @media(max-width:720px){.hero h1{font-size:22px}}
 
     /* Light theme overrides (uses the .light flag on body) */
     body.light{
       --bg1:#f5f7fb;--bg2:#ffffff;--surface:#ffffff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)
     }
-    .hero, .menu-panel, .site, section, footer{transition:background-color .2s,border-color .18s,color .18s}
+    .hero, .site, section, footer{transition:background-color .2s,border-color .18s,color .18s}
   </style>
 </head>
 <body>
   <div class="site">
     <header>
         <div class="brand">云立</div>
-        <nav>
+        <nav class="nav-links">
           <a href="blog.html">Blog</a>
           <a href="projects.html">Projects</a>
           <a href="about.html">About</a>
-          <div class="topmenu">
-            <button class="menu-btn" id="menuBtn">菜单 ▾</button>
-            <div class="menu-panel" id="menuPanel">
-              <a href="blog.html">Blog</a>
-              <a href="projects.html">Projects</a>
-              <a href="about.html">About</a>
-              <a href="editor.html">写文章</a>
-              <a href="#contact">联系</a>
-            </div>
-          </div>
+          <button id="themeSwitch" class="menu-btn" aria-label="切换主题" title="切换日/夜模式">🌙</button>
         </nav>
-        <button id="themeSwitch" class="menu-btn" aria-label="切换主题" title="切换日/夜模式">🌙</button>
     </header>
 
     <main>
       <article class="hero">
         <h1>你好，我是 云立</h1>
-        <p>前端工程师 · 开源爱好者 · 写点东西记录生活。使用右上角菜单可快速导航到站点各部分，点击“写文章”可用 Markdown 撰写博客并导出。</p>
+        <p>前端工程师 · 开源爱好者 · 写点东西记录生活。顶部可直接访问 Blog、Projects、About，或切换日间/夜间主题。</p>
       </article>
 
       <section id="projects">
@@ -90,11 +77,6 @@
   </div>
 
   <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const menuPanel = document.getElementById('menuPanel');
-    menuBtn.addEventListener('click', ()=>{menuPanel.style.display = menuPanel.style.display === 'block' ? 'none' : 'block'});
-    document.addEventListener('click', e=>{if(!menuBtn.contains(e.target) && !menuPanel.contains(e.target)){menuPanel.style.display='none'}});
-
     // Theme control (persist in localStorage)
     const themeSwitch = document.getElementById('themeSwitch');
     function applyTheme(theme){
