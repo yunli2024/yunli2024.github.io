@@ -14,5 +14,14 @@
     "category": "course",
     "tags": "course,others",
     "excerpt": "关于低钙如何用较少的时间拿到高分。"
+  },
+  {
+    "file": "posts/CS203_DSAA_数据结构与算法分析：评教.md",
+    "title": "CS203 数据结构与算法分析 评教",
+    "date": "2026-01-09",
+    "category": "course",
+    "tags": "course,cs,algorithm",
+    "excerpt": "主要是分享学习算法和上DSAA的经验~"
   }
+  
 ]
