@@ -22,6 +22,14 @@
     "category": "course",
     "tags": "course,cs,algorithm",
     "excerpt": "主要是分享学习算法和上DSAA的经验~"
+  },
+  {
+    "file": "posts/STA219_工程概率统计评教.md",
+    "title": "STA219_工程概率统计评教",
+    "date": "2026-01-09",
+    "category": "course",
+    "tags": "course,math,statistic",
+    "excerpt": "针对课程的点评，经验和学习技巧不多"
   }
   
 ]
