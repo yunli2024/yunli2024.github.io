@@ -21,7 +21,7 @@
     body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s}
     .site{min-height:100vh;display:flex;flex-direction:column}
     header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
-    .brand{font-weight:700;font-size:18px}
+    .brand{font-weight:700;font-size:26px}
     nav{display:flex;gap:12px;align-items:center}
     nav a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
     nav a.primary{background:linear-gradient(180deg,var(--accent),#3b82f6);color:#fff}
@@ -124,6 +124,27 @@
           <div class="sponsor-row">
             <div class="sponsor-text">
               <p>如果你喜欢我的内容，可以通过赞助支持我喵。</p>
+              <table style="width:100%;border-collapse:separate;border-spacing:0 8px;margin-top:10px">
+                <thead>
+                  <tr>
+                    <th style="text-align:left;color:var(--muted);font-weight:600;padding:6px 10px">date</th>
+                    <th style="text-align:left;color:var(--muted);font-weight:600;padding:6px 10px">amount</th>
+                    <th style="text-align:left;color:var(--muted);font-weight:600;padding:6px 10px">sponsor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="background:rgba(255,255,255,0.04);border-radius:10px">
+                    <td style="padding:8px 10px">2026-01-22</td>
+                    <td style="padding:8px 10px">¥3.91</td>
+                    <td style="padding:8px 10px">我是帅哥</td>
+                  </tr>
+                  <tr style="background:rgba(255,255,255,0.04);border-radius:10px">
+                    <td style="padding:8px 10px">2026-01-22</td>
+                    <td style="padding:8px 10px">¥0.01</td>
+                    <td style="padding:8px 10px">Test</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <div class="sponsor-image">
               <img src="source/alipay.png" alt="支付宝赞助" style="width:clamp(140px,22vw,220px);height:clamp(140px,22vw,220px);object-fit:contain;border-radius:10px;box-shadow:0 8px 22px rgba(2,6,23,0.14)" />

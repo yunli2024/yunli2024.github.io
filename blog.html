@@ -14,19 +14,21 @@
     .post{padding:18px;border-radius:12px;margin-bottom:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.04);}
     .post h3{margin:0 0 6px}
     .controls{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+    .search-icon{font-size:16px;line-height:1;filter:drop-shadow(0 2px 6px rgba(214,106,150,0.25))}
     .search-input{background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:8px 14px;border-radius:999px;color:var(--text);border:1px solid rgba(214,106,150,0.22);box-shadow:0 10px 22px rgba(214,106,150,0.18);transition:transform .18s,box-shadow .18s,border-color .18s;min-width:180px}
     .search-input:focus{outline:none;border-color:#f472b6;animation:jelly 420ms ease}
     .btn{background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:8px 12px;border-radius:999px;color:var(--text);text-decoration:none;border:1px solid rgba(214,106,150,0.18);box-shadow:0 8px 20px rgba(214,106,150,0.12);transition:transform .18s,box-shadow .18s}
     .btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(214,106,150,0.18)}
     .controls label{background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:6px 12px;border-radius:999px;color:var(--muted);border:1px solid rgba(214,106,150,0.18);box-shadow:0 6px 18px rgba(214,106,150,0.10)}
     .filter-select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:8px 36px 8px 14px;border-radius:999px;color:var(--text);border:1px solid rgba(214,106,150,0.22);box-shadow:0 10px 22px rgba(214,106,150,0.18);transition:transform .18s,box-shadow .18s,border-color .18s;cursor:pointer;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d9467a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 12px center}
-    .filter-select:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(214,106,150,0.22)}
+    .filter-select:hover{transform:translateY(-1px) scale(1.01);box-shadow:0 12px 26px rgba(214,106,150,0.22)}
     .filter-select:focus{outline:none;border-color:#f472b6;animation:jelly 420ms ease}
+    .filter-select:active{transform:scale(0.98)}
     @keyframes jelly{0%{transform:scale(1)}40%{transform:scale(1.04,0.96)}70%{transform:scale(0.98,1.02)}100%{transform:scale(1)}}
 
     /* Header / nav (copied from index.html) */
     header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
-    .brand{font-weight:700;font-size:18px}
+    .brand{font-weight:700;font-size:26px}
     .nav-links{display:flex;gap:12px;align-items:center}
     .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
     .nav-links a.primary{background:linear-gradient(180deg,var(--accent),#3b82f6);color:#fff}
@@ -63,14 +65,15 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
       <h1>Blog</h1>
       <div class="controls">
+        <span class="search-icon" aria-hidden="true">🔍</span>
         <input id="searchInput" class="search-input" type="search" placeholder="搜索标题/标签..." />
         <label for="categorySelect" style="color:var(--muted)">分类</label>
         <select id="categorySelect" class="filter-select">
-          <option value="all">all</option>
-          <option value="course">course</option>
-          <option value="academic">academic</option>
-          <option value="reflection">reflection</option>
-          <option value="daily-life">daily-life</option>
+          <option value="all">✨ 全部</option>
+          <option value="course">📘 course</option>
+          <option value="academic">🎓 academic</option>
+          <option value="reflection">💭 reflection</option>
+          <option value="daily-life">🍃 daily-life</option>
         </select>
         <a class="btn" href="editor.html">写文章</a>
       </div>
