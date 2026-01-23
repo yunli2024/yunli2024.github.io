@@ -152,7 +152,9 @@
         // normalize file path: remove leading slash to keep relative path
         let filePath = item.file || '';
         if(filePath.startsWith('/')) filePath = filePath.slice(1);
-        const coverSrc = `source/${encodeURIComponent(item.title || 'post')}_cover.png`;
+        const baseName = (item.file || '').split('/').pop() || 'post.md';
+        const coverFile = baseName.replace(/\.md$/i, '_cover.png');
+        const coverSrc = `source/${encodeURIComponent(coverFile)}`;
         el.innerHTML = `
           <div class="post-row">
             <div class="post-content">
