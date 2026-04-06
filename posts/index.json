@@ -54,6 +54,14 @@
     "category": "daily-life",
     "tags": "daily-life",
     "excerpt": "除夕夜的展望！"
+  },
+  {
+    "file": "posts/计网整理.md",
+    "title": "计网小笔记",
+    "date": "2026-04-06",
+    "category": "course",
+    "tags": "course,computer network",
+    "excerpt": "关于计网的整理，截止4.6只整理到应用层和传输层的前面。"
   }
   
 ]
