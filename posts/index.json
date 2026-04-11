@@ -62,6 +62,14 @@
     "category": "course",
     "tags": "course,computer network",
     "excerpt": "关于计网的整理，截止4.6只整理到应用层和传输层的前面。"
+  },
+   {
+    "file": "posts/260410-Object Detection：目标检测的前世与今生.md",
+    "title": "目标检测讲座笔记",
+    "date": "2026-04-11",
+    "category": "reflection",
+    "tags": "summary,lecture,object detection,computer vision",
+    "excerpt": "听我导的讲座，记笔记✍️"
   }
   
 ]
