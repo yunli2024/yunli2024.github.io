@@ -70,6 +70,14 @@
     "category": "daily-life",
     "tags": "haha",
     "excerpt": "因为一个梦的emo。。。"
+  },
+  {
+    "file": "posts/算法设计与分析评教.md",
+    "title": "算法设计与分析评教",
+    "date": "2026-07-04",
+    "category": "course",
+    "tags": "course,cs,algorithm,dp,graph,network-flow,oj",
+    "excerpt": "期末偏课件背诵，DP和网络流部分值得自己刷题练习的一点课程体验。"
   }
   
 ]
