@@ -29,8 +29,27 @@
     @media (max-width:820px){
       #content img{margin:12px auto;}
     }
+    #content mjx-container{
+      max-width:100%;
+    }
+    #content mjx-container[display="true"]{
+      overflow-x:auto;
+      overflow-y:hidden;
+      padding:.35em 0;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      svg: {fontCache: 'global'}
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
   <div class="bg"></div>
@@ -48,14 +67,25 @@
 
   <script>
     function qs(name){const u=new URL(location.href);return u.searchParams.get(name)}
+    async function typesetMath(el){
+      if(!window.MathJax || !el) return;
+      try{
+        if(MathJax.startup && MathJax.startup.promise) await MathJax.startup.promise;
+        if(MathJax.typesetClear) MathJax.typesetClear([el]);
+        if(MathJax.typesetPromise) await MathJax.typesetPromise([el]);
+      }catch(e){
+        console.warn('MathJax render failed', e);
+      }
+    }
     async function load(){
+      const content = document.getElementById('content');
       let file = qs('file');
-      if(!file){document.getElementById('content').innerText='未指定文章文件';return}
+      if(!file){content.innerText='未指定文章文件';return}
       try{ file = decodeURIComponent(file); }catch(e){}
 
       // Allow paths like 'posts/xxx.md' or '/posts/xxx.md'
       if(file.startsWith('/')) file = file.slice(1);
-      if(!file.startsWith('posts/')){document.getElementById('content').innerText='文章路径不合法（必须在 posts/ 目录下）';console.error('Invalid post path:', file);return}
+      if(!file.startsWith('posts/')){content.innerText='文章路径不合法（必须在 posts/ 目录下）';console.error('Invalid post path:', file);return}
 
       try{
         // try multiple relative forms to avoid absolute-path issues
@@ -67,14 +97,15 @@
         if(!res || !res.ok){
           const status = res ? `${res.status} ${res.statusText}` : 'network error';
           const msg = `读取文章失败：${status}`;
-          document.getElementById('content').innerText = msg;
+          content.innerText = msg;
           console.error('All fetch candidates failed for', file, res);
           return;
         }
         const md = await res.text();
-        document.getElementById('content').innerHTML = marked.parse(md);
+        content.innerHTML = marked.parse(md);
+        await typesetMath(content);
       }catch(e){
-        document.getElementById('content').innerText='读取文章失败（网络或跨域错误）';
+        content.innerText='读取文章失败（网络或跨域错误）';
         console.error('Fetch error for', file, e);
       }
     }
