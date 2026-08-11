@@ -37,6 +37,8 @@
     /* 封面区域固定高度，图片覆盖并居中裁剪 */
     .card .media{height:180px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(96,165,250,0.02));display:block;color:var(--muted)}
     .card .media img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block}
+    .card .media img.media-top{object-position:center top}
+    .card .media img.media-card-cover{object-fit:cover;object-position:center center}
     /* 对 SVG 使用 contain 避免被裁剪 */
     .card .media img[src$='.svg']{object-fit:contain;background:transparent}
     /* 移动端回退为单列并移除固定高度 */
@@ -69,31 +71,33 @@
     .reveal .projects-grid .card:nth-child(3){animation-delay:500ms}
     .reveal .projects-grid .card:nth-child(4){animation-delay:680ms}
     .reveal .projects-grid .card:nth-child(5){animation-delay:860ms}
+    .reveal .projects-grid .card:nth-child(6){animation-delay:1040ms}
   </style>
   <link rel="stylesheet" href="source/ui-polish.css">
+  <script src="source/typewriter.js" defer></script>
 </head>
-<body class="preload">
+<body class="preload page-projects">
   <header>
     <a href="index.html" class="brand">云离</a>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="主导航">
       <a href="blog.html">Blog</a>
-      <a href="projects.html">Projects</a>
+      <a href="projects.html" aria-current="page">Projects</a>
       <a href="about.html">About</a>
-      <button id="themeSwitch" class="menu-btn" aria-label="切换主题" title="切换日/夜模式">🌙</button>
+      <button id="themeSwitch" class="menu-btn" type="button" aria-label="切换到浅色主题" title="切换日/夜模式">🌙</button>
     </nav>
   </header>
-  <div class="wrap">
+  <main class="wrap">
     <h1>Projects</h1>
-    <p>主要是一些课程项目啦。</p>
+    <p class="projects-type-note typewriter-line" data-typewriter data-typewriter-speed="82" data-typewriter-start="420">主要是一些课程项目啦。</p>
 
     
     <div class="projects-grid">
       <article class="card">
         <div class="media">
-           <img src="source/cs109_project_example.png" alt="Klotski Game 封面">
+           <img class="media-contain" src="source/cs109_project_example.png" alt="三国华容道 Klotski Game 项目界面" fetchpriority="high" decoding="async">
         </div>
         <div>
-          <h3>CS109 25SPRING Project：Klotski Game</h3>
+          <h2>CS109 25SPRING Project：Klotski Game</h2>
           <p>计算机程序设计基础课程项目：三国华容道小游戏</p>
           <div class="score"><span class="score-label">Final Score:</span><span class="score-star">⭐</span><span class="score-value">104</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
@@ -110,10 +114,10 @@
       <!-- 用这个模板添加更多项目：复制并修改标题、描述、标签与链接 -->
       <article class="card">
         <div class="media">
-          <img src="source/cs207_project_example.png" alt="FPGA">
+          <img class="media-contain" src="source/cs207_project_example.png" alt="FPGA 矩阵计算器演示界面" loading="lazy" decoding="async">
         </div>
         <div>
-          <h3>CS203 25FALL Project：Matrix calculator</h3>
+          <h2>CS203 25FALL Project：Matrix calculator</h2>
           <p>数字逻辑课程项目：基于FPGA的矩阵计算器</p>
           <div class="score"><span class="score-label">Final Score:</span><span class="score-star">⭐</span><span class="score-value">106</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
@@ -130,10 +134,10 @@
       
       <article class="card">
         <div class="media">
-          <img src="source/cs307_project1_example.png" alt="DataBase1">
+          <img class="media-contain" src="source/cs307_project1_example.png" alt="菜谱管理系统数据库结构图" loading="lazy" decoding="async">
         </div>
         <div>
-          <h3>CS307 25FALL ProjectI: SUSTC Recipe Management System</h3>
+          <h2>CS307 25FALL ProjectI: SUSTC Recipe Management System</h2>
           <p>数据库原理课程项目I：SUSTC菜谱管理系统</p>
           <div class="score"><span class="score-label">Final Score:</span><span class="score-star">⭐</span><span class="score-value">99</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
@@ -149,10 +153,10 @@
 
       <article class="card">
         <div class="media">
-          <img src="source/cs307_project2_example.png" alt="DataBase2">
+          <img class="media-contain" src="source/cs307_project2_example.png" alt="菜谱数据库系统界面" loading="lazy" decoding="async">
         </div>
         <div>
-          <h3>CS307 25FALL ProjectII：SUSTC Recipe Database System</h3>
+          <h2>CS307 25FALL ProjectII：SUSTC Recipe Database System</h2>
           <p>数据库原理课程项目II：SUSTC菜谱数据库系统</p>
           <div class="score"><span class="score-label">Final Score:</span><span class="score-star">⭐</span><span class="score-value">110+</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
@@ -168,10 +172,10 @@
 
       <article class="card">
         <div class="media">
-          <img src="source/nus_visual_computing_project.png" alt="实时人体关键点控制平台游戏">
+          <img src="source/nus_visual_computing_project.png" alt="实时人体关键点控制平台游戏" loading="lazy" decoding="async">
         </div>
         <div>
-          <h3>NUS SOC Visual Computing Project: Real-Time Facial &amp; Body Keypoint Analysis</h3>
+          <h2>NUS SOC Visual Computing Project: Real-Time Facial &amp; Body Keypoint Analysis</h2>
           <p>新加坡国立大学计算机视觉课程项目：基于人脸与人体关键点的表情识别、舞蹈评分与体感游戏。</p>
           <div class="score"><span class="score-label">Final Score:</span><span class="score-value"></span></div>
         </div>
@@ -184,18 +188,39 @@
           <a href="https://github.com/yunli2024/NUS_SOC_Visual_Computing_Project_26Summer" target="_blank" rel="noopener">repository</a>
         </div>
       </article>
+
+      <article class="card">
+        <a class="media" href="project-cs202.html" aria-label="查看 CS202 RISC-V CPU 项目详情">
+          <img class="media-card-cover" src="source/cs202_cpu_project.svg" alt="单周期 RV32I CPU 数据通路与 UART 调试架构封面" loading="lazy" decoding="async">
+        </a>
+        <div>
+          <h2>CS202 26SPRING Project: Single-Cycle RISC-V CPU</h2>
+          <p>计算机组成原理课程项目：基于 Verilog 与 Vivado 的单周期 RV32I CPU，支持 UART 调试与可视化教学工具</p>
+          <div class="score"><span class="score-label">Final Score:</span><span class="score-value"></span></div>
+        </div>
+        <div class="tags">
+          <span class="tag">Verilog</span>
+          <span class="tag">RISC-V</span>
+          <span class="tag">Vivado</span>
+        </div>
+        <div class="links">
+          <a href="project-cs202.html">project details</a>
+          <a href="https://github.com/CS202ComputerOrganization/cpu-project-ourcpu" target="_blank" rel="noopener" title="GitHub Classroom 私有仓库，访问需要授权">repository (private)</a>
+        </div>
+      </article>
     </div>
 
   
-  </div>
+  </main>
   <footer>© 云离-projects</footer>
   <script>
     // Theme control (persist in localStorage) — same as首页
     const themeSwitch = document.getElementById('themeSwitch');
     function applyTheme(theme){
-      if(theme === 'light'){
-        document.body.classList.add('light'); themeSwitch.textContent = '☀️';
-      } else { document.body.classList.remove('light'); themeSwitch.textContent = '🌙'; }
+      const light = theme === 'light';
+      document.body.classList.toggle('light', light);
+      themeSwitch.textContent = light ? '☀️' : '🌙';
+      themeSwitch.setAttribute('aria-label', light ? '切换到深色主题' : '切换到浅色主题');
       try{localStorage.setItem('site-theme', theme)}catch(e){}
     }
     (function(){
@@ -214,7 +239,3 @@
   </script>
 </body>
 </html>
-<!-- 鼠标点击爱心特效 -->
-<script>
-!function(e,t,a){function r(){for(var e=0;e<s.length;e++)s[e].alpha<=0?(t.body.removeChild(s[e].el),s.splice(e,1)):(s[e].y--,s[e].scale+=.004,s[e].alpha-=.013,s[e].el.style.cssText="left:"+s[e].x+"px;top:"+s[e].y+"px;opacity:"+s[e].alpha+";transform:scale("+s[e].scale+","+s[e].scale+") rotate(45deg);background:"+s[e].color+";z-index:99999");requestAnimationFrame(r)}function n(){var t="function"==typeof e.onclick&&e.onclick;e.onclick=function(e){t&&t(),o(e)}}function o(e){var a=t.createElement("div");a.className="heart",s.push({el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:c()}),t.body.appendChild(a)}function i(e){var a=t.createElement("style");a.type="text/css";try{a.appendChild(t.createTextNode(e))}catch(t){a.styleSheet.cssText=e}t.getElementsByTagName("head")[0].appendChild(a)}function c(){return"rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"}var s=[];e.requestAnimationFrame=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,1e3/60)},i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"),n(),r()}(window,document);
-</script>

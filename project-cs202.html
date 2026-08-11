@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="CS202 计算机组成原理课程项目：基于 Verilog 与 Vivado 的单周期 RISC-V CPU。">
+  <title>CS202 RISC-V CPU — 云离</title>
+  <style>
+    :root{
+      --bg1:#071026;
+      --bg2:#0e1729;
+      --surface:#0f172a;
+      --text:#e7eefb;
+      --muted:#a8b3c7;
+      --accent:#38bdf8;
+      --accent-2:#2dd4bf;
+      --line:rgba(148,163,184,.22);
+      --panel:rgba(15,23,42,.78);
+    }
+    body.light{
+      --bg1:#f7fbff;
+      --bg2:#fff;
+      --surface:#fff;
+      --text:#111827;
+      --muted:#64748b;
+      --accent:#0369a1;
+      --accent-2:#0f766e;
+      --line:rgba(15,23,42,.1);
+      --panel:rgba(255,255,255,.82);
+    }
+    body{
+      margin:0;
+      font-family:"Aptos","Microsoft YaHei",sans-serif;
+      background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--text);
+      overflow-x:hidden;
+      transition:background-color .25s,color .25s;
+    }
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
+    .brand{font-weight:800;font-size:26px;color:var(--text);text-decoration:none}
+    .nav-links{display:flex;gap:12px;align-items:center}
+    .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+    .menu-btn{background:transparent;border:1px solid var(--line);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer}
+    main{width:min(1040px,calc(100% - 32px));margin:42px auto 72px}
+    .back{display:inline-flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;margin-bottom:24px}
+    .back:hover{color:var(--accent)}
+    .hero{
+      position:relative;
+      overflow:hidden;
+      display:grid;
+      grid-template-columns:minmax(0,1.05fr) minmax(330px,.95fr);
+      gap:32px;
+      padding:34px;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:
+        radial-gradient(520px 260px at 0 0,rgba(56,189,248,.18),transparent 64%),
+        radial-gradient(420px 260px at 100% 100%,rgba(45,212,191,.12),transparent 68%),
+        var(--panel);
+      box-shadow:0 28px 80px rgba(0,0,0,.28);
+    }
+    .hero-copy{min-width:0;align-self:center}
+    .eyebrow{
+      margin:0 0 14px;
+      color:var(--accent);
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.82rem;
+      font-weight:750;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+    }
+    h1{font-size:clamp(2.2rem,5vw,4.3rem);line-height:1.02;margin:0 0 20px;letter-spacing:-.045em}
+    .lede{font-size:1.05rem;line-height:1.78;color:var(--muted);margin:0}
+    .hero-media{
+      min-width:0;
+      min-height:330px;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#0b1324;
+      box-shadow:0 18px 48px rgba(0,0,0,.3);
+    }
+    .hero-media img{width:100%;height:100%;object-fit:contain;object-position:center center;display:block}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+    .button{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:42px;
+      padding:0 16px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:var(--text);
+      background:rgba(148,163,184,.08);
+      text-decoration:none;
+      font-weight:750;
+      transition:transform .18s ease,border-color .18s ease,background-color .18s ease;
+    }
+    .button.primary{border-color:transparent;color:#04111f;background:linear-gradient(135deg,var(--accent),var(--accent-2))}
+    .button:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.5)}
+    .tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+    .tag{padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:.82rem;background:rgba(148,163,184,.06)}
+    section{margin-top:26px}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:14px}
+    h2{font-size:clamp(1.45rem,3vw,2rem);margin:0}
+    .section-head p{margin:0;color:var(--muted)}
+    .feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .feature{
+      min-width:0;
+      padding:20px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:var(--panel);
+    }
+    .feature-index{display:block;margin-bottom:18px;color:var(--accent);font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.78rem}
+    .feature h3{margin:0 0 8px;font-size:1rem}
+    .feature p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.65}
+    .architecture{
+      min-width:0;
+      overflow:hidden;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:var(--panel);
+    }
+    .architecture img{width:100%;display:block;border-radius:12px;background:#fff}
+    .note{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:14px;
+      align-items:start;
+      padding:20px;
+      border:1px solid rgba(56,189,248,.28);
+      border-radius:18px;
+      background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(45,212,191,.06));
+    }
+    .note-mark{font-size:1.3rem;line-height:1}
+    .note strong{display:block;margin-bottom:5px}
+    .note p{margin:0;color:var(--muted);line-height:1.65}
+    .lede,.feature p,.section-head p,.note p{overflow-wrap:anywhere}
+    footer{text-align:center;color:var(--muted);padding:30px}
+    @media(max-width:880px){
+      .hero{grid-template-columns:1fr}
+      .hero-media{min-height:260px}
+      .feature-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:560px){
+      header{align-items:flex-start;gap:12px;flex-wrap:wrap}
+      .nav-links{width:100%;justify-content:flex-start}
+      main{margin-top:28px}
+      .hero{padding:22px}
+      .hero-media{min-height:210px}
+      .feature-grid{grid-template-columns:1fr}
+      .section-head{display:block}
+      .section-head p{margin-top:8px}
+    }
+  </style>
+  <link rel="stylesheet" href="source/ui-polish.css">
+</head>
+<body class="page-project-detail">
+  <header>
+    <a href="index.html" class="brand">云离</a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="blog.html">Blog</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="about.html">About</a>
+      <button id="themeSwitch" class="menu-btn" type="button" aria-label="切换到浅色主题" title="切换日/夜模式">🌙</button>
+    </nav>
+  </header>
+
+  <main>
+    <a class="back" href="projects.html">← 返回 Projects</a>
+
+    <article class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">SUSTech · CS202 · 2026 Spring</p>
+        <h1>Single-Cycle<br>RISC-V CPU</h1>
+        <p class="lede">基于 Verilog 与 Vivado 构建的 32 位单周期 RV32I CPU。从取指、译码、执行、访存到写回，配套 UART 调试通路和四个计算机组成原理可视化教学工具。</p>
+        <div class="tags" aria-label="技术标签">
+          <span class="tag">Verilog</span>
+          <span class="tag">RISC-V RV32I</span>
+          <span class="tag">Vivado</span>
+          <span class="tag">UART Debug</span>
+        </div>
+        <div class="actions">
+          <a class="button primary" href="#architecture">查看架构</a>
+          <a class="button" href="https://github.com/login?return_to=%2FCS202ComputerOrganization%2Fcpu-project-ourcpu" target="_blank" rel="noopener">Private repository ↗</a>
+        </div>
+      </div>
+      <div class="hero-media">
+        <img src="source/cs202_cpu_project.svg" alt="单周期 RV32I CPU 数据通路与 UART 调试架构封面" decoding="async">
+      </div>
+    </article>
+
+    <section aria-labelledby="highlights-title">
+      <div class="section-head">
+        <h2 id="highlights-title">Project highlights</h2>
+        <p>从硬件数据通路到交互式教学工具</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature">
+          <span class="feature-index">01 / CORE</span>
+          <h3>单周期数据通路</h3>
+          <p>实现 PC、控制器、寄存器堆、立即数生成、ALU、IMEM、DMEM 与写回选择。</p>
+        </article>
+        <article class="feature">
+          <span class="feature-index">02 / ISA</span>
+          <h3>RV32I 指令支持</h3>
+          <p>覆盖算术逻辑、立即数、加载、存储、条件分支以及 JAL/JALR 跳转路径。</p>
+        </article>
+        <article class="feature">
+          <span class="feature-index">03 / DEBUG</span>
+          <h3>UART 硬件调试</h3>
+          <p>支持 CPU halt、step、reset，以及寄存器、指令存储器和数据存储器的调试访问。</p>
+        </article>
+        <article class="feature">
+          <span class="feature-index">04 / BONUS</span>
+          <h3>可视化教学工具</h3>
+          <p>包含算术单元、Cache、RISC-V 指令编解码与 Hamming SEC/DED 四套交互工具。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="architecture" aria-labelledby="architecture-title">
+      <div class="section-head">
+        <h2 id="architecture-title">CPU architecture</h2>
+        <p>Harvard memory · single-cycle execution · observable state</p>
+      </div>
+      <div class="architecture">
+        <img src="source/cs202_cpu_architecture.png" alt="单周期 RISC-V CPU 完整数据通路与调试结构图" loading="lazy" decoding="async">
+      </div>
+    </section>
+
+    <section class="note" aria-label="仓库访问说明">
+      <span class="note-mark">PRIVATE</span>
+      <div>
+        <strong>为什么代码仓库不是公开链接？</strong>
+        <p>源代码位于 GitHub Classroom 私有仓库。详情页公开展示经过整理的项目介绍；只有已登录且获得课程组织授权的 GitHub 账号才能访问原始仓库。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 云离 · CS202 Computer Organization</footer>
+
+  <script>
+    const themeSwitch = document.getElementById('themeSwitch');
+    function applyTheme(theme){
+      const light = theme === 'light';
+      document.body.classList.toggle('light', light);
+      themeSwitch.textContent = light ? '☀️' : '🌙';
+      themeSwitch.setAttribute('aria-label', light ? '切换到深色主题' : '切换到浅色主题');
+      try{localStorage.setItem('site-theme',theme)}catch(e){}
+    }
+    (function(){
+      let theme = 'dark';
+      try{theme = localStorage.getItem('site-theme') || 'dark'}catch(e){}
+      applyTheme(theme);
+      themeSwitch.addEventListener('click',()=>{
+        applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+      });
+    })();
+  </script>
+</body>
+</html>

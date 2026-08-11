@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">CS202 Single-Cycle RISC-V CPU</title>
+  <desc id="description">A five-stage visual summary of the implemented RV32I single-cycle datapath, from instruction fetch through writeback, with UART debugging.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#061225"/>
+      <stop offset=".52" stop-color="#0a1b32"/>
+      <stop offset="1" stop-color="#071426"/>
+    </linearGradient>
+    <radialGradient id="cyan-glow" cx="0" cy="0" r="1" gradientTransform="translate(1230 410) rotate(155) scale(660 460)">
+      <stop offset="0" stop-color="#38bdf8" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#38bdf8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="teal-glow" cx="0" cy="0" r="1" gradientTransform="translate(560 650) rotate(-25) scale(620 340)">
+      <stop offset="0" stop-color="#2dd4bf" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="blue-card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#123556"/>
+      <stop offset="1" stop-color="#0b233e"/>
+    </linearGradient>
+    <linearGradient id="teal-card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#124455"/>
+      <stop offset="1" stop-color="#0b2935"/>
+    </linearGradient>
+    <linearGradient id="amber-card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4a3916"/>
+      <stop offset="1" stop-color="#2f240e"/>
+    </linearGradient>
+    <linearGradient id="debug-card" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0b223a"/>
+      <stop offset=".5" stop-color="#0d2f42"/>
+      <stop offset="1" stop-color="#0b223a"/>
+    </linearGradient>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M42 0H0V42" fill="none" stroke="#7dd3fc" stroke-opacity=".045" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#020617" flood-opacity=".45"/>
+    </filter>
+    <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0L10 5L0 10Z" fill="#52d7ff"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0L10 5L0 10Z" fill="#2dd4bf"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" rx="24" fill="url(#background)"/>
+  <rect width="1600" height="900" rx="24" fill="url(#grid)"/>
+  <rect width="1600" height="900" rx="24" fill="url(#cyan-glow)"/>
+  <rect width="1600" height="900" rx="24" fill="url(#teal-glow)"/>
+  <path d="M0 118H118L146 90H342" fill="none" stroke="#38bdf8" stroke-opacity=".18" stroke-width="2"/>
+  <path d="M1600 786H1482L1454 814H1258" fill="none" stroke="#2dd4bf" stroke-opacity=".16" stroke-width="2"/>
+  <circle cx="118" cy="118" r="5" fill="#38bdf8" fill-opacity=".6"/>
+  <circle cx="1482" cy="786" r="5" fill="#2dd4bf" fill-opacity=".55"/>
+
+  <g font-family="Inter,Segoe UI,Arial,sans-serif">
+    <text x="60" y="184" fill="#7dd3fc" font-size="20" font-weight="700" letter-spacing="3">CS202 · COMPUTER ORGANIZATION · 2026 SPRING</text>
+    <text x="60" y="250" fill="#f8fafc" font-size="56" font-weight="800" letter-spacing="-1.4">SINGLE-CYCLE RISC-V CPU</text>
+    <text x="60" y="296" fill="#94a3b8" font-size="23">A complete RV32I datapath implemented in Verilog · Vivado</text>
+
+    <g transform="translate(1320 180)" filter="url(#shadow)">
+      <rect width="220" height="116" rx="24" fill="#0c3045" stroke="#2dd4bf" stroke-width="2"/>
+      <path d="M26 0V-12M62 0V-12M98 0V-12M134 0V-12M170 0V-12M206 0V-12M26 116V128M62 116V128M98 116V128M134 116V128M170 116V128M206 116V128" stroke="#2dd4bf" stroke-opacity=".7" stroke-width="3"/>
+      <text x="110" y="63" fill="#e6fffb" font-size="40" font-weight="800" text-anchor="middle">RV32I</text>
+      <text x="110" y="89" fill="#99f6e4" font-size="15" font-weight="700" letter-spacing="2" text-anchor="middle">32-BIT ISA</text>
+    </g>
+
+    <g fill="none" stroke="#52d7ff" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-cyan)">
+      <path d="M300 450H356"/>
+      <path d="M610 450H666"/>
+      <path d="M920 450H976"/>
+      <path d="M1230 450H1286"/>
+    </g>
+    <g fill="#52d7ff" filter="url(#soft-glow)">
+      <circle cx="328" cy="450" r="4"/>
+      <circle cx="638" cy="450" r="4"/>
+      <circle cx="948" cy="450" r="4"/>
+      <circle cx="1258" cy="450" r="4"/>
+    </g>
+
+    <g transform="translate(60 360)" filter="url(#shadow)">
+      <rect width="240" height="180" rx="22" fill="url(#blue-card)" stroke="#38bdf8" stroke-width="2"/>
+      <rect x="18" y="18" width="84" height="28" rx="14" fill="#38bdf8" fill-opacity=".13"/>
+      <text x="60" y="38" fill="#7dd3fc" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="1">01 / FETCH</text>
+      <text x="120" y="95" fill="#f8fafc" font-size="27" font-weight="800" text-anchor="middle">PC + IMEM</text>
+      <text x="120" y="130" fill="#a8b3c7" font-size="17" text-anchor="middle">PC + 4 · instruction</text>
+      <path d="M38 153H202" stroke="#38bdf8" stroke-opacity=".22"/>
+    </g>
+
+    <g transform="translate(370 360)" filter="url(#shadow)">
+      <rect width="240" height="180" rx="22" fill="url(#blue-card)" stroke="#38bdf8" stroke-width="2"/>
+      <rect x="18" y="18" width="94" height="28" rx="14" fill="#38bdf8" fill-opacity=".13"/>
+      <text x="65" y="38" fill="#7dd3fc" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="1">02 / DECODE</text>
+      <text x="120" y="95" fill="#f8fafc" font-size="25" font-weight="800" text-anchor="middle">CONTROL + IMM</text>
+      <text x="120" y="130" fill="#a8b3c7" font-size="17" text-anchor="middle">opcode · I/S/B/U/J</text>
+      <path d="M38 153H202" stroke="#38bdf8" stroke-opacity=".22"/>
+    </g>
+
+    <g transform="translate(680 360)" filter="url(#shadow)">
+      <rect width="240" height="180" rx="22" fill="url(#teal-card)" stroke="#2dd4bf" stroke-width="2"/>
+      <rect x="18" y="18" width="116" height="28" rx="14" fill="#2dd4bf" fill-opacity=".13"/>
+      <text x="76" y="38" fill="#5eead4" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="1">03 / OPERANDS</text>
+      <text x="120" y="95" fill="#f8fafc" font-size="25" font-weight="800" text-anchor="middle">REGISTER FILE</text>
+      <text x="120" y="130" fill="#a8b3c7" font-size="17" text-anchor="middle">x0–x31 · 2R1W</text>
+      <path d="M38 153H202" stroke="#2dd4bf" stroke-opacity=".24"/>
+    </g>
+
+    <g transform="translate(990 360)" filter="url(#shadow)">
+      <rect width="240" height="180" rx="22" fill="url(#amber-card)" stroke="#fbbf24" stroke-width="2"/>
+      <rect x="18" y="18" width="104" height="28" rx="14" fill="#fbbf24" fill-opacity=".13"/>
+      <text x="70" y="38" fill="#fde68a" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="1">04 / EXECUTE</text>
+      <text x="120" y="95" fill="#fff8e1" font-size="27" font-weight="800" text-anchor="middle">32-BIT ALU</text>
+      <text x="120" y="130" fill="#d8c9a4" font-size="17" text-anchor="middle">branch · JAL · JALR</text>
+      <path d="M38 153H202" stroke="#fbbf24" stroke-opacity=".24"/>
+    </g>
+
+    <g transform="translate(1300 360)" filter="url(#shadow)">
+      <rect width="240" height="180" rx="22" fill="url(#blue-card)" stroke="#38bdf8" stroke-width="2"/>
+      <rect x="18" y="18" width="154" height="28" rx="14" fill="#38bdf8" fill-opacity=".13"/>
+      <text x="95" y="38" fill="#7dd3fc" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="1">05 / MEMORY + WB</text>
+      <text x="120" y="95" fill="#f8fafc" font-size="24" font-weight="800" text-anchor="middle">DMEM + WB MUX</text>
+      <text x="120" y="130" fill="#a8b3c7" font-size="16" text-anchor="middle">load · store · writeback</text>
+      <path d="M38 153H202" stroke="#38bdf8" stroke-opacity=".22"/>
+    </g>
+
+    <path d="M1420 540V582H800V548" fill="none" stroke="#2dd4bf" stroke-opacity=".78" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow-teal)"/>
+    <text x="1110" y="575" fill="#5eead4" font-size="14" font-weight="700" letter-spacing="1">WRITEBACK TO x0–x31</text>
+
+    <g transform="translate(370 630)" filter="url(#shadow)">
+      <rect width="860" height="86" rx="22" fill="url(#debug-card)" stroke="#2dd4bf" stroke-width="2" stroke-dasharray="8 7"/>
+      <rect x="22" y="21" width="180" height="44" rx="12" fill="#2dd4bf" fill-opacity=".14"/>
+      <text x="112" y="49" fill="#ccfbf1" font-size="17" font-weight="800" text-anchor="middle" letter-spacing="1">UART DEBUG PATH</text>
+      <text x="238" y="50" fill="#99f6e4" font-size="16" font-weight="700">HALT · STEP · RESET</text>
+      <path d="M443 22V64" stroke="#2dd4bf" stroke-opacity=".35"/>
+      <text x="478" y="50" fill="#cbd5e1" font-size="16">OBSERVE  PC · INSTRUCTION · ALU · REGISTERS · MEMORY</text>
+    </g>
+    <path d="M800 540V618" fill="none" stroke="#2dd4bf" stroke-width="3" stroke-dasharray="7 7" marker-end="url(#arrow-teal)"/>
+
+    <g transform="translate(60 760)" font-size="15" font-weight="700" letter-spacing="1">
+      <rect width="116" height="40" rx="20" fill="#12253d" stroke="#334155"/>
+      <text x="58" y="26" fill="#cbd5e1" text-anchor="middle">VERILOG</text>
+      <rect x="132" width="108" height="40" rx="20" fill="#12253d" stroke="#334155"/>
+      <text x="186" y="26" fill="#cbd5e1" text-anchor="middle">VIVADO</text>
+      <rect x="256" width="190" height="40" rx="20" fill="#12253d" stroke="#334155"/>
+      <text x="351" y="26" fill="#cbd5e1" text-anchor="middle">HARVARD MEMORY</text>
+    </g>
+  </g>
+</svg>

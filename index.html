@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>云离-Homepage</title>
   <meta name="description" content="云离的个人主页">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
   <style>
     :root{
@@ -70,18 +69,18 @@
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%)}}
   </style>
   <link rel="stylesheet" href="source/ui-polish.css">
+  <script src="source/typewriter.js" defer></script>
 </head>
-<body class="preload">
-  <div class="bg-image" aria-hidden="true"></div>
+<body class="preload page-home">
   <div class="bg"></div>
   <div class="site">
     <header>
-      <a href="index.html" class="brand">云离</a>
-        <nav class="nav-links">
+      <a href="index.html" class="brand" aria-current="page">云离</a>
+        <nav class="nav-links" aria-label="主导航">
           <a href="blog.html">Blog</a>
           <a href="projects.html">Projects</a>
           <a href="about.html">About</a>
-          <button id="themeSwitch" class="menu-btn" aria-label="切换主题" title="切换日/夜模式">🌙</button>
+          <button id="themeSwitch" class="menu-btn" type="button" aria-label="切换到浅色主题" title="切换日/夜模式">🌙</button>
         </nav>
     </header>
 
@@ -98,26 +97,28 @@
 
       <section class="glass-card">
       <div class="cards-grid">
-        <article class="hero">
-          <h1>你好我是云离~</h1>
-          <p>南方科技大学2024级本科生</p>
+        <article class="hero profile-hero">
+          <div class="profile-copy">
+            <h1 class="typewriter-line" data-typewriter data-typewriter-speed="88" data-typewriter-start="360">你好，我是云离</h1>
+            <p class="typewriter-line" data-typewriter data-typewriter-speed="54">南方科技大学 2024 级本科生</p>
+          </div>
         </article>
 
         <article class="hero">
-          <h1>网站说明</h1>
+          <h2>网站说明</h2>
           <p>是yunli的个人主页，随缘写写，分享点有趣的东西。</p>
           <p>上方导航可查看博客文章，项目等。也可以通过About的内容了解更多关于我~</p>
           <p style="margin-top:8px"><a href="https://github.com/yunli2024/yunli2024.github.io" style="color:var(--accent)">查看此网站仓库</a></p>
         </article>
 
         <article class="hero">
-          <h1>联系我</h1>
+          <h2>联系我</h2>
           <p>有问题或合作请发邮件：<a href="mailto:12410922@mail.sustech.edu.cn" style="color:var(--accent)">12410922@mail.sustech.edu.cn</a></p>
           <p style="margin-top:8px">也可以在 <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a> 找到我。</p>
         </article>
 
         <article class="hero">
-          <h1>统计量</h1>
+          <h2>统计量</h2>
           <p style="color:var(--muted)">来自所有的Markdown文章。</p>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px">
             <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px">
@@ -147,9 +148,10 @@
     // Theme control (persist in localStorage)
     const themeSwitch = document.getElementById('themeSwitch');
     function applyTheme(theme){
-      if(theme === 'light'){
-        document.body.classList.add('light'); themeSwitch.textContent = '☀️';
-      } else { document.body.classList.remove('light'); themeSwitch.textContent = '🌙'; }
+      const light = theme === 'light';
+      document.body.classList.toggle('light', light);
+      themeSwitch.textContent = light ? '☀️' : '🌙';
+      themeSwitch.setAttribute('aria-label', light ? '切换到深色主题' : '切换到浅色主题');
       try{localStorage.setItem('site-theme', theme)}catch(e){}
     }
     (function(){
@@ -160,6 +162,33 @@
     })();
   </script>
   <script>
+    function typeTerminalValue(element, value, startDelay = 0){
+      if(!element) return;
+      const finalValue = String(value);
+      element.setAttribute('aria-label', finalValue);
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        element.textContent = finalValue;
+        return;
+      }
+
+      element.textContent = '';
+      element.classList.remove('terminal-readout', 'is-complete');
+      window.setTimeout(() => {
+        element.classList.add('terminal-readout');
+        let index = 0;
+        const writeNext = () => {
+          index += 1;
+          element.textContent = finalValue.slice(0, index);
+          if(index < finalValue.length){
+            window.setTimeout(writeNext, 64);
+          }else{
+            element.classList.add('is-complete');
+          }
+        };
+        writeNext();
+      }, startDelay);
+    }
+
     async function loadBlogStats(){
       const activeEl = document.getElementById('stat-active-days');
       const lastEl = document.getElementById('stat-last-update');
@@ -190,9 +219,9 @@
           totalCount += cleaned.length;
         });
 
-        if(activeEl) activeEl.textContent = String(uniqueDates.length || 0);
-        if(lastEl) lastEl.textContent = lastDate;
-        if(totalEl) totalEl.textContent = String(totalCount);
+        typeTerminalValue(activeEl, uniqueDates.length || 0);
+        typeTerminalValue(lastEl, lastDate, 120);
+        typeTerminalValue(totalEl, totalCount, 240);
       }catch(e){
         if(activeEl) activeEl.textContent = '—';
         if(lastEl) lastEl.textContent = '—';
@@ -210,7 +239,3 @@
   </script>
 </body>
 </html>
-<!-- 鼠标点击爱心特效 -->
-<script>
-!function(e,t,a){function r(){for(var e=0;e<s.length;e++)s[e].alpha<=0?(t.body.removeChild(s[e].el),s.splice(e,1)):(s[e].y--,s[e].scale+=.004,s[e].alpha-=.013,s[e].el.style.cssText="left:"+s[e].x+"px;top:"+s[e].y+"px;opacity:"+s[e].alpha+";transform:scale("+s[e].scale+","+s[e].scale+") rotate(45deg);background:"+s[e].color+";z-index:99999");requestAnimationFrame(r)}function n(){var t="function"==typeof e.onclick&&e.onclick;e.onclick=function(e){t&&t(),o(e)}}function o(e){var a=t.createElement("div");a.className="heart",s.push({el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:c()}),t.body.appendChild(a)}function i(e){var a=t.createElement("style");a.type="text/css";try{a.appendChild(t.createTextNode(e))}catch(t){a.styleSheet.cssText=e}t.getElementsByTagName("head")[0].appendChild(a)}function c(){return"rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"}var s=[];e.requestAnimationFrame=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,1e3/60)},i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"),n(),r()}(window,document);
-</script>

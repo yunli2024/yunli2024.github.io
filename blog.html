@@ -3,249 +3,347 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Blog</title>
-  <meta name="description" content="云离的博客">
-  <style>
-    :root{--bg1:#fff6f8;--bg2:#fff0f4;--surface:#fff8fb;--text:#0b1220;--muted:#6b6b6b;--accent:#d9467a;--card-border:rgba(11,18,32,0.06)}
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s}
-    body.light{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)}
-    .wrap{max-width:900px;margin:36px auto;padding:16px}
-    a{color:var(--accent)}
-    footer{padding:28px;text-align:center;color:var(--muted)}
-    .post{padding:18px;border-radius:12px;margin-bottom:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.04);}
-    .post h3{margin:0 0 6px}
-    .post-row{display:flex;gap:16px;align-items:stretch}
-    .post-content{flex:1;min-width:0}
-    .post-cover{flex:0 0 auto;display:flex;align-items:center}
-    .post-cover img{width:180px;height:120px;border-radius:10px;object-fit:cover;object-position:center;box-shadow:0 8px 22px rgba(2,6,23,0.12)}
-    @media(max-width:820px){.post-row{flex-direction:column}.post-cover{justify-content:flex-start}.post-cover img{width:100%;max-width:420px;height:180px}}
-    .controls{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-bottom:12px;flex-wrap:wrap}
-    .search-icon{font-size:16px;line-height:1;filter:drop-shadow(0 2px 6px rgba(214,106,150,0.25))}
-    .search-input{background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:8px 14px;border-radius:999px;color:var(--text);border:1px solid rgba(214,106,150,0.22);box-shadow:0 10px 22px rgba(214,106,150,0.18);transition:transform .18s,box-shadow .18s,border-color .18s;min-width:180px}
-    .search-input:focus{outline:none;border-color:#f472b6;animation:jelly 420ms ease}
-    .btn{background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:8px 12px;border-radius:999px;color:var(--text);text-decoration:none;border:1px solid rgba(214,106,150,0.18);box-shadow:0 8px 20px rgba(214,106,150,0.12);transition:transform .18s,box-shadow .18s}
-    .btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(214,106,150,0.18)}
-    .controls label{background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:6px 12px;border-radius:999px;color:var(--muted);border:1px solid rgba(214,106,150,0.18);box-shadow:0 6px 18px rgba(214,106,150,0.10)}
-    .filter-select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));padding:8px 36px 8px 14px;border-radius:999px;color:var(--text);border:1px solid rgba(214,106,150,0.22);box-shadow:0 10px 22px rgba(214,106,150,0.18);transition:transform .18s,box-shadow .18s,border-color .18s;cursor:pointer;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d9467a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 12px center}
-    .filter-select:hover{transform:translateY(-1px) scale(1.01);box-shadow:0 12px 26px rgba(214,106,150,0.22)}
-    .filter-select:focus{outline:none;border-color:#f472b6;animation:jelly 420ms ease}
-    .filter-select:active{transform:scale(0.98)}
-    @keyframes jelly{0%{transform:scale(1)}40%{transform:scale(1.04,0.96)}70%{transform:scale(0.98,1.02)}100%{transform:scale(1)}}
-
-    /* Header / nav (copied from index.html) */
-    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
-    .brand{font-weight:700;font-size:26px}
-    .nav-links{display:flex;gap:12px;align-items:center}
-    .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
-    .nav-links a.primary{background:linear-gradient(180deg,var(--accent),#3b82f6);color:#fff}
-    .menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer;transition:color .18s,border-color .18s,background-color .18s}
-    .nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
-    .theme-toggle{position:fixed;right:14px;top:14px;background:var(--surface);color:var(--text);border:1px solid var(--card-border);padding:8px;border-radius:8px;cursor:pointer}
-    /* 背景与玻璃卡片样式 */
-    .bg{position:fixed;inset:0;background-image: url("");background-size:cover;background-position:center;background-repeat:no-repeat;background:radial-gradient(1000px 500px at 20% 10%, rgba(255,192,203,.12), transparent 55%),radial-gradient(700px 380px at 80% 30%, rgba(255,160,180,.08), transparent 50%),linear-gradient(180deg,var(--bg1),var(--bg2));z-index:-1}
-    .glass-card{max-width:900px;margin:18px auto;padding:18px;border-radius:12px;background-color:rgba(255,255,255,0.06);-webkit-backdrop-filter:blur(10px) saturate(150%);backdrop-filter:blur(10px) saturate(150%);border:1px solid rgba(255,255,255,0.04);box-shadow:0 8px 20px rgba(2,6,23,0.25);color:var(--text);will-change:backdrop-filter}
-    @media (max-width:768px) and (hover:none){.glass-card{-webkit-backdrop-filter:blur(6px) saturate(140%);backdrop-filter:blur(6px) saturate(140%);background-color:rgba(255,255,255,0.08)}}
-    @media (prefers-reduced-transparency: reduce){.glass-card{-webkit-backdrop-filter:none;backdrop-filter:none;background-color:rgba(255,255,255,0.92);color:#0b1220}}
-    @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.06);-webkit-backdrop-filter:blur(10px) saturate(150%);backdrop-filter:blur(10px) saturate(150%)}}
-    @keyframes popInUp {
-      0% {opacity:0; transform:translateY(24px) scale(0.98)}
-      60% {opacity:1; transform:translateY(-4px) scale(1.01)}
-      100% {opacity:1; transform:translateY(0) scale(1)}
-    }
-    .preload #list{opacity:0}
-    .pop-in{opacity:0;animation:popInUp 1200ms ease-out forwards}
-  </style>
+  <title>Blog — 云离</title>
+  <meta name="description" content="云离的个人博客与学习记录">
   <link rel="stylesheet" href="source/ui-polish.css">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="source/typewriter.js" defer></script>
 </head>
-<body class="preload">
+<body class="preload page-blog">
   <header>
     <a href="index.html" class="brand">云离</a>
-    <nav class="nav-links">
-      <a href="blog.html">Blog</a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="blog.html" aria-current="page">Blog</a>
       <a href="projects.html">Projects</a>
       <a href="about.html">About</a>
-      <button id="themeSwitch" class="menu-btn" aria-label="切换主题" title="切换日/夜模式">🌙</button>
+      <button id="themeSwitch" class="menu-btn" type="button" aria-label="切换到浅色主题" title="切换日/夜模式">🌙</button>
     </nav>
   </header>
-  <div class="wrap">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <h1>Blog</h1>
-      <div class="controls">
-        <span class="search-icon" aria-hidden="true">🔍</span>
-        <input id="searchInput" class="search-input" type="search" placeholder="搜索标题/标签..." />
-        <label for="categorySelect" style="color:var(--muted)">分类</label>
-        <select id="categorySelect" class="filter-select">
-          <option value="all">✨ 全部</option>
-          <option value="course">📘 course</option>
-          <option value="academic">🎓 academic</option>
-          <option value="reflection">💭 reflection</option>
-          <option value="daily-life">🍃 daily-life</option>
+
+  <main class="wrap blog-wrap">
+    <section class="blog-intro" aria-labelledby="blog-title">
+      <div>
+        <p class="eyebrow">YL / FIELD NOTES / 2026</p>
+        <h1 id="blog-title">Blog</h1>
+      </div>
+      <p class="blog-type-note typewriter-line" data-typewriter data-typewriter-speed="120" data-typewriter-start="460">写点傻开心的东西</p>
+    </section>
+
+    <form class="query-panel" role="search" aria-label="检索博客文章">
+      <div class="query-row">
+        <label class="query-label" for="searchInput">SEARCH</label>
+        <div class="search-control">
+          <span class="search-mark" aria-hidden="true">⌕</span>
+          <input id="searchInput" class="search-input" type="search" autocomplete="off" placeholder="输入标题、标签或关键词">
+          <button id="clearSearch" class="clear-search" type="button" hidden>清除</button>
+        </div>
+      </div>
+
+      <div class="query-row">
+        <span class="query-label" id="categoryLabel">CHANNEL</span>
+        <div class="filter-list" role="group" aria-labelledby="categoryLabel">
+          <button class="filter-button is-active" type="button" data-category="all" aria-pressed="true">all</button>
+          <button class="filter-button" type="button" data-category="course" aria-pressed="false">course</button>
+          <button class="filter-button" type="button" data-category="academic" aria-pressed="false">academic</button>
+          <button class="filter-button" type="button" data-category="reflection" aria-pressed="false">reflection</button>
+          <button class="filter-button" type="button" data-category="daily-life" aria-pressed="false">daily-life</button>
+        </div>
+        <select id="categorySelect" class="visually-hidden" tabindex="-1" aria-hidden="true">
+          <option value="all">all</option>
+          <option value="course">course</option>
+          <option value="academic">academic</option>
+          <option value="reflection">reflection</option>
+          <option value="daily-life">daily-life</option>
         </select>
       </div>
+    </form>
+
+    <div id="resultMeta" class="result-line" aria-live="polite">SYNC / INDEX</div>
+    <div id="list" aria-busy="true">
+      <p class="list-status">正在读取文章索引</p>
     </div>
+  </main>
 
-    <div id="list">加载中…没有开VPN的话可能需要稍稍等一会儿~www</div>
-  </div>
+  <footer>© 云离 / Notes archive</footer>
 
-  <footer>© 云离-blog</footer>
-  
   <script>
-    async function tryFetch(url){
-      try{
-        const res = await fetch(url);
-        if(!res.ok) throw res;
-        return await res.json();
-      }catch(e){
-        console.error('fetch failed for', url, e);
-        throw e;
-      }
-    }
-
     const LIKE_API = 'https://homepagelike.12410922.workers.dev/like';
+    const CATEGORY_LABELS = {
+      all: 'all',
+      course: 'course',
+      academic: 'academic',
+      reflection: 'reflection',
+      'daily-life': 'daily-life',
+      uncategorized: 'uncategorized'
+    };
+
+    const state = {
+      items: [],
+      activeCategory: 'all',
+      query: '',
+      likes: new Map(),
+      likesReady: false
+    };
+
+    async function tryFetch(url){
+      const response = await fetch(url);
+      if(!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+      return response.json();
+    }
 
     function normalizeTags(tags){
       if(!tags) return [];
-      if(Array.isArray(tags)) return tags.map(t=>String(t).toLowerCase());
-      return String(tags).split(/[,\s]+/).map(t=>t.toLowerCase()).filter(Boolean);
+      if(Array.isArray(tags)) return tags.map(tag => String(tag).toLowerCase());
+      return String(tags).split(/[,\s]+/).map(tag => tag.toLowerCase()).filter(Boolean);
+    }
+
+    function displayTags(tags){
+      if(!tags) return [];
+      if(Array.isArray(tags)) return tags.map(tag => String(tag).trim()).filter(Boolean);
+      return String(tags).split(',').map(tag => tag.trim()).filter(Boolean);
     }
 
     function getCategory(item){
       if(item.category) return String(item.category).toLowerCase();
-      const tags = normalizeTags(item.tags);
       const known = ['course','academic','reflection','daily-life'];
-      return tags.find(t=>known.includes(t)) || 'uncategorized';
+      return normalizeTags(item.tags).find(tag => known.includes(tag)) || 'uncategorized';
     }
 
     function matchesQuery(item, query){
-      if(!query) return true;
-      const q = query.toLowerCase().trim();
-      if(!q) return true;
-      const words = q.split(/[\s,]+/).filter(Boolean);
-      const title = String(item.title || '').toLowerCase();
-      const tags = normalizeTags(item.tags).join(' ');
-      return words.every(w => title.includes(w) || tags.includes(w));
+      const words = String(query || '').toLowerCase().trim().split(/[\s,]+/).filter(Boolean);
+      if(words.length === 0) return true;
+      const haystack = `${item.title || ''} ${normalizeTags(item.tags).join(' ')}`.toLowerCase();
+      return words.every(word => haystack.includes(word));
+    }
+
+    function normalizeFilePath(file){
+      const value = String(file || '');
+      return value.startsWith('/') ? value.slice(1) : value;
     }
 
     async function getLikeCount(file){
       try{
-        const res = await fetch(`${LIKE_API}?id=${encodeURIComponent(file)}`);
-        if(!res.ok) return 0;
-        const data = await res.json();
+        const response = await fetch(`${LIKE_API}?id=${encodeURIComponent(file)}`);
+        if(!response.ok) return 0;
+        const data = await response.json();
         return Number(data.likes) || 0;
-      }catch(e){
+      }catch(error){
         return 0;
       }
     }
 
-    function renderList(items){
+    function appendMeta(container, text){
+      const item = document.createElement('span');
+      item.textContent = text;
+      container.appendChild(item);
+    }
+
+    function createPostElement(item, index){
+      const filePath = normalizeFilePath(item.file);
+      const category = getCategory(item);
+      const likes = state.likes.get(filePath);
+      const article = document.createElement('article');
+      article.className = 'post pop-in has-cover';
+      article.style.animationDelay = `${Math.min(index * 45, 270)}ms`;
+
+      const number = document.createElement('span');
+      number.className = 'post-index';
+      number.textContent = String(index + 1).padStart(2, '0');
+      article.appendChild(number);
+
+      const content = document.createElement('div');
+      content.className = 'post-content';
+
+      const heading = document.createElement('h2');
+      const link = document.createElement('a');
+      link.href = `post.html?file=${encodeURIComponent(filePath)}`;
+      link.textContent = item.title || '未命名文章';
+      heading.appendChild(link);
+      content.appendChild(heading);
+
+      const meta = document.createElement('div');
+      meta.className = 'post-meta';
+      appendMeta(meta, item.date || 'DATE —');
+      appendMeta(meta, `CHANNEL / ${CATEGORY_LABELS[category] || category}`);
+      appendMeta(meta, `SIGNAL / ${typeof likes === 'number' ? likes : '—'}`);
+      content.appendChild(meta);
+
+      if(item.excerpt){
+        const excerpt = document.createElement('p');
+        excerpt.className = 'post-excerpt';
+        excerpt.textContent = item.excerpt;
+        content.appendChild(excerpt);
+      }
+
+      const tags = displayTags(item.tags);
+      if(tags.length){
+        const tagList = document.createElement('div');
+        tagList.className = 'post-tags';
+        tagList.setAttribute('aria-label', '文章标签');
+        tags.forEach(tag => {
+          const tagItem = document.createElement('span');
+          tagItem.className = 'post-tag';
+          tagItem.textContent = tag;
+          tagList.appendChild(tagItem);
+        });
+        content.appendChild(tagList);
+      }
+      article.appendChild(content);
+
+      const cover = document.createElement('div');
+      cover.className = 'post-cover';
+      const image = document.createElement('img');
+      const baseName = filePath.split('/').pop() || 'post.md';
+      const coverFile = baseName.replace(/\.md$/i, '_cover.png');
+      image.src = `source/${encodeURIComponent(coverFile)}`;
+      image.alt = '';
+      image.loading = index > 1 ? 'lazy' : 'eager';
+      image.decoding = 'async';
+      image.addEventListener('error', () => {
+        cover.hidden = true;
+        article.classList.remove('has-cover');
+      });
+      cover.appendChild(image);
+      article.appendChild(cover);
+
+      return article;
+    }
+
+    function getFilteredItems(){
+      const filtered = state.items.filter(item => {
+        const categoryMatches = state.activeCategory === 'all'
+          || getCategory(item) === state.activeCategory
+          || normalizeTags(item.tags).includes(state.activeCategory);
+        return categoryMatches && matchesQuery(item, state.query);
+      });
+
+      if(state.likesReady){
+        filtered.sort((a,b) => {
+          const difference = (state.likes.get(normalizeFilePath(b.file)) || 0)
+            - (state.likes.get(normalizeFilePath(a.file)) || 0);
+          return difference || String(b.date || '').localeCompare(String(a.date || ''));
+        });
+      }
+      return filtered;
+    }
+
+    function renderList(){
       const list = document.getElementById('list');
-      if(!items || items.length===0){
-        list.innerHTML = '<p>该分类暂无文章。</p>';
+      const resultMeta = document.getElementById('resultMeta');
+      const items = getFilteredItems();
+      list.replaceChildren();
+      list.setAttribute('aria-busy', 'false');
+
+      const mode = state.likesReady ? 'POPULARITY' : 'SYNCING SIGNAL';
+      resultMeta.textContent = `${String(items.length).padStart(2, '0')} ENTRIES / ${mode}`;
+
+      if(items.length === 0){
+        const empty = document.createElement('p');
+        empty.className = 'list-status';
+        empty.textContent = state.query ? '没有匹配当前关键词的文章' : '当前分类暂时没有文章';
+        list.appendChild(empty);
         return;
       }
-      list.innerHTML='';
-      items.forEach((entry, i)=>{
-        const item = entry.item || entry;
-        const likes = typeof entry.likes === 'number' ? entry.likes : 0;
-        const el = document.createElement('section'); el.className='glass-card post pop-in';
-        // normalize file path: remove leading slash to keep relative path
-        let filePath = item.file || '';
-        if(filePath.startsWith('/')) filePath = filePath.slice(1);
-        const baseName = (item.file || '').split('/').pop() || 'post.md';
-        const coverFile = baseName.replace(/\.md$/i, '_cover.png');
-        const coverSrc = `source/${encodeURIComponent(coverFile)}`;
-        el.innerHTML = `
-          <div class="post-row">
-            <div class="post-content">
-              <h3 style="margin:0 0 6px"><a href="post.html?file=${encodeURIComponent(filePath)}">${item.title}</a></h3>
-              <div style="color:var(--muted);margin-top:6px">${item.date} · ${item.tags||''}</div>
-              <div style="color:var(--muted);margin-top:6px">👍 ${likes}</div>
-              <p style="margin-top:10px">${item.excerpt||''}</p>
-            </div>
-            <div class="post-cover">
-              <img src="${coverSrc}" alt="${item.title} cover" onerror="this.style.display='none'" />
-            </div>
-          </div>`;
-        el.style.animationDelay = `${140 + i * 180}ms`;
-        list.appendChild(el);
-      });
+
+      const fragment = document.createDocumentFragment();
+      items.forEach((item,index) => fragment.appendChild(createPostElement(item,index)));
+      list.appendChild(fragment);
+    }
+
+    async function loadLikes(){
+      await Promise.all(state.items.map(async item => {
+        const filePath = normalizeFilePath(item.file);
+        state.likes.set(filePath, await getLikeCount(filePath));
+      }));
+      state.likesReady = true;
+      renderList();
     }
 
     async function loadIndex(){
       const list = document.getElementById('list');
-      const candidates = [
-        'posts/index.json',
-        '/posts/index.json',
-        location.origin + '/posts/index.json'
-      ];
-      let idx = null;
+      const candidates = ['posts/index.json','/posts/index.json',`${location.origin}/posts/index.json`];
+      let index = null;
+
       for(const url of candidates){
-        try{ idx = await tryFetch(url); break }catch(e){}
+        try{
+          index = await tryFetch(url);
+          break;
+        }catch(error){
+          console.warn('Index candidate failed:', url, error);
+        }
       }
-      if(!idx){
-        list.innerHTML = '<p>读取文章索引失败。哦买噶怎么还有bug……请先检查你的网络，如果没问题就告知开发者一声。</p>';
+
+      if(!Array.isArray(index)){
+        list.setAttribute('aria-busy', 'false');
+        list.innerHTML = '<p class="list-status">文章索引读取失败，请稍后重试</p>';
+        document.getElementById('resultMeta').textContent = 'SYNC / FAILED';
         return;
       }
-      if(!Array.isArray(idx) || idx.length===0){list.innerHTML='<p>暂无文章。</p>';return}
 
-      const categorySelect = document.getElementById('categorySelect');
-      const searchInput = document.getElementById('searchInput');
-      async function applyFilter(){
-        const value = categorySelect ? categorySelect.value : 'all';
-        const query = searchInput ? searchInput.value : '';
-        let filtered = value === 'all'
-          ? idx
-          : idx.filter(item => getCategory(item) === value || normalizeTags(item.tags).includes(value));
-        filtered = filtered.filter(item => matchesQuery(item, query));
-
-        const withLikes = await Promise.all(filtered.map(async item => {
-          let filePath = item.file || '';
-          if(filePath.startsWith('/')) filePath = filePath.slice(1);
-          const likes = await getLikeCount(filePath);
-          return { item, likes };
-        }));
-
-        withLikes.sort((a,b) => b.likes - a.likes);
-        renderList(withLikes);
-      }
-      if(categorySelect){
-        categorySelect.addEventListener('change', applyFilter);
-      }
-      if(searchInput){
-        searchInput.addEventListener('input', applyFilter);
-      }
-      applyFilter();
+      state.items = index;
+      renderList();
+      loadLikes();
     }
+
+    const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
+    const categorySelect = document.getElementById('categorySelect');
+    const filterButtons = Array.from(document.querySelectorAll('.filter-button'));
+
+    searchInput.addEventListener('input', () => {
+      state.query = searchInput.value;
+      clearSearch.hidden = state.query.length === 0;
+      renderList();
+    });
+
+    clearSearch.addEventListener('click', () => {
+      searchInput.value = '';
+      state.query = '';
+      clearSearch.hidden = true;
+      searchInput.focus();
+      renderList();
+    });
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        state.activeCategory = button.dataset.category || 'all';
+        categorySelect.value = state.activeCategory;
+        filterButtons.forEach(item => {
+          const active = item === button;
+          item.classList.toggle('is-active', active);
+          item.setAttribute('aria-pressed', String(active));
+        });
+        renderList();
+      });
+    });
+
+    document.querySelector('.query-panel').addEventListener('submit', event => event.preventDefault());
     loadIndex();
   </script>
 
   <script>
-    // Theme control (persist in localStorage) — same as首页
     const themeSwitch = document.getElementById('themeSwitch');
+
     function applyTheme(theme){
-      if(theme === 'light'){
-        document.body.classList.add('light'); themeSwitch.textContent = '☀️';
-      } else { document.body.classList.remove('light'); themeSwitch.textContent = '🌙'; }
-      try{localStorage.setItem('site-theme', theme)}catch(e){}
+      const light = theme === 'light';
+      document.body.classList.toggle('light', light);
+      themeSwitch.textContent = light ? '☀️' : '🌙';
+      themeSwitch.setAttribute('aria-label', light ? '切换到深色主题' : '切换到浅色主题');
+      try{localStorage.setItem('site-theme', theme)}catch(error){}
     }
+
     (function(){
-      let t = 'dark';
-      try{const stored = localStorage.getItem('site-theme'); if(stored) t = stored;}catch(e){}
-      applyTheme(t);
-      if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
+      let theme = 'dark';
+      try{theme = localStorage.getItem('site-theme') || 'dark'}catch(error){}
+      applyTheme(theme);
+      themeSwitch.addEventListener('click', () => {
+        applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+      });
     })();
-  </script>
-  <script>
-    // Reveal animation on load
+
     window.addEventListener('load', () => {
       document.body.classList.add('reveal');
       document.body.classList.remove('preload');
     });
   </script>
-<!-- 鼠标点击爱心特效 -->
-<script>
-!function(e,t,a){function r(){for(var e=0;e<s.length;e++)s[e].alpha<=0?(t.body.removeChild(s[e].el),s.splice(e,1)):(s[e].y--,s[e].scale+=.004,s[e].alpha-=.013,s[e].el.style.cssText="left:"+s[e].x+"px;top:"+s[e].y+"px;opacity:"+s[e].alpha+";transform:scale("+s[e].scale+","+s[e].scale+") rotate(45deg);background:"+s[e].color+";z-index:99999");requestAnimationFrame(r)}function n(){var t="function"==typeof e.onclick&&e.onclick;e.onclick=function(e){t&&t(),o(e)}}function o(e){var a=t.createElement("div");a.className="heart",s.push({el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:c()}),t.body.appendChild(a)}function i(e){var a=t.createElement("style");a.type="text/css";try{a.appendChild(t.createTextNode(e))}catch(t){a.styleSheet.cssText=e}t.getElementsByTagName("head")[0].appendChild(a)}function c(){return"rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"}var s=[];e.requestAnimationFrame=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,1e3/60)},i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"),n(),r()}(window,document);
-</script>
 </body>
 </html>
