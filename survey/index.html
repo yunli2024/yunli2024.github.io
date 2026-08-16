@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Anonymous human preference survey interface for visual comparison research.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="light">
+  <title>Anonymous Video Preference Survey · Pilot</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body id="top">
+  <div class="reading-progress" aria-hidden="true"><span id="reading-progress-fill"></span></div>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="返回问卷顶部">
+      <span class="brand-mark">YL</span>
+      <span class="brand-copy"><strong>Research Survey</strong><small>yunli2024.github.io</small></span>
+    </a>
+    <nav class="site-nav" aria-label="Survey navigation">
+      <a href="#instructions">说明</a>
+      <a href="#criteria">指标</a>
+      <a href="#study-items">样例</a>
+      <a class="nav-survey-link" href="#questionnaire">腾讯问卷 <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero section-shell" aria-labelledby="hero-title">
+      <div class="hero-copy reveal-item">
+        <div class="status-line">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Pilot interface</span>
+          <span class="status-divider"></span>
+          <span>Demo stimuli only</span>
+        </div>
+        <p class="kicker">Human perceptual evaluation / 2026</p>
+        <h1 id="hero-title">匿名视频<br><em>偏好评测</em></h1>
+        <p class="hero-lede">
+          比较同一删除任务下的四个匿名候选视频，并在五项评价标准下选出你认为表现最好的两个结果。
+          页面负责统一展示，最终回答通过腾讯问卷提交。
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#instructions">开始阅读说明 <span aria-hidden="true">↓</span></a>
+          <a class="button button-quiet" href="#criteria">查看评价指标</a>
+        </div>
+      </div>
+
+      <div class="hero-instrument reveal-item" aria-label="研究流程示意图">
+        <div class="instrument-meta"><span>Preference signal</span><span>05 criteria</span></div>
+        <div class="signal-stack" aria-hidden="true">
+          <div class="signal-row"><span>01</span><div><i class="seg coral"></i><i class="seg amber"></i><i class="seg mint"></i><i class="seg violet"></i></div></div>
+          <div class="signal-row"><span>02</span><div><i class="seg coral wide"></i><i class="seg amber short"></i><i class="seg mint"></i><i class="seg violet"></i></div></div>
+          <div class="signal-row"><span>03</span><div><i class="seg coral"></i><i class="seg amber"></i><i class="seg mint short"></i><i class="seg violet wide"></i></div></div>
+          <div class="signal-row"><span>04</span><div><i class="seg coral wide"></i><i class="seg amber"></i><i class="seg mint"></i><i class="seg violet short"></i></div></div>
+          <div class="signal-row"><span>05</span><div><i class="seg coral"></i><i class="seg amber short"></i><i class="seg mint wide"></i><i class="seg violet"></i></div></div>
+        </div>
+        <div class="instrument-flow">
+          <span>anonymous candidates</span>
+          <b aria-hidden="true">→</b>
+          <span>top–2 selections</span>
+          <b aria-hidden="true">→</b>
+          <span>paper figure</span>
+        </div>
+        <p>示意条仅展示最终图表语言，不代表任何实验结果。</p>
+      </div>
+    </section>
+
+    <section id="instructions" class="section-shell section-block reveal-item" aria-labelledby="instructions-title">
+      <div class="section-heading">
+        <p class="section-index">01 / Instructions</p>
+        <h2 id="instructions-title">先理解任务，<br>再独立作答。</h2>
+      </div>
+      <div class="instruction-grid">
+        <article class="instruction-card">
+          <span class="step-number">1</span>
+          <h3>查看输入与意图</h3>
+          <p>先观察原始场景与红色 scribble，确认需要删除的目标以及需要保留的区域。</p>
+        </article>
+        <article class="instruction-card">
+          <span class="step-number">2</span>
+          <h3>同步观看四个候选</h3>
+          <p>候选只标记为 Video A–D。可同时播放、暂停或重置，方法身份不会显示。</p>
+        </article>
+        <article class="instruction-card">
+          <span class="step-number">3</span>
+          <h3>每项选择两个</h3>
+          <p>针对每项标准选择表现最好的两个候选；不同标准可以选择不同候选。</p>
+        </article>
+        <article class="instruction-card instruction-card-accent">
+          <span class="step-number">4</span>
+          <h3>复制并提交</h3>
+          <p>完成页面选择后复制回答代码，再打开腾讯问卷粘贴并提交。</p>
+        </article>
+      </div>
+      <div class="prototype-note" role="note">
+        <strong>原型说明</strong>
+        <p>当前页面使用程序生成的演示画面，五项指标沿用论文初稿占位文本；正式招募前将替换为冻结视频、正式措辞与腾讯问卷链接。</p>
+      </div>
+    </section>
+
+    <section id="criteria" class="criteria-section section-shell section-block reveal-item" aria-labelledby="criteria-title">
+      <div class="section-heading compact">
+        <p class="section-index">02 / Criteria</p>
+        <h2 id="criteria-title">当前五项<br>评价标准</h2>
+        <p>这些指标集中配置，后续可以整体替换而不影响页面结构与回答编码。</p>
+      </div>
+      <div id="criteria-grid" class="criteria-grid"></div>
+    </section>
+
+    <section id="study-items" class="study-section section-shell section-block" aria-labelledby="study-title">
+      <div class="study-heading reveal-item">
+        <div>
+          <p class="section-index">03 / Study items</p>
+          <h2 id="study-title">匿名候选比较</h2>
+        </div>
+        <div class="study-progress" aria-live="polite">
+          <span>已完成</span>
+          <strong id="answered-count">0</strong>
+          <span>/</span>
+          <span id="question-count">0</span>
+          <small>criterion rows</small>
+        </div>
+      </div>
+
+      <div id="tasks-container"></div>
+    </section>
+
+    <section id="questionnaire" class="questionnaire-section section-shell reveal-item" aria-labelledby="questionnaire-title">
+      <div class="completion-orbit" aria-hidden="true"><span id="completion-percent">0%</span></div>
+      <div class="questionnaire-copy">
+        <p class="section-index">04 / Submit</p>
+        <h2 id="questionnaire-title">复制回答，<br>前往腾讯问卷。</h2>
+        <p>演示版不会上传数据。全部选择完成后，页面会生成一段结构化回答代码；正式问卷中将设置对应的粘贴位置。</p>
+      </div>
+      <div class="submission-panel">
+        <label for="response-code">回答代码</label>
+        <textarea id="response-code" readonly placeholder="完成所有评价后在此生成"></textarea>
+        <div class="submission-actions">
+          <button id="copy-response" class="button button-primary" type="button" disabled>复制回答代码</button>
+          <a id="external-survey-link" class="button button-external is-unconfigured" href="#" aria-disabled="true">腾讯问卷链接待配置 <span aria-hidden="true">↗</span></a>
+        </div>
+        <button id="reset-responses" class="reset-button" type="button">清空本页演示选择</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Visual Editing Research · Human Preference Survey Prototype</p>
+    <p>Hosted on yunli2024.github.io</p>
+  </footer>
+
+  <noscript><p class="noscript-message">此页面需要 JavaScript 来渲染比较任务和记录本地选择。</p></noscript>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
