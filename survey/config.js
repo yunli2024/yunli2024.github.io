@@ -52,44 +52,44 @@ window.VISUAL_SURVEY_CONFIG = {
   candidateLabels: ["Result A", "Result B", "Result C", "Result D", "Result E", "Result F"],
   criteria: [
     {
-      id: "interaction_rationality",
+      id: "removal_completeness",
       number: "01",
-      nameEn: "Interaction Rationality",
-      nameZh: "交互合理性",
-      promptZh: "哪两个结果最合理地遵循了目标移除指令，并正确处理了目标与周围区域的关系？",
-      promptEn: "Which two results follow the removal instruction most appropriately and handle the relationship between the target and its surroundings most reasonably?"
+      nameEn: "Removal Completeness",
+      nameZh: "移除完整性",
+      promptZh: "哪两个选项相对完整地移除了红色标注的目标物体，以及它的附加效果（阴影、倒影等），残留的程度更少？",
+      promptEn: "Which two results most completely remove the target object indicated by the red annotation and its associated visual effects (e.g., shadows or reflections, if present), leaving the fewest visible remnants?"
     },
     {
-      id: "transfer_quality",
+      id: "background_plausibility",
       number: "02",
-      nameEn: "Transfer Quality",
-      nameZh: "转换质量",
-      promptZh: "哪两个结果最完整地移除了目标，并最自然地补全了被移除区域？",
-      promptEn: "Which two results remove the target most completely and reconstruct the removed region most naturally?"
+      nameEn: "Background Plausibility",
+      nameZh: "背景补全合理性",
+      promptZh: "哪两个选项在移除物体区域的背景补全上，更符合周围场景，看起来更加真实自然？",
+      promptEn: "Which two results fill in the background within the removed-object region in a way that is most consistent with the surrounding scene and looks most realistic and natural?"
     },
     {
-      id: "physical_authenticity",
+      id: "edge_seamlessness",
       number: "03",
-      nameEn: "Physical Authenticity",
-      nameZh: "物理真实性",
-      promptZh: "哪两个结果在结构、光照、纹理和空间关系上看起来最真实可信？",
-      promptEn: "Which two results look most physically plausible in terms of structure, lighting, texture, and spatial relationships?"
+      nameEn: "Edge Seamlessness",
+      nameZh: "边界无缝性",
+      promptZh: "哪两个结果在移除物体区域与周围边界处，衔接和融合更为自然，相对没有明显差别和伪影？",
+      promptEn: "Which two results blend the removed-object region most naturally into its surroundings at the boundary, with the fewest visible mismatches or artifacts?"
     },
     {
-      id: "temporal_consistency",
+      id: "non_target_preservation",
       number: "04",
-      nameEn: "Temporal Consistency",
-      nameZh: "时间一致性",
-      promptZh: "哪两个结果在整个移除过程中最连贯稳定，且最少出现闪烁或突变？",
-      promptEn: "Which two results remain most coherent and stable throughout the removal process, with the least flicker or abrupt change?"
+      nameEn: "Non-Target Preservation",
+      nameZh: "非目标内容保持性",
+      promptZh: "哪两个结果最好地保留了目标之外的物体、场景和细节，且误删或无关改动最少？",
+      promptEn: "Which two results best preserve non-target objects, scene content, and details, with the fewest unintended removals or unrelated changes?"
     },
     {
-      id: "semantic_similarity",
+      id: "overall_performance",
       number: "05",
-      nameEn: "Semantic Similarity",
-      nameZh: "语义一致性",
-      promptZh: "完成目标移除后，哪两个结果最完整地保留了未编辑区域的物体、布局与语义内容？",
-      promptEn: "After removing the target, which two results best preserve the objects, layout, and semantic content of the unedited regions?"
+      nameEn: "Overall Performance",
+      nameZh: "综合考虑",
+      promptZh: "综合考虑，你认为哪两个结果最好地完成了移除物体的任务，相对更适合作为这个任务的最终输出？",
+      promptEn: "Overall, which two results best accomplish the object-removal task and are most suitable as the final outputs?"
     }
   ],
   tasks: Array.from({ length: 10 }, (_value, index) => makePlaceholderTask(index + 1))
