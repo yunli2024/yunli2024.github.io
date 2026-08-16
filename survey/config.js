@@ -1,88 +1,96 @@
 /*
- * Survey prototype configuration.
+ * Public survey configuration.
  *
- * The five criteria below mirror the current paper draft and are placeholders
- * until the protocol is frozen. Change labels/prompts here; app.js and the page
- * layout do not need to be edited.
- *
- * IMPORTANT FOR THE FORMAL BUILD:
- * - use opaque asset paths such as assets/t01/a.mp4;
- * - never put method names or an A/B/C/D-to-method mapping in public files;
- * - replace the empty Tencent Survey URL before recruitment.
+ * Formal media paths must stay opaque (for example, assets/t01/input.png and
+ * assets/t01/c01.png). Never place method names, checkpoint names, or a public
+ * candidate-to-method mapping in this repository. The private analysis
+ * manifest resolves each opaque candidate token to its method identity.
  */
+
+function makePlaceholderTask(taskNumber) {
+  const number = String(taskNumber).padStart(2, "0");
+  return {
+    id: `study_item_${number}`,
+    labelZh: `任务 ${taskNumber}`,
+    labelEn: `Task ${taskNumber}`,
+    contextZh: `评测样本 ${number}`,
+    contextEn: `Evaluation sample ${number}`,
+    instructionZh: "删除标记的目标物体，自然补全被移除区域，并尽量保持场景中的其他内容不变。",
+    instructionEn: "Remove the marked target object, reconstruct the removed region naturally, and preserve the rest of the scene as much as possible.",
+    referenceSrc: "",
+    candidates: Array.from({ length: 6 }, (_value, index) => ({
+      token: `t${number}-c${index + 1}`,
+      src: ""
+    }))
+  };
+}
+
 window.VISUAL_SURVEY_CONFIG = {
-  schemaVersion: 1,
-  studyId: "visual-removal-preference-pilot-v0",
-  assignmentManifestId: "demo-manifest-v0",
-  mode: "DEMO_ONLY",
-  questionnaireUrl: "",
-  questionnaireLabel: "打开腾讯问卷",
-  candidateLabels: ["Video A", "Video B", "Video C", "Video D"],
+  schemaVersion: 4,
+  responseSchemaVersion: 1,
+  studyId: "visual-removal-preference-v1",
+  assignmentManifestId: "six-candidate-last-frame-v1",
+  mode: "STUDY",
+  questionnaireUrl: "https://wj.qq.com/s2/27600498/05wz/",
+  questionnaireLabel: "打开腾讯问卷 / Open Tencent Survey",
+  practice: {
+    id: "top2_practice",
+    titleZh: "作答示例",
+    titleEn: "Practice Example",
+    instructionZh: "请先完成下面的示例，以确认你理解 Top-2 选择规则。此题仅用于熟悉作答方式，不计入正式研究结果。",
+    instructionEn: "Complete the example below to confirm that you understand the Top-2 selection rule. This practice response is not included in the formal study results.",
+    questionZh: "请从三张示例图中选择你认为整体表现最好的两个结果。",
+    questionEn: "Select the two results that you think have the best overall quality from the three example images.",
+    confirmationZh: "我已经确认：我理解正式题中每项必须选择且只能选择 2 个结果。",
+    confirmationEn: "I confirm that I understand I must select exactly two results for each criterion in the main study.",
+    candidates: [
+      { key: "A", labelZh: "示例 A", labelEn: "Example A", src: "" },
+      { key: "B", labelZh: "示例 B", labelEn: "Example B", src: "" },
+      { key: "C", labelZh: "示例 C", labelEn: "Example C", src: "" }
+    ]
+  },
+  candidateLabels: ["Result A", "Result B", "Result C", "Result D", "Result E", "Result F"],
   criteria: [
     {
       id: "interaction_rationality",
       number: "01",
       nameEn: "Interaction Rationality",
       nameZh: "交互合理性",
-      prompt: "哪个候选更合理地理解并执行了标注所表达的删除意图？"
+      promptZh: "哪两个结果最合理地遵循了目标移除指令，并正确处理了目标与周围区域的关系？",
+      promptEn: "Which two results follow the removal instruction most appropriately and handle the relationship between the target and its surroundings most reasonably?"
     },
     {
       id: "transfer_quality",
       number: "02",
       nameEn: "Transfer Quality",
       nameZh: "转换质量",
-      prompt: "哪个候选从输入场景到目标结果的转换更清晰、完整且自然？"
+      promptZh: "哪两个结果最完整地移除了目标，并最自然地补全了被移除区域？",
+      promptEn: "Which two results remove the target most completely and reconstruct the removed region most naturally?"
     },
     {
       id: "physical_authenticity",
       number: "03",
       nameEn: "Physical Authenticity",
       nameZh: "物理真实性",
-      prompt: "哪个候选的结构、光照、纹理与物理关系看起来更可信？"
+      promptZh: "哪两个结果在结构、光照、纹理和空间关系上看起来最真实可信？",
+      promptEn: "Which two results look most physically plausible in terms of structure, lighting, texture, and spatial relationships?"
     },
     {
       id: "temporal_consistency",
       number: "04",
       nameEn: "Temporal Consistency",
       nameZh: "时间一致性",
-      prompt: "哪个候选在整个变化过程中更连续，且更少出现闪烁或突变？"
+      promptZh: "哪两个结果在整个移除过程中最连贯稳定，且最少出现闪烁或突变？",
+      promptEn: "Which two results remain most coherent and stable throughout the removal process, with the least flicker or abrupt change?"
     },
     {
       id: "semantic_similarity",
       number: "05",
       nameEn: "Semantic Similarity",
       nameZh: "语义一致性",
-      prompt: "在完成删除任务后，哪个候选更好地保持了其余场景的语义内容？"
+      promptZh: "完成目标移除后，哪两个结果最完整地保留了未编辑区域的物体、布局与语义内容？",
+      promptEn: "After removing the target, which two results best preserve the objects, layout, and semantic content of the unedited regions?"
     }
   ],
-  tasks: [
-    {
-      id: "demo_room_01",
-      label: "Study item 01",
-      context: "Interior scene · sparse scribble",
-      instruction: "Remove the object indicated by the red scribble and restore a plausible background.",
-      instructionZh: "删除红色笔画所指向的物体，并恢复可信的背景。",
-      scene: "room",
-      candidates: [
-        { token: "d01-c1", src: "", variant: "v1" },
-        { token: "d01-c2", src: "", variant: "v2" },
-        { token: "d01-c3", src: "", variant: "v3" },
-        { token: "d01-c4", src: "", variant: "v4" }
-      ]
-    },
-    {
-      id: "demo_street_02",
-      label: "Study item 02",
-      context: "Outdoor scene · imperfect scribble",
-      instruction: "Remove the marked foreground object and its associated effects while preserving unrelated nearby structures.",
-      instructionZh: "删除被标记的前景物体及其关联影响，同时保留无关的附近结构。",
-      scene: "street",
-      candidates: [
-        { token: "d02-c1", src: "", variant: "v3" },
-        { token: "d02-c2", src: "", variant: "v1" },
-        { token: "d02-c3", src: "", variant: "v4" },
-        { token: "d02-c4", src: "", variant: "v2" }
-      ]
-    }
-  ]
+  tasks: Array.from({ length: 10 }, (_value, index) => makePlaceholderTask(index + 1))
 };

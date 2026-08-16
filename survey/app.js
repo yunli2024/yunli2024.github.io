@@ -3,12 +3,12 @@
 
   const config = window.VISUAL_SURVEY_CONFIG;
   if (!config) {
-    document.body.innerHTML = "<p class='fatal-error'>Survey configuration could not be loaded.</p>";
+    document.body.innerHTML = "<p class='fatal-error'>问卷配置加载失败。 / Survey configuration could not be loaded.</p>";
     return;
   }
 
-  const storageKey = `survey-state:${config.studyId}`;
-  const criteriaGrid = document.getElementById("criteria-grid");
+  const storageKey = `survey-state:${config.studyId}:v${config.schemaVersion}`;
+  const practiceContainer = document.getElementById("practice-container");
   const tasksContainer = document.getElementById("tasks-container");
   const answeredCount = document.getElementById("answered-count");
   const questionCount = document.getElementById("question-count");
@@ -16,10 +16,11 @@
   const copyButton = document.getElementById("copy-response");
   const responseCode = document.getElementById("response-code");
   const externalLink = document.getElementById("external-survey-link");
+  const submissionReadiness = document.getElementById("submission-readiness");
   const resetButton = document.getElementById("reset-responses");
   const toast = document.getElementById("toast");
-  const readingProgress = document.getElementById("reading-progress-fill");
   let toastTimer = null;
+  let questionnaireUrl = "";
 
   const totalRows = config.tasks.length * config.criteria.length;
   let state = readState();
@@ -85,6 +86,8 @@
       startedAt: new Date().toISOString(),
       completedAt: null,
       assignments: createAssignments(sessionId),
+      practiceSelections: [],
+      instructionsConfirmed: false,
       responses: {}
     };
   }
@@ -94,7 +97,8 @@
       const raw = localStorage.getItem(storageKey);
       if (!raw) return freshState();
       const parsed = JSON.parse(raw);
-      if (parsed.studyId !== config.studyId ||
+      if (parsed.schemaVersion !== config.schemaVersion ||
+          parsed.studyId !== config.studyId ||
           parsed.assignmentManifestId !== config.assignmentManifestId ||
           typeof parsed.responses !== "object") {
         return freshState();
@@ -102,6 +106,12 @@
       if (!parsed.assignments || typeof parsed.assignments !== "object") {
         parsed.assignments = createAssignments(parsed.sessionId);
       }
+      const practiceKeys = new Set(config.practice.candidates.map((candidate) => candidate.key));
+      const savedPractice = Array.isArray(parsed.practiceSelections) ? parsed.practiceSelections : [];
+      parsed.practiceSelections = [...new Set(savedPractice.filter((key) => practiceKeys.has(key)))]
+        .slice(0, 2)
+        .sort();
+      parsed.instructionsConfirmed = parsed.practiceSelections.length === 2 && parsed.instructionsConfirmed === true;
       return parsed;
     } catch (_error) {
       return freshState();
@@ -112,7 +122,7 @@
     try {
       localStorage.setItem(storageKey, JSON.stringify(state));
     } catch (_error) {
-      showToast("当前浏览器无法保存进度，但你仍可继续完成本页。", "warning");
+      showToast("当前浏览器无法保存进度。 / This browser cannot save your progress.", "warning");
     }
   }
 
@@ -120,37 +130,29 @@
     return `${taskId}:${criterionId}`;
   }
 
-  function renderCriteria() {
-    criteriaGrid.innerHTML = config.criteria.map((criterion) => `
-      <article class="criterion-card">
-        <div class="criterion-number">${escapeHtml(criterion.number)}</div>
-        <div>
-          <h3>${escapeHtml(criterion.nameEn)}</h3>
-          <p class="criterion-zh">${escapeHtml(criterion.nameZh)}</p>
-          <p>${escapeHtml(criterion.prompt)}</p>
-        </div>
-      </article>
-    `).join("");
-  }
-
-  function demoSceneMarkup(scene, variant, source = false) {
+  function imagePlaceholderMarkup(label, kind = "candidate") {
+    const placeholderTitle = kind === "reference"
+      ? "输入图像与标注 / Input image & annotation"
+      : kind === "practice"
+        ? "示例图像 / Example image"
+        : "最终帧结果 / Final-frame result";
     return `
-      <div class="demo-stage scene-${escapeHtml(scene)} variant-${escapeHtml(variant)}${source ? " is-source" : ""}"
-           data-demo-stage role="img" aria-label="${source ? "演示输入图像和红色 scribble" : "演示候选视频占位画面"}">
-        <div class="demo-sky"></div>
-        <div class="demo-horizon"></div>
-        <div class="demo-structure structure-one"></div>
-        <div class="demo-structure structure-two"></div>
-        <div class="demo-shadow"></div>
-        <div class="demo-object"><span></span></div>
-        <div class="demo-repair"></div>
-        <div class="demo-artifact artifact-one"></div>
-        <div class="demo-artifact artifact-two"></div>
-        ${source ? "<div class='demo-scribble'><i></i><i></i><i></i></div>" : ""}
-        <div class="demo-playhead"></div>
-        <span class="demo-label">DEMO / PLACEHOLDER</span>
+      <div class="image-placeholder ${escapeHtml(kind)}-placeholder" role="img"
+           aria-label="${escapeHtml(label)}">
+        <span class="placeholder-icon" aria-hidden="true"></span>
+        <span class="placeholder-copy">
+          <strong>${escapeHtml(placeholderTitle)}</strong>
+          <small>${escapeHtml(label)}</small>
+        </span>
       </div>
     `;
+  }
+
+  function referenceMarkup(task) {
+    if (task.referenceSrc) {
+      return `<img src="${escapeHtml(task.referenceSrc)}" alt="输入图像及红色标注 / Input image with red annotation" loading="lazy" data-reference-image>`;
+    }
+    return imagePlaceholderMarkup("输入图像及红色标注 / Input image with red annotation", "reference");
   }
 
   function assignedCandidates(task) {
@@ -160,19 +162,148 @@
 
   function candidateMarkup(task, candidate, index) {
     const displayKey = String.fromCharCode(65 + index);
-    const label = config.candidateLabels[index] || `Video ${displayKey}`;
+    const label = config.candidateLabels[index] || `Result ${displayKey}`;
     const media = candidate.src
-      ? `<video src="${escapeHtml(candidate.src)}" controls muted playsinline preload="metadata" data-candidate-video></video>`
-      : demoSceneMarkup(task.scene, candidate.variant, false);
+      ? `<img src="${escapeHtml(candidate.src)}" alt="${escapeHtml(label)} 匿名最终帧结果 / anonymous final-frame result" loading="lazy" data-candidate-image>`
+      : imagePlaceholderMarkup(label);
     return `
       <article class="candidate-card" data-candidate="${escapeHtml(displayKey)}">
         <div class="candidate-media">${media}</div>
-        <div class="candidate-footer">
-          <span>${escapeHtml(label)}</span>
-          <small>anonymous candidate</small>
-        </div>
+        <div class="anonymous-label">${escapeHtml(label)}</div>
       </article>
     `;
+  }
+
+  function practiceCandidateMarkup(candidate) {
+    const label = `${candidate.labelZh} / ${candidate.labelEn}`;
+    const media = candidate.src
+      ? `<img src="${escapeHtml(candidate.src)}" alt="${escapeHtml(label)}" loading="lazy" data-practice-image>`
+      : imagePlaceholderMarkup(label, "practice");
+    return `
+      <article class="practice-candidate-card" data-practice-candidate="${escapeHtml(candidate.key)}">
+        <div class="practice-candidate-media">${media}</div>
+        <div class="anonymous-label">${escapeHtml(label)}</div>
+      </article>
+    `;
+  }
+
+  function practiceMarkup() {
+    const practice = config.practice;
+    const saved = state.practiceSelections;
+    const options = practice.candidates.map((candidate) => {
+      const checked = saved.includes(candidate.key) ? " checked" : "";
+      return `
+        <label class="candidate-option practice-option">
+          <input type="checkbox" value="${escapeHtml(candidate.key)}"${checked}>
+          <span>${escapeHtml(candidate.labelZh)} / ${escapeHtml(candidate.labelEn)}</span>
+        </label>
+      `;
+    }).join("");
+    const candidates = practice.candidates.map(practiceCandidateMarkup).join("");
+    const canConfirm = saved.length === 2;
+    const confirmed = canConfirm && state.instructionsConfirmed;
+
+    return `
+      <header class="practice-header">
+        <div>
+          <span class="practice-kicker">开始前请先完成 / Complete before starting</span>
+          <h2 id="practice-title">${escapeHtml(practice.titleZh)} <span>/ ${escapeHtml(practice.titleEn)}</span></h2>
+        </div>
+        <span class="practice-badge">Top-2</span>
+      </header>
+
+      <div class="practice-intro">
+        <p>${escapeHtml(practice.instructionZh)}</p>
+        <p lang="en">${escapeHtml(practice.instructionEn)}</p>
+      </div>
+
+      <div class="practice-grid">${candidates}</div>
+
+      <fieldset class="practice-question${canConfirm ? " is-complete" : ""}" data-practice-question>
+        <legend>
+          <span class="question-copy">
+            <strong>示例题 / Practice Question</strong>
+            <small>${escapeHtml(practice.questionZh)}</small>
+            <small class="question-en" lang="en">${escapeHtml(practice.questionEn)}</small>
+          </span>
+          <span class="selection-count">已选 / Selected <b>${saved.length}</b>/2</span>
+        </legend>
+        <div class="candidate-options practice-options">${options}</div>
+      </fieldset>
+
+      <label id="practice-confirmation-panel" class="practice-confirmation${canConfirm ? " is-enabled" : ""}${confirmed ? " is-confirmed" : ""}">
+        <input id="practice-confirmation" type="checkbox"${canConfirm ? "" : " disabled"}${confirmed ? " checked" : ""}>
+        <span>
+          <strong>${escapeHtml(practice.confirmationZh)}</strong>
+          <small lang="en">${escapeHtml(practice.confirmationEn)}</small>
+        </span>
+      </label>
+      <p id="practice-guidance" class="practice-guidance" aria-live="polite"></p>
+    `;
+  }
+
+  function renderPractice() {
+    practiceContainer.innerHTML = practiceMarkup();
+    const question = practiceContainer.querySelector("[data-practice-question]");
+    const confirmation = practiceContainer.querySelector("#practice-confirmation");
+
+    question.addEventListener("change", (event) => {
+      const checkbox = event.target.closest('input[type="checkbox"]');
+      if (!checkbox) return;
+      const selected = Array.from(question.querySelectorAll('input[type="checkbox"]:checked'));
+      if (selected.length > 2) {
+        checkbox.checked = false;
+        showToast("示例题必须且只能选择两个结果。 / Select exactly two results in the practice question.", "warning");
+      }
+      state.practiceSelections = Array.from(question.querySelectorAll('input[type="checkbox"]:checked'))
+        .map((input) => input.value)
+        .sort();
+      if (state.practiceSelections.length !== 2) {
+        state.instructionsConfirmed = false;
+      }
+      saveState();
+      updatePracticeUi();
+      updateProgress();
+    });
+
+    confirmation.addEventListener("change", () => {
+      if (state.practiceSelections.length !== 2) {
+        confirmation.checked = false;
+        return;
+      }
+      state.instructionsConfirmed = confirmation.checked;
+      saveState();
+      updatePracticeUi();
+      updateProgress();
+    });
+
+    updatePracticeUi();
+  }
+
+  function updatePracticeUi() {
+    const count = state.practiceSelections.length;
+    const question = practiceContainer.querySelector("[data-practice-question]");
+    const counter = question.querySelector(".selection-count b");
+    const confirmation = practiceContainer.querySelector("#practice-confirmation");
+    const panel = practiceContainer.querySelector("#practice-confirmation-panel");
+    const guidance = practiceContainer.querySelector("#practice-guidance");
+    const canConfirm = count === 2;
+    const confirmed = canConfirm && state.instructionsConfirmed;
+
+    question.classList.toggle("is-complete", canConfirm);
+    counter.textContent = String(count);
+    confirmation.disabled = !canConfirm;
+    confirmation.checked = confirmed;
+    panel.classList.toggle("is-enabled", canConfirm);
+    panel.classList.toggle("is-confirmed", confirmed);
+
+    if (!canConfirm) {
+      guidance.innerHTML = "请先在示例题中选择两个结果。<br><span lang=\"en\">Select two results in the practice question first.</span>";
+    } else if (!confirmed) {
+      guidance.innerHTML = "示例已完成，请勾选“我已经确认”。<br><span lang=\"en\">Practice complete. Select “I confirm” to continue.</span>";
+    } else {
+      guidance.innerHTML = "已确认，可以开始正式评价。<br><span lang=\"en\">Confirmed. You may begin the main study.</span>";
+    }
   }
 
   function criterionQuestionMarkup(task, criterion) {
@@ -184,7 +315,6 @@
       return `
         <label class="candidate-option">
           <input type="checkbox" value="${escapeHtml(candidateKey)}"${checked}>
-          <span class="option-key">${escapeHtml(candidateKey)}</span>
           <span>${escapeHtml(label)}</span>
         </label>
       `;
@@ -194,12 +324,12 @@
       <fieldset class="criterion-question${saved.length === 2 ? " is-complete" : ""}"
                 data-response-key="${escapeHtml(key)}">
         <legend>
-          <span class="question-number">${escapeHtml(criterion.number)}</span>
           <span class="question-copy">
-            <strong>${escapeHtml(criterion.nameEn)} <em>${escapeHtml(criterion.nameZh)}</em></strong>
-            <small>${escapeHtml(criterion.prompt)}</small>
+            <strong><span class="question-number">${escapeHtml(criterion.number)}</span>${escapeHtml(criterion.nameEn)} <em>（${escapeHtml(criterion.nameZh)}）</em></strong>
+            <small>${escapeHtml(criterion.promptZh)}</small>
+            <small class="question-en" lang="en">${escapeHtml(criterion.promptEn)}</small>
           </span>
-          <span class="selection-count"><b>${saved.length}</b>/2 selected</span>
+          <span class="selection-count">已选 / Selected <b>${saved.length}</b>/2</span>
         </legend>
         <div class="candidate-options">${options}</div>
       </fieldset>
@@ -210,46 +340,38 @@
     const candidates = assignedCandidates(task).map((candidate, index) => candidateMarkup(task, candidate, index)).join("");
     const questions = config.criteria.map((criterion) => criterionQuestionMarkup(task, criterion)).join("");
     return `
-      <article class="task-card reveal-item" id="task-${escapeHtml(task.id)}" data-task-id="${escapeHtml(task.id)}">
+      <article class="task-card" id="task-${escapeHtml(task.id)}" data-task-id="${escapeHtml(task.id)}">
         <header class="task-header">
-          <div>
-            <span class="task-sequence">${String(taskIndex + 1).padStart(2, "0")} / ${String(config.tasks.length).padStart(2, "0")}</span>
-            <h3>${escapeHtml(task.label)}</h3>
-          </div>
-          <span class="task-context">${escapeHtml(task.context)}</span>
+          <h2>${escapeHtml(task.labelZh)} <span>/ ${escapeHtml(task.labelEn)}</span></h2>
+          <span class="task-sequence">${taskIndex + 1} / ${config.tasks.length}</span>
         </header>
 
-        <div class="intent-panel">
-          <div class="source-preview">${demoSceneMarkup(task.scene, "input", true)}</div>
-          <div class="intent-copy">
-            <span>Source &amp; editing intent</span>
-            <h4>${escapeHtml(task.instructionZh)}</h4>
-            <p>${escapeHtml(task.instruction)}</p>
-            <ul>
-              <li>确认目标是否被移除</li>
-              <li>检查附近结构与背景</li>
-              <li>观察整个变化过程</li>
-            </ul>
-          </div>
+        <div class="prompt-box">
+          <p><span class="prompt-label">任务说明：</span>${escapeHtml(task.instructionZh)}</p>
+          <p lang="en"><span class="prompt-label">Instructions:</span>${escapeHtml(task.instructionEn)}</p>
+          <span class="task-context">${escapeHtml(task.contextZh)} / ${escapeHtml(task.contextEn)}</span>
         </div>
 
-        <div class="media-toolbar" aria-label="候选视频控制">
-          <div>
-            <span class="toolbar-label">Synchronized controls</span>
-            <span class="playback-status" aria-live="polite">Ready</span>
+        <section class="reference-section" aria-label="输入图像与标注 / Input image and annotation">
+          <div class="media-section-heading">
+            <h3>输入图像与标注 <span>/ Input image &amp; annotation</span></h3>
           </div>
-          <div class="toolbar-actions">
-            <button type="button" data-action="play"><span aria-hidden="true">▶</span> 同时播放</button>
-            <button type="button" data-action="pause"><span aria-hidden="true">Ⅱ</span> 同时暂停</button>
-            <button type="button" data-action="reset"><span aria-hidden="true">↺</span> 重置</button>
+          <div class="reference-card">
+            <div class="reference-media">${referenceMarkup(task)}</div>
           </div>
-        </div>
+        </section>
 
-        <div class="candidate-grid">${candidates}</div>
+        <section class="candidate-section" aria-label="候选最终帧 / Candidate final frames">
+          <div class="media-section-heading">
+            <h3>候选最终帧 <span>/ Candidate final frames</span></h3>
+            <p>六个匿名结果 / Six anonymous results</p>
+          </div>
+          <div class="candidate-grid">${candidates}</div>
+        </section>
 
-        <div class="questions-header">
-          <div><span>Preference form</span><h4>每项选择两个候选</h4></div>
-          <p>Top–2 · no ranking within the selected pair</p>
+        <div class="question-section-heading">
+          <h3>请分别完成以下五项评价 <span>/ Rate all five criteria</span></h3>
+          <p>每项选择两个候选，所选结果不排序 / Select two per criterion; no ranking</p>
         </div>
         <div class="question-list">${questions}</div>
       </article>
@@ -259,7 +381,6 @@
   function renderTasks() {
     tasksContainer.innerHTML = config.tasks.map(taskMarkup).join("");
     tasksContainer.querySelectorAll(".criterion-question").forEach(bindQuestionRow);
-    tasksContainer.querySelectorAll(".task-card").forEach(bindTaskControls);
   }
 
   function bindQuestionRow(row) {
@@ -269,7 +390,7 @@
       const selected = Array.from(row.querySelectorAll('input[type="checkbox"]:checked'));
       if (selected.length > 2) {
         checkbox.checked = false;
-        showToast("每项最多选择两个候选。", "warning");
+        showToast("每项最多选择两个候选。 / Select no more than two candidates per criterion.", "warning");
       }
       const finalSelection = Array.from(row.querySelectorAll('input[type="checkbox"]:checked'))
         .map((input) => input.value)
@@ -287,47 +408,6 @@
     if (counter) counter.textContent = String(count);
   }
 
-  function bindTaskControls(taskCard) {
-    taskCard.querySelectorAll("[data-action]").forEach((button) => {
-      button.addEventListener("click", () => controlTask(taskCard, button.dataset.action));
-    });
-  }
-
-  async function controlTask(taskCard, action) {
-    const videos = Array.from(taskCard.querySelectorAll("[data-candidate-video]"));
-    const demos = Array.from(taskCard.querySelectorAll(".candidate-card [data-demo-stage]"));
-    const status = taskCard.querySelector(".playback-status");
-
-    if (action === "play") {
-      videos.forEach((video) => { video.currentTime = 0; });
-      demos.forEach((demo) => {
-        demo.classList.remove("is-playing", "is-paused");
-        void demo.offsetWidth;
-        demo.classList.add("is-playing");
-      });
-      await Promise.allSettled(videos.map((video) => video.play()));
-      status.textContent = "Playing together";
-      taskCard.classList.add("is-playing");
-      return;
-    }
-
-    if (action === "pause") {
-      videos.forEach((video) => video.pause());
-      demos.forEach((demo) => demo.classList.add("is-paused"));
-      status.textContent = "Paused";
-      taskCard.classList.remove("is-playing");
-      return;
-    }
-
-    videos.forEach((video) => {
-      video.pause();
-      video.currentTime = 0;
-    });
-    demos.forEach((demo) => demo.classList.remove("is-playing", "is-paused"));
-    status.textContent = "Ready";
-    taskCard.classList.remove("is-playing");
-  }
-
   function orderedResponses() {
     return config.tasks.flatMap((task) => config.criteria.map((criterion) => {
       const key = responseKey(task.id, criterion.id);
@@ -341,30 +421,80 @@
   }
 
   function buildResponsePayload() {
+    const candidateOrders = config.tasks.map((task) => {
+      const tokens = state.assignments[task.id] || [];
+      const permutation = tokens.map((token) => {
+        const candidateIndex = task.candidates.findIndex((candidate) => candidate.token === token);
+        if (candidateIndex < 0 || candidateIndex >= config.candidateLabels.length) {
+          throw new Error(`Invalid candidate assignment for ${task.id}`);
+        }
+        return String(candidateIndex + 1);
+      }).join("");
+      if (permutation.length !== config.candidateLabels.length ||
+          new Set(permutation).size !== config.candidateLabels.length) {
+        throw new Error(`Invalid candidate permutation for ${task.id}`);
+      }
+      return permutation;
+    });
+
+    const answers = config.tasks.map((task) => config.criteria.map((criterion) => {
+      const key = responseKey(task.id, criterion.id);
+      const selected = Array.isArray(state.responses[key]) ? state.responses[key] : [];
+      return selected.join("");
+    }));
+
     return {
-      schema_version: config.schemaVersion,
-      study_id: config.studyId,
-      mode: config.mode,
-      assignment_manifest_id: config.assignmentManifestId,
-      session_id: state.sessionId,
-      started_at: state.startedAt,
-      completed_at: state.completedAt,
-      generated_at: new Date().toISOString(),
-      assignments: Object.fromEntries(config.tasks.map((task) => {
-        const tokens = state.assignments[task.id] || [];
-        return [task.id, Object.fromEntries(tokens.map((token, index) => [String.fromCharCode(65 + index), token]))];
-      })),
-      responses: orderedResponses()
+      v: config.responseSchemaVersion,
+      s: config.studyId,
+      m: config.assignmentManifestId,
+      id: state.sessionId,
+      t: [state.startedAt, state.completedAt].map((value) => Math.floor(new Date(value).getTime() / 1000)),
+      o: candidateOrders,
+      a: answers
     };
+  }
+
+  function practiceIsReady() {
+    return state.practiceSelections.length === 2 && state.instructionsConfirmed === true;
+  }
+
+  function updateExternalLink(ready) {
+    if (!questionnaireUrl) return;
+    externalLink.classList.toggle("is-locked", !ready);
+    if (ready) {
+      externalLink.href = questionnaireUrl;
+      externalLink.target = "_blank";
+      externalLink.rel = "noopener noreferrer";
+      externalLink.removeAttribute("aria-disabled");
+      externalLink.removeAttribute("tabindex");
+    } else {
+      externalLink.removeAttribute("href");
+      externalLink.removeAttribute("target");
+      externalLink.removeAttribute("rel");
+      externalLink.setAttribute("aria-disabled", "true");
+      externalLink.setAttribute("tabindex", "-1");
+    }
+  }
+
+  function updateSubmissionReadiness(completeRows, ready) {
+    submissionReadiness.dataset.state = ready ? "ready" : "locked";
+    if (!practiceIsReady()) {
+      submissionReadiness.innerHTML = "请先完成作答示例并勾选“我已经确认”。<br><span lang=\"en\">Complete the practice example and select “I confirm” before submission.</span>";
+    } else if (completeRows !== totalRows) {
+      submissionReadiness.innerHTML = `请完成全部 ${totalRows} 项正式评价。<br><span lang="en">Complete all ${totalRows} formal rating rows before submission.</span>`;
+    } else {
+      submissionReadiness.innerHTML = "全部必填内容已完成，可以复制回答代码并前往腾讯问卷。<br><span lang=\"en\">All required items are complete. You may copy the response code and continue to Tencent Survey.</span>";
+    }
   }
 
   function updateProgress() {
     const completeRows = orderedResponses().filter((response) => response.selected.length === 2).length;
     const percent = totalRows ? Math.round((completeRows / totalRows) * 100) : 0;
-    if (completeRows === totalRows && !state.completedAt) {
+    const ready = completeRows === totalRows && practiceIsReady();
+    if (ready && !state.completedAt) {
       state.completedAt = new Date().toISOString();
       saveState();
-    } else if (completeRows !== totalRows && state.completedAt) {
+    } else if (!ready && state.completedAt) {
       state.completedAt = null;
       saveState();
     }
@@ -372,9 +502,11 @@
     questionCount.textContent = String(totalRows);
     completionPercent.textContent = `${percent}%`;
     document.documentElement.style.setProperty("--completion", `${percent * 3.6}deg`);
-    copyButton.disabled = completeRows !== totalRows;
+    copyButton.disabled = !ready;
+    updateExternalLink(ready);
+    updateSubmissionReadiness(completeRows, ready);
 
-    if (completeRows === totalRows) {
+    if (ready) {
       responseCode.value = JSON.stringify(buildResponsePayload());
     } else {
       responseCode.value = "";
@@ -385,17 +517,15 @@
     const url = String(config.questionnaireUrl || "").trim();
     const configured = /^https:\/\//i.test(url);
     if (configured) {
-      externalLink.href = url;
-      externalLink.target = "_blank";
-      externalLink.rel = "noopener noreferrer";
+      questionnaireUrl = url;
+      externalLink.hidden = false;
       externalLink.classList.remove("is-unconfigured");
-      externalLink.removeAttribute("aria-disabled");
       externalLink.innerHTML = `${escapeHtml(config.questionnaireLabel)} <span aria-hidden="true">↗</span>`;
     } else {
-      externalLink.addEventListener("click", (event) => {
-        event.preventDefault();
-        showToast("真实腾讯问卷链接尚未配置。请在 config.js 中填写 questionnaireUrl。", "warning");
-      });
+      questionnaireUrl = "";
+      externalLink.hidden = true;
+      externalLink.removeAttribute("href");
+      externalLink.setAttribute("tabindex", "-1");
     }
   }
 
@@ -407,22 +537,22 @@
     responseCode.select();
     try {
       await navigator.clipboard.writeText(text);
-      showToast("回答代码已复制，可以前往腾讯问卷粘贴。", "success");
+      showToast("回答代码已复制。 / Response code copied.", "success");
     } catch (_error) {
       document.execCommand("copy");
-      showToast("回答代码已生成；如未自动复制，请手动复制文本框内容。", "warning");
+      showToast("请手动复制文本框中的回答代码。 / Please copy the response code manually.", "warning");
     }
   }
 
   function resetResponses() {
-    const confirmed = window.confirm("确定清空当前浏览器中的全部演示选择吗？");
+    const confirmed = window.confirm("确定清空全部选择吗？ / Clear all selections?");
     if (!confirmed) return;
     state = freshState();
     saveState();
-    tasksContainer.querySelectorAll('input[type="checkbox"]').forEach((input) => { input.checked = false; });
-    tasksContainer.querySelectorAll(".criterion-question").forEach((row) => updateQuestionRow(row, 0));
+    renderPractice();
+    renderTasks();
     updateProgress();
-    showToast("演示选择已清空。", "success");
+    showToast("选择已清空。 / Selections cleared.", "success");
   }
 
   function showToast(message, tone = "default") {
@@ -433,37 +563,16 @@
     toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 3800);
   }
 
-  function updateReadingProgress() {
-    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = scrollable > 0 ? Math.min(1, window.scrollY / scrollable) : 0;
-    readingProgress.style.transform = `scaleX(${progress})`;
-  }
-
-  function setupReveal() {
-    const items = Array.from(document.querySelectorAll(".reveal-item"));
-    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      items.forEach((item) => item.classList.add("is-revealed"));
-      return;
-    }
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-revealed");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: "0px 0px -40px" });
-    items.forEach((item) => observer.observe(item));
-  }
-
-  renderCriteria();
+  renderPractice();
   renderTasks();
   configureExternalLink();
   updateProgress();
-  setupReveal();
-  updateReadingProgress();
 
   copyButton.addEventListener("click", copyResponse);
+  externalLink.addEventListener("click", (event) => {
+    if (externalLink.getAttribute("aria-disabled") === "true") {
+      event.preventDefault();
+    }
+  });
   resetButton.addEventListener("click", resetResponses);
-  window.addEventListener("scroll", updateReadingProgress, { passive: true });
 })();
