@@ -26,9 +26,9 @@
   }
 
   config.formId = formId;
-  config.schemaVersion = 6;
+  config.schemaVersion = 7;
   config.responseSchemaVersion = 2;
-  config.assignmentManifestId = "sraw-two-form-20case-v2";
+  config.assignmentManifestId = "sraw-two-form-20case-v3";
   config.practice.referenceSrc = `${practiceAssetRoot}/input.png`;
   config.practice.candidates.forEach((candidate, index) => {
     candidate.src = `${practiceAssetRoot}/p${String(index + 1).padStart(2, "0")}.png`;
