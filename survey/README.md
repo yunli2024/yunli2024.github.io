@@ -4,7 +4,8 @@ This directory is a plain static GitHub Pages survey interface. When merged
 into the `yunli2024.github.io` repository it is available at:
 
 ```text
-https://yunli2024.github.io/survey/
+https://yunli2024.github.io/survey/1/
+https://yunli2024.github.io/survey/2/
 ```
 
 No build step or backend is required. Serve the repository root locally for
@@ -14,7 +15,9 @@ preview:
 python -m http.server 8000
 ```
 
-Then open `http://localhost:8000/survey/`.
+Then open `http://localhost:8000/survey/1/` or
+`http://localhost:8000/survey/2/`. The original `/survey/` route remains as a
+schema-v1 compatibility page.
 
 ## Configuration
 
@@ -29,6 +32,10 @@ Edit only `config.js` for ordinary study changes:
 - `tasks`: 10 bilingual task definitions, each with one input/reference image
   and six opaque candidate final-frame image paths;
 - `candidateLabels`: public anonymous labels.
+
+The two form-specific files, `1/form-config.js` and `2/form-config.js`, set only
+the form source (`formId`) and compact response schema version. Keep their IDs
+fixed when formal responses are collected.
 
 An empty practice, `referenceSrc`, or candidate `src` renders a neutral image placeholder.
 Real formal assets should use opaque paths such as `assets/t01/input.png` and
@@ -63,10 +70,11 @@ After the practice gate and all formal rows are complete, the page emits one
 compact JSON object (abbreviated to one task below for readability):
 
 ```json
-{"v":1,"s":"visual-removal-preference-v1","m":"six-candidate-last-frame-v1","id":"SV-0123456789AB","t":[1786851000,1786851900],"o":["351624"],"a":[["AB","CF","DE","AC","BF"]]}
+{"v":2,"s":"visual-removal-preference-v1","m":"six-candidate-last-frame-v1","id":"SV-0123456789AB","t":[1786851000,1786851900],"o":["351624"],"a":[["AB","CF","DE","AC","BF"]],"form_id":1}
 ```
 
 - `v`: compact response schema version;
+- `form_id`: fixed source form, `1` for `/survey/1/` and `2` for `/survey/2/`;
 - `s`: frozen study/protocol ID;
 - `m`: private assignment-manifest ID;
 - `id`: random browser session ID, not a participant identity;
@@ -75,7 +83,7 @@ compact JSON object (abbreviated to one task below for readability):
   task `i` (for example, `351624` means `A -> c3`, `B -> c5`, and so on);
 - `a[i][j]`: the sorted, unranked Top-2 labels for task `i`, criterion `j`.
 
-Task and criterion order are frozen by `s` and `m`. A formal decoder must
+Task and criterion order are resolved by `s`, `m`, and `form_id`. A formal decoder must
 reject unknown versions/IDs, malformed permutations, non-canonical answers,
 and incomplete matrices rather than guessing.
 

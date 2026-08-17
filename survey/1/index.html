@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Anonymous final-frame image preference survey for visual removal research.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="light">
+  <title>物体移除结果评价 · Object Removal Result Evaluation</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../config.js" defer></script>
+  <script src="form-config.js" defer></script>
+  <script src="../app.js" defer></script>
+</head>
+<body>
+  <header class="site-header page-card" aria-labelledby="page-title">
+    <h1 id="page-title">物体移除结果评价<br><span>Object Removal Result Evaluation</span></h1>
+    <p class="intro intro-zh">
+      感谢参与本次匿名用户研究。<strong class="instruction-alert">请认真阅读下面的说明后作答。</strong>
+    </p>
+    <p class="intro intro-zh">
+      本问卷共包含 <strong>10 个物体移除任务</strong>。每个任务先展示带有红色标注的输入图像，随后展示六个匿名方法生成的最终帧，
+      统一标记为 <strong>Result A–F</strong>。请在五项评价标准下分别选择表现最好的2个结果，
+      <strong class="instruction-alert">一定要注意是选择2个！</strong>所选两项不区分先后顺序。
+    </p>
+    <p class="intro intro-en" lang="en">
+      Thank you for participating in this anonymous user study.
+      <strong class="instruction-alert">Please read the instructions below carefully before answering.</strong>
+    </p>
+    <p class="intro intro-en" lang="en">
+      This survey contains <strong>10 object-removal tasks</strong>. Each task first presents an input image with a red annotation,
+      followed by the final frames produced by six anonymous methods, labeled <strong>Result A–F</strong>.
+      For each of the five criteria, select the two best results.
+      <strong class="instruction-alert">Please make sure to select exactly two results!</strong> The selected pair is not ranked.
+    </p>
+  </header>
+
+  <main>
+    <form id="survey-form">
+      <section id="practice" class="practice-panel page-card" aria-labelledby="practice-title">
+        <div id="practice-container"></div>
+      </section>
+
+      <div id="tasks-container"></div>
+
+      <section id="questionnaire" class="submit-panel page-card" aria-labelledby="questionnaire-title">
+        <h2 id="questionnaire-title">提交回答 / Submit Responses</h2>
+        <p class="submit-instruction">
+          完成全部任务后，请生成并复制回答代码，再打开腾讯问卷，将代码粘贴到指定题目中。<br>
+          <span lang="en">After completing all tasks, generate and copy the response code. Then open Tencent Survey and paste the code into the designated field.</span>
+        </p>
+
+        <div class="completion-line" aria-live="polite">
+          <span>完成进度 / Progress</span>
+          <strong><span id="answered-count">0</span> / <span id="question-count">0</span></strong>
+          <span id="completion-percent">0%</span>
+        </div>
+
+        <p id="submission-readiness" class="submission-readiness" data-state="locked" aria-live="polite">
+          请先完成作答示例并勾选“我已经确认”。<br>
+          <span lang="en">Complete the practice example and select “I confirm” before submission.</span>
+        </p>
+
+        <label class="output-label" for="response-code">回答代码 / Response code</label>
+        <textarea id="response-code" readonly placeholder="完成所有评价后生成 / Generated after all ratings are completed"></textarea>
+
+        <div class="submission-actions">
+          <button id="copy-response" class="button primary" type="button" disabled>复制回答代码 / Copy response code</button>
+          <a id="external-survey-link" class="external-link is-locked" aria-disabled="true" tabindex="-1">打开腾讯问卷 / Open Tencent Survey</a>
+        </div>
+
+        <p class="copy-hint">请在提交腾讯问卷前保留此页面。 / Keep this page open until your Tencent Survey response is submitted.</p>
+        <button id="reset-responses" class="reset-button" type="button">清空全部选择 / Clear all selections</button>
+      </section>
+    </form>
+  </main>
+
+  <footer class="site-footer">匿名物体移除用户研究 / Anonymous Object Removal User Study</footer>
+  <noscript><p class="noscript-message">此页面需要启用 JavaScript。 / JavaScript is required to complete this survey.</p></noscript>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

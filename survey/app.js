@@ -7,7 +7,13 @@
     return;
   }
 
-  const storageKey = `survey-state:${config.studyId}:v${config.schemaVersion}`;
+  const formId = config.formId ?? null;
+  if (formId !== null && formId !== 1 && formId !== 2) {
+    document.body.innerHTML = "<p class='fatal-error'>问卷分卷配置无效。 / Invalid survey form configuration.</p>";
+    return;
+  }
+  const formStorageScope = formId === null ? "" : `:form:${formId}`;
+  const storageKey = `survey-state:${config.studyId}${formStorageScope}:v${config.schemaVersion}`;
   const practiceContainer = document.getElementById("practice-container");
   const tasksContainer = document.getElementById("tasks-container");
   const answeredCount = document.getElementById("answered-count");
@@ -77,7 +83,7 @@
 
   function freshState() {
     const sessionId = createSessionId();
-    return {
+    const nextState = {
       schemaVersion: config.schemaVersion,
       studyId: config.studyId,
       assignmentManifestId: config.assignmentManifestId,
@@ -90,6 +96,8 @@
       instructionsConfirmed: false,
       responses: {}
     };
+    if (formId !== null) nextState.formId = formId;
+    return nextState;
   }
 
   function readState() {
@@ -100,6 +108,7 @@
       if (parsed.schemaVersion !== config.schemaVersion ||
           parsed.studyId !== config.studyId ||
           parsed.assignmentManifestId !== config.assignmentManifestId ||
+          (parsed.formId ?? null) !== formId ||
           typeof parsed.responses !== "object") {
         return freshState();
       }
@@ -443,7 +452,7 @@
       return selected.join("");
     }));
 
-    return {
+    const payload = {
       v: config.responseSchemaVersion,
       s: config.studyId,
       m: config.assignmentManifestId,
@@ -452,6 +461,8 @@
       o: candidateOrders,
       a: answers
     };
+    if (formId !== null) payload.form_id = formId;
+    return payload;
   }
 
   function practiceIsReady() {
