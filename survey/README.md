@@ -21,21 +21,18 @@ schema-v1 compatibility page.
 
 ## Configuration
 
-Edit only `config.js` for ordinary study changes:
+Edit `config.js` for shared wording and interaction changes:
 
 - `questionnaireUrl`: the final Tencent Survey (`wj.qq.com`) URL;
-- `assignmentManifestId`: the version of the private candidate-to-method
-  manifest used for analysis;
 - `practice`: the three-image, one-question Top-2 practice example and
   bilingual acknowledgement copy;
-- `criteria`: the five current paper-draft placeholder criteria;
-- `tasks`: 10 bilingual task definitions, each with one input/reference image
-  and six opaque candidate final-frame image paths;
+- `criteria`: the five frozen bilingual evaluation criteria;
 - `candidateLabels`: public anonymous labels.
 
-The two form-specific files, `1/form-config.js` and `2/form-config.js`, set only
-the form source (`formId`) and compact response schema version. Keep their IDs
-fixed when formal responses are collected.
+The two form-specific files, `1/form-config.js` and `2/form-config.js`, freeze
+the form source (`formId`), compact response schema version, assignment
+manifest ID, three practice assets, and ten opaque task asset groups. Keep
+these values fixed while formal responses are collected.
 
 An empty practice, `referenceSrc`, or candidate `src` renders a neutral image placeholder.
 Real formal assets should use opaque paths such as `assets/t01/input.png` and
@@ -61,8 +58,10 @@ configuration.
 - Test image loading, mobile layout, keyboard navigation, response
   persistence, copy-to-clipboard, and a complete Tencent Survey submission.
 
-The current page is a visual and interaction prototype only. It does not
-collect data and must not be used as paper evidence.
+The two form routes currently expose the frozen
+`sraw-two-form-20case-v1` stimulus set. The static page does not
+upload answers by itself; a response enters the study dataset only after the
+participant copies its response code into the configured Tencent Survey.
 
 ## Compact response-code schema
 
@@ -70,7 +69,7 @@ After the practice gate and all formal rows are complete, the page emits one
 compact JSON object (abbreviated to one task below for readability):
 
 ```json
-{"v":2,"s":"visual-removal-preference-v1","m":"six-candidate-last-frame-v1","id":"SV-0123456789AB","t":[1786851000,1786851900],"o":["351624"],"a":[["AB","CF","DE","AC","BF"]],"form_id":1}
+{"v":2,"s":"visual-removal-preference-v1","m":"sraw-two-form-20case-v1","id":"SV-0123456789AB","t":[1786851000,1786851900],"o":["351624"],"a":[["AB","CF","DE","AC","BF"]],"form_id":1}
 ```
 
 - `v`: compact response schema version;
