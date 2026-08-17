@@ -24,14 +24,14 @@ Then open `http://localhost:8000/survey/1/` or
 Edit `config.js` for shared wording and interaction changes:
 
 - `questionnaireUrl`: the final Tencent Survey (`wj.qq.com`) URL;
-- `practice`: the three-image, one-question Top-2 practice example and
-  bilingual acknowledgement copy;
+- `practice`: the red-line reference, three candidate images, fixed worked
+  answer, bilingual rationale, and acknowledgement gate;
 - `criteria`: the five frozen bilingual evaluation criteria;
 - `candidateLabels`: public anonymous labels.
 
 The two form-specific files, `1/form-config.js` and `2/form-config.js`, freeze
 the form source (`formId`), compact response schema version, assignment
-manifest ID, three practice assets, and ten opaque task asset groups. Keep
+manifest ID, four practice assets, and ten opaque task asset groups. Keep
 these values fixed while formal responses are collected.
 
 An empty practice, `referenceSrc`, or candidate `src` renders a neutral image placeholder.
@@ -43,8 +43,9 @@ configuration.
 ## Formal-release checklist
 
 - Add every frozen input image and candidate result.
-- Add the three practice images and confirm that their example does not reveal
-  a formal candidate identity.
+- Add the practice reference and three candidate images; confirm that the
+  instructional case is outside both formal forms and does not reveal method
+  identity in the participant-facing interface.
 - Freeze the task manifest, criterion wording, candidate order, and app version.
 - Keep the task-specific opaque candidate-token to method/output mapping in a
   private immutable manifest. The browser payload records only the randomized
@@ -61,7 +62,7 @@ configuration.
   persistence, copy-to-clipboard, and a complete Tencent Survey submission.
 
 The two form routes currently expose the frozen
-`sraw-two-form-20case-v1` stimulus set. The static page does not
+`sraw-two-form-20case-v2` stimulus set. The static page does not
 upload answers by itself; a response enters the study dataset only after the
 participant copies its response code into the configured Tencent Survey.
 
@@ -71,7 +72,7 @@ After the practice gate and all formal rows are complete, the page emits one
 compact JSON object (abbreviated to one task below for readability):
 
 ```json
-{"v":2,"s":"visual-removal-preference-v1","m":"sraw-two-form-20case-v1","id":"SV-0123456789AB","t":[1786851000,1786851900],"o":["351624"],"a":[["AB","CF","DE","AC","BF"]],"form_id":1}
+{"v":2,"s":"visual-removal-preference-v1","m":"sraw-two-form-20case-v2","id":"SV-0123456789AB","t":[1786851000,1786851900],"o":["351624"],"a":[["AB","CF","DE","AC","BF"]],"form_id":1}
 ```
 
 - `v`: compact response schema version;

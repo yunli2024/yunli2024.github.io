@@ -120,7 +120,8 @@
       parsed.practiceSelections = [...new Set(savedPractice.filter((key) => practiceKeys.has(key)))]
         .slice(0, 2)
         .sort();
-      parsed.instructionsConfirmed = parsed.practiceSelections.length === 2 && parsed.instructionsConfirmed === true;
+      parsed.instructionsConfirmed = practiceSelectionIsCorrect(parsed.practiceSelections) &&
+        parsed.instructionsConfirmed === true;
       return parsed;
     } catch (_error) {
       return freshState();
@@ -137,6 +138,15 @@
 
   function responseKey(taskId, criterionId) {
     return `${taskId}:${criterionId}`;
+  }
+
+  function practiceSelectionIsCorrect(selections) {
+    const selected = Array.isArray(selections) ? [...new Set(selections)].sort() : [];
+    const correct = Array.isArray(config.practice.correctAnswers)
+      ? [...new Set(config.practice.correctAnswers)].sort()
+      : [];
+    return correct.length === 2 && selected.length === correct.length &&
+      correct.every((key, index) => key === selected[index]);
   }
 
   function imagePlaceholderMarkup(label, kind = "candidate") {
@@ -196,6 +206,24 @@
     `;
   }
 
+  function practiceReferenceMarkup(practice) {
+    const alt = `${practice.referenceAltZh} / ${practice.referenceAltEn}`;
+    const media = practice.referenceSrc
+      ? `<img src="${escapeHtml(practice.referenceSrc)}" alt="${escapeHtml(alt)}" loading="lazy" data-practice-reference-image>`
+      : imagePlaceholderMarkup(alt, "reference");
+    return `
+      <section class="practice-reference-section" aria-labelledby="practice-reference-heading">
+        <div class="practice-section-heading">
+          <h3 id="practice-reference-heading">${escapeHtml(practice.referenceHeadingZh)} <span>/ ${escapeHtml(practice.referenceHeadingEn)}</span></h3>
+          <p>${escapeHtml(practice.referenceNoteZh)}<br><span lang="en">${escapeHtml(practice.referenceNoteEn)}</span></p>
+        </div>
+        <article class="practice-reference-card">
+          <div class="practice-reference-media">${media}</div>
+        </article>
+      </section>
+    `;
+  }
+
   function practiceMarkup() {
     const practice = config.practice;
     const saved = state.practiceSelections;
@@ -209,7 +237,8 @@
       `;
     }).join("");
     const candidates = practice.candidates.map(practiceCandidateMarkup).join("");
-    const canConfirm = saved.length === 2;
+    const canConfirm = practiceSelectionIsCorrect(saved);
+    const incorrect = saved.length === 2 && !canConfirm;
     const confirmed = canConfirm && state.instructionsConfirmed;
 
     return `
@@ -218,7 +247,7 @@
           <span class="practice-kicker">开始前请先完成 / Complete before starting</span>
           <h2 id="practice-title">${escapeHtml(practice.titleZh)} <span>/ ${escapeHtml(practice.titleEn)}</span></h2>
         </div>
-        <span class="practice-badge">Top-2</span>
+        <span class="practice-badge">任务示例 / Worked example</span>
       </header>
 
       <div class="practice-intro">
@@ -226,9 +255,16 @@
         <p lang="en">${escapeHtml(practice.instructionEn)}</p>
       </div>
 
-      <div class="practice-grid">${candidates}</div>
+      ${practiceReferenceMarkup(practice)}
 
-      <fieldset class="practice-question${canConfirm ? " is-complete" : ""}" data-practice-question>
+      <section class="practice-results-section" aria-labelledby="practice-results-heading">
+        <div class="practice-section-heading compact">
+          <h3 id="practice-results-heading">${escapeHtml(practice.resultsHeadingZh)} <span>/ ${escapeHtml(practice.resultsHeadingEn)}</span></h3>
+        </div>
+        <div class="practice-grid">${candidates}</div>
+      </section>
+
+      <fieldset class="practice-question${canConfirm ? " is-complete" : ""}${incorrect ? " is-incorrect" : ""}" data-practice-question>
         <legend>
           <span class="question-copy">
             <strong>示例题 / Practice Question</strong>
@@ -240,6 +276,7 @@
         <div class="candidate-options practice-options">${options}</div>
       </fieldset>
 
+      <div id="practice-guidance" class="practice-guidance" aria-live="polite"></div>
       <label id="practice-confirmation-panel" class="practice-confirmation${canConfirm ? " is-enabled" : ""}${confirmed ? " is-confirmed" : ""}">
         <input id="practice-confirmation" type="checkbox"${canConfirm ? "" : " disabled"}${confirmed ? " checked" : ""}>
         <span>
@@ -247,7 +284,6 @@
           <small lang="en">${escapeHtml(practice.confirmationEn)}</small>
         </span>
       </label>
-      <p id="practice-guidance" class="practice-guidance" aria-live="polite"></p>
     `;
   }
 
@@ -267,7 +303,7 @@
       state.practiceSelections = Array.from(question.querySelectorAll('input[type="checkbox"]:checked'))
         .map((input) => input.value)
         .sort();
-      if (state.practiceSelections.length !== 2) {
+      if (!practiceSelectionIsCorrect(state.practiceSelections)) {
         state.instructionsConfirmed = false;
       }
       saveState();
@@ -276,7 +312,7 @@
     });
 
     confirmation.addEventListener("change", () => {
-      if (state.practiceSelections.length !== 2) {
+      if (!practiceSelectionIsCorrect(state.practiceSelections)) {
         confirmation.checked = false;
         return;
       }
@@ -296,22 +332,26 @@
     const confirmation = practiceContainer.querySelector("#practice-confirmation");
     const panel = practiceContainer.querySelector("#practice-confirmation-panel");
     const guidance = practiceContainer.querySelector("#practice-guidance");
-    const canConfirm = count === 2;
+    const canConfirm = practiceSelectionIsCorrect(state.practiceSelections);
+    const incorrect = count === 2 && !canConfirm;
     const confirmed = canConfirm && state.instructionsConfirmed;
 
     question.classList.toggle("is-complete", canConfirm);
+    question.classList.toggle("is-incorrect", incorrect);
     counter.textContent = String(count);
     confirmation.disabled = !canConfirm;
     confirmation.checked = confirmed;
     panel.classList.toggle("is-enabled", canConfirm);
     panel.classList.toggle("is-confirmed", confirmed);
+    guidance.classList.toggle("is-correct", canConfirm);
+    guidance.classList.toggle("is-incorrect", incorrect);
 
-    if (!canConfirm) {
-      guidance.innerHTML = "请先在示例题中选择两个结果。<br><span lang=\"en\">Select two results in the practice question first.</span>";
-    } else if (!confirmed) {
-      guidance.innerHTML = "示例已完成，请勾选“我已经确认”。<br><span lang=\"en\">Practice complete. Select “I confirm” to continue.</span>";
+    if (count < 2) {
+      guidance.innerHTML = "<span>请先比较输入图像与三个结果，并选择两个答案。</span><span lang=\"en\">Compare the input image with the three results, then select two answers.</span>";
+    } else if (incorrect) {
+      guidance.innerHTML = `<strong>再看一下：为什么不能选择 C？ / Try again: why should C not be selected?</strong><span>${escapeHtml(config.practice.incorrectExplanationZh)}</span><span lang="en">${escapeHtml(config.practice.incorrectExplanationEn)}</span>`;
     } else {
-      guidance.innerHTML = "已确认，可以开始正式评价。<br><span lang=\"en\">Confirmed. You may begin the main study.</span>";
+      guidance.innerHTML = `<strong>为什么选择 A 和 B，而不是 C？ / Why A and B rather than C?</strong><span>${escapeHtml(config.practice.correctExplanationZh)}</span><span lang="en">${escapeHtml(config.practice.correctExplanationEn)}</span><span class="practice-transition"><b>${escapeHtml(config.practice.transitionZh)}</b><b lang="en">${escapeHtml(config.practice.transitionEn)}</b></span>`;
     }
   }
 
@@ -466,7 +506,7 @@
   }
 
   function practiceIsReady() {
-    return state.practiceSelections.length === 2 && state.instructionsConfirmed === true;
+    return practiceSelectionIsCorrect(state.practiceSelections) && state.instructionsConfirmed === true;
   }
 
   function updateExternalLink(ready) {
