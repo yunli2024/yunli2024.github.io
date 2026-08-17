@@ -144,7 +144,7 @@
       ? "输入图像与标注 / Input image & annotation"
       : kind === "practice"
         ? "示例图像 / Example image"
-        : "最终帧结果 / Final-frame result";
+        : "候选结果 / Candidate result";
     return `
       <div class="image-placeholder ${escapeHtml(kind)}-placeholder" role="img"
            aria-label="${escapeHtml(label)}">
@@ -159,9 +159,9 @@
 
   function referenceMarkup(task) {
     if (task.referenceSrc) {
-      return `<img src="${escapeHtml(task.referenceSrc)}" alt="输入图像及红色标注 / Input image with red annotation" loading="lazy" data-reference-image>`;
+      return `<img src="${escapeHtml(task.referenceSrc)}" alt="输入图像及红色线条标注 / Input image annotated with red lines" loading="lazy" data-reference-image>`;
     }
-    return imagePlaceholderMarkup("输入图像及红色标注 / Input image with red annotation", "reference");
+    return imagePlaceholderMarkup("输入图像及红色线条标注 / Input image annotated with red lines", "reference");
   }
 
   function assignedCandidates(task) {
@@ -171,9 +171,9 @@
 
   function candidateMarkup(task, candidate, index) {
     const displayKey = String.fromCharCode(65 + index);
-    const label = config.candidateLabels[index] || `Result ${displayKey}`;
+    const label = config.candidateLabels[index] || displayKey;
     const media = candidate.src
-      ? `<img src="${escapeHtml(candidate.src)}" alt="${escapeHtml(label)} 匿名最终帧结果 / anonymous final-frame result" loading="lazy" data-candidate-image>`
+      ? `<img src="${escapeHtml(candidate.src)}" alt="${escapeHtml(label)} 匿名候选结果 / anonymous candidate result" loading="lazy" data-candidate-image>`
       : imagePlaceholderMarkup(label);
     return `
       <article class="candidate-card" data-candidate="${escapeHtml(displayKey)}">
@@ -370,9 +370,9 @@
           </div>
         </section>
 
-        <section class="candidate-section" aria-label="候选最终帧 / Candidate final frames">
+        <section class="candidate-section" aria-label="候选结果 / Candidate results">
           <div class="media-section-heading">
-            <h3>候选最终帧 <span>/ Candidate final frames</span></h3>
+            <h3>候选结果 <span>/ Candidate results</span></h3>
             <p>六个匿名结果 / Six anonymous results</p>
           </div>
           <div class="candidate-grid">${candidates}</div>

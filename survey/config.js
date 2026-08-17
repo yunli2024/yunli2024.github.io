@@ -49,47 +49,47 @@ window.VISUAL_SURVEY_CONFIG = {
       { key: "C", labelZh: "示例 C", labelEn: "Example C", src: "" }
     ]
   },
-  candidateLabels: ["Result A", "Result B", "Result C", "Result D", "Result E", "Result F"],
+  candidateLabels: ["A", "B", "C", "D", "E", "F"],
   criteria: [
     {
       id: "removal_completeness",
       number: "01",
       nameEn: "Removal Completeness",
       nameZh: "移除完整性",
-      promptZh: "哪两个选项相对完整地移除了红色标注的目标物体，以及它的附加效果（阴影、倒影等），残留的程度更少？",
-      promptEn: "Which two results most completely remove the target object indicated by the red annotation and its associated visual effects (e.g., shadows or reflections, if present), leaving the fewest visible remnants?"
+      promptZh: "哪两个结果最完整地移除了红色线条所指示的目标物体及其相关视觉效果（如存在的阴影或倒影），且可见残留最少？",
+      promptEn: "Which two results most completely remove the target object indicated by the red lines and its associated visual effects (e.g., shadows or reflections, if present), leaving the fewest visible remnants?"
     },
     {
       id: "background_plausibility",
       number: "02",
       nameEn: "Background Plausibility",
       nameZh: "背景补全合理性",
-      promptZh: "哪两个选项在移除物体区域的背景补全上，更符合周围场景，看起来更加真实自然？",
-      promptEn: "Which two results fill in the background within the removed-object region in a way that is most consistent with the surrounding scene and looks most realistic and natural?"
+      promptZh: "哪两个结果在原目标物体所在区域补全的背景最符合周围场景，且看起来最真实、自然？",
+      promptEn: "Which two results restore the background in the removed region most consistently with the surrounding scene and make it look most realistic and natural?"
     },
     {
       id: "edge_seamlessness",
       number: "03",
       nameEn: "Edge Seamlessness",
       nameZh: "边界无缝性",
-      promptZh: "哪两个结果在移除物体区域与周围边界处，衔接和融合更为自然，相对没有明显差别和伪影？",
-      promptEn: "Which two results blend the removed-object region most naturally into its surroundings at the boundary, with the fewest visible mismatches or artifacts?"
+      promptZh: "哪两个结果中，移除区域的边界与周围环境融合得最自然，且可见接缝或伪影最少？",
+      promptEn: "Which two results blend the boundary of the removed region most naturally with its surroundings, with the fewest visible seams or artifacts?"
     },
     {
       id: "non_target_preservation",
       number: "04",
       nameEn: "Non-Target Preservation",
       nameZh: "非目标内容保持性",
-      promptZh: "哪两个结果最好地保留了目标之外的物体、场景和细节，且误删或无关改动最少？",
+      promptZh: "哪两个结果最好地保留了非目标物体、场景内容和细节，且非预期移除或无关改动最少？",
       promptEn: "Which two results best preserve non-target objects, scene content, and details, with the fewest unintended removals or unrelated changes?"
     },
     {
       id: "overall_performance",
       number: "05",
       nameEn: "Overall Performance",
-      nameZh: "综合考虑",
-      promptZh: "综合考虑，你认为哪两个结果最好地完成了移除物体的任务，相对更适合作为这个任务的最终输出？",
-      promptEn: "Overall, which two results best accomplish the object-removal task and are most suitable as the final outputs?"
+      nameZh: "综合表现",
+      promptZh: "综合而言，哪两个结果最成功地完成了物体移除任务，并最适合作为最终输出？",
+      promptEn: "Overall, which two results most successfully accomplish the object-removal task and are most suitable as the final outputs?"
     }
   ],
   tasks: Array.from({ length: 10 }, (_value, index) => makePlaceholderTask(index + 1))

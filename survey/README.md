@@ -16,8 +16,8 @@ python -m http.server 8000
 ```
 
 Then open `http://localhost:8000/survey/1/` or
-`http://localhost:8000/survey/2/`. The original `/survey/` route remains as a
-schema-v1 compatibility page.
+`http://localhost:8000/survey/2/`. There is intentionally no standalone
+`/survey/` page.
 
 ## Configuration
 
@@ -42,7 +42,7 @@ configuration.
 
 ## Formal-release checklist
 
-- Add every frozen input image and final-frame result.
+- Add every frozen input image and candidate result.
 - Add the three practice images and confirm that their example does not reveal
   a formal candidate identity.
 - Freeze the task manifest, criterion wording, candidate order, and app version.
@@ -50,8 +50,10 @@ configuration.
   private immutable manifest. The browser payload records only the randomized
   A/B/C/D/E/F-to-token assignment.
 - Configure and test the Tencent Survey link and response-code field.
-- Collect a stable pre-assigned participant code in Tencent Survey; the local
-  browser session ID is not a participant identity.
+- This study does not collect a separate participant code. Tencent Survey is
+  configured to limit one submission per IP address, while the local browser
+  session ID is retained as the response-level analysis key. The static page
+  does not receive or validate IP information.
 - Keep method identity and the candidate-to-method mapping outside this public
   repository.
 - Remove the `noindex` meta tag only if public indexing is intended.
