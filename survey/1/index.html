@@ -15,7 +15,7 @@
 </head>
 <body>
   <header class="site-header page-card" aria-labelledby="page-title">
-    <h1 id="page-title">物体移除结果评价<br><span>Object Removal Result Evaluation</span></h1>
+    <h1 id="page-title">物体移除结果评价<br><span lang="en">Object Removal Result Evaluation</span></h1>
     <p class="intro intro-zh">
       感谢参与本次匿名用户研究。<strong class="instruction-alert">请认真阅读下面的说明后作答。</strong>
     </p>
@@ -46,14 +46,14 @@
       <div id="tasks-container"></div>
 
       <section id="questionnaire" class="submit-panel page-card" aria-labelledby="questionnaire-title">
-        <h2 id="questionnaire-title">提交回答 / Submit Responses</h2>
+        <h2 id="questionnaire-title">提交回答 <span class="en-inline" lang="en">/ Submit Responses</span></h2>
         <p class="submit-instruction">
           完成全部任务后，请生成并复制回答代码，再打开腾讯问卷，将代码粘贴到指定题目中。<br>
           <span lang="en">After completing all tasks, generate and copy the response code. Then open Tencent Survey and paste the code into the designated field.</span>
         </p>
 
         <div class="completion-line" aria-live="polite">
-          <span>完成进度 / Progress</span>
+          <span>完成进度 <span class="en-inline" lang="en">/ Progress</span></span>
           <strong><span id="answered-count">0</span> / <span id="question-count">0</span></strong>
           <span id="completion-percent">0%</span>
         </div>
@@ -63,22 +63,22 @@
           <span lang="en">Complete the practice example and select “I confirm” before submission.</span>
         </p>
 
-        <label class="output-label" for="response-code">回答代码 / Response code</label>
+        <label class="output-label" for="response-code">回答代码 <span class="en-inline" lang="en">/ Response code</span></label>
         <textarea id="response-code" readonly placeholder="完成所有评价后生成 / Generated after all ratings are completed"></textarea>
 
         <div class="submission-actions">
-          <button id="copy-response" class="button primary" type="button" disabled>复制回答代码 / Copy response code</button>
-          <a id="external-survey-link" class="external-link is-locked" aria-disabled="true" tabindex="-1">打开腾讯问卷 / Open Tencent Survey</a>
+          <button id="copy-response" class="button primary" type="button" disabled>复制回答代码 <span class="en-inline" lang="en">/ Copy response code</span></button>
+          <a id="external-survey-link" class="external-link is-locked" aria-disabled="true" tabindex="-1">打开腾讯问卷 <span class="en-inline" lang="en">/ Open Tencent Survey</span></a>
         </div>
 
-        <p class="copy-hint">请在提交腾讯问卷前保留此页面。 / Keep this page open until your Tencent Survey response is submitted.</p>
-        <button id="reset-responses" class="reset-button" type="button">清空全部选择 / Clear all selections</button>
+        <p class="copy-hint">请在提交腾讯问卷前保留此页面。 <span class="en-inline" lang="en">/ Keep this page open until your Tencent Survey response is submitted.</span></p>
+        <button id="reset-responses" class="reset-button" type="button">清空全部选择 <span class="en-inline" lang="en">/ Clear all selections</span></button>
       </section>
     </form>
   </main>
 
-  <footer class="site-footer">匿名物体移除用户研究 / Anonymous Object Removal User Study</footer>
-  <noscript><p class="noscript-message">此页面需要启用 JavaScript。 / JavaScript is required to complete this survey.</p></noscript>
+  <footer class="site-footer">匿名物体移除用户研究 <span class="en-inline" lang="en">/ Anonymous Object Removal User Study</span></footer>
+  <noscript><p class="noscript-message">此页面需要启用 JavaScript。 <span class="en-inline" lang="en">/ JavaScript is required to complete this survey.</span></p></noscript>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

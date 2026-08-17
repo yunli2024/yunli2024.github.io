@@ -34,6 +34,15 @@ body {
   line-height: 1.6;
 }
 
+/* Chinese is the primary survey language; English translations are secondary. */
+[lang="en"] {
+  font-size: 0.86em;
+}
+
+.en-inline {
+  font-size: 0.82em;
+}
+
 button,
 textarea,
 input {
@@ -66,9 +75,9 @@ h1 {
   line-height: 1.35;
 }
 
-h1 span {
+h1 span[lang="en"] {
   color: #555555;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -97,7 +106,7 @@ h1 span {
 
 .intro-en {
   color: #666666;
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .practice-panel {
@@ -131,7 +140,7 @@ h1 span {
 
 .practice-header h2 span {
   color: #60656d;
-  font-size: 0.82em;
+  font-size: 0.72em;
   font-weight: 600;
 }
 
@@ -161,7 +170,7 @@ h1 span {
 
 .practice-intro p[lang="en"] {
   color: #6d737b;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .practice-section-heading {
@@ -184,7 +193,7 @@ h1 span {
 
 .practice-section-heading h3 span {
   color: #60656d;
-  font-size: 0.82em;
+  font-size: 0.72em;
   font-weight: 600;
 }
 
@@ -198,7 +207,7 @@ h1 span {
 
 .practice-section-heading p span[lang="en"] {
   color: #747a82;
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .practice-reference-card {
@@ -262,7 +271,7 @@ h1 span {
 .media-section-heading h3 span,
 .question-section-heading h3 span {
   color: #60656d;
-  font-size: 0.82em;
+  font-size: 0.72em;
   font-weight: 600;
 }
 
@@ -577,6 +586,7 @@ h1 span {
 .question-copy .question-en {
   margin-top: 2px;
   color: #747a82;
+  font-size: 12px;
 }
 
 .selection-count {
@@ -589,6 +599,10 @@ h1 span {
   background: #ffffff;
   font-size: 12px;
   white-space: nowrap;
+}
+
+.selection-count .en-inline {
+  font-size: 11px;
 }
 
 .criterion-question.is-complete .selection-count,
@@ -679,7 +693,7 @@ h1 span {
 
 .practice-confirmation small {
   color: inherit;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -754,6 +768,10 @@ h1 span {
 .submit-panel h2 {
   margin: 0 0 10px;
   font-size: 24px;
+}
+
+.submit-panel h2 .en-inline {
+  font-size: 0.67em;
 }
 
 .submit-panel > p {
@@ -998,13 +1016,17 @@ h1 span {
     font-size: 25px;
   }
 
-  h1 span {
-    font-size: 16px;
+  h1 span[lang="en"] {
+    font-size: 14px;
   }
 
   .intro {
     text-align: left;
     font-size: 15px;
+  }
+
+  .intro-en {
+    font-size: 13px;
   }
 
   #tasks-container {

@@ -32,7 +32,8 @@ window.VISUAL_SURVEY_CONFIG = {
   assignmentManifestId: "six-candidate-last-frame-v1",
   mode: "STUDY",
   questionnaireUrl: "https://wj.qq.com/s2/27600498/05wz/",
-  questionnaireLabel: "打开腾讯问卷 / Open Tencent Survey",
+  questionnaireLabelZh: "打开腾讯问卷",
+  questionnaireLabelEn: "Open Tencent Survey",
   practice: {
     id: "worked_removal_practice_v2",
     titleZh: "物体移除作答示例",

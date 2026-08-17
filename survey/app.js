@@ -201,7 +201,7 @@
     return `
       <article class="practice-candidate-card" data-practice-candidate="${escapeHtml(candidate.key)}">
         <div class="practice-candidate-media">${media}</div>
-        <div class="anonymous-label">${escapeHtml(label)}</div>
+        <div class="anonymous-label">${escapeHtml(candidate.labelZh)} <span class="en-inline" lang="en">/ ${escapeHtml(candidate.labelEn)}</span></div>
       </article>
     `;
   }
@@ -214,7 +214,7 @@
     return `
       <section class="practice-reference-section" aria-labelledby="practice-reference-heading">
         <div class="practice-section-heading">
-          <h3 id="practice-reference-heading">${escapeHtml(practice.referenceHeadingZh)} <span>/ ${escapeHtml(practice.referenceHeadingEn)}</span></h3>
+          <h3 id="practice-reference-heading">${escapeHtml(practice.referenceHeadingZh)} <span lang="en">/ ${escapeHtml(practice.referenceHeadingEn)}</span></h3>
           <p>${escapeHtml(practice.referenceNoteZh)}<br><span lang="en">${escapeHtml(practice.referenceNoteEn)}</span></p>
         </div>
         <article class="practice-reference-card">
@@ -232,7 +232,7 @@
       return `
         <label class="candidate-option practice-option">
           <input type="checkbox" value="${escapeHtml(candidate.key)}"${checked}>
-          <span>${escapeHtml(candidate.labelZh)} / ${escapeHtml(candidate.labelEn)}</span>
+          <span>${escapeHtml(candidate.labelZh)} <span class="en-inline" lang="en">/ ${escapeHtml(candidate.labelEn)}</span></span>
         </label>
       `;
     }).join("");
@@ -244,10 +244,10 @@
     return `
       <header class="practice-header">
         <div>
-          <span class="practice-kicker">开始前请先完成 / Complete before starting</span>
-          <h2 id="practice-title">${escapeHtml(practice.titleZh)} <span>/ ${escapeHtml(practice.titleEn)}</span></h2>
+          <span class="practice-kicker">开始前请先完成 <span class="en-inline" lang="en">/ Complete before starting</span></span>
+          <h2 id="practice-title">${escapeHtml(practice.titleZh)} <span lang="en">/ ${escapeHtml(practice.titleEn)}</span></h2>
         </div>
-        <span class="practice-badge">任务示例 / Worked example</span>
+        <span class="practice-badge">任务示例 <span class="en-inline" lang="en">/ Worked example</span></span>
       </header>
 
       <div class="practice-intro">
@@ -259,7 +259,7 @@
 
       <section class="practice-results-section" aria-labelledby="practice-results-heading">
         <div class="practice-section-heading compact">
-          <h3 id="practice-results-heading">${escapeHtml(practice.resultsHeadingZh)} <span>/ ${escapeHtml(practice.resultsHeadingEn)}</span></h3>
+          <h3 id="practice-results-heading">${escapeHtml(practice.resultsHeadingZh)} <span lang="en">/ ${escapeHtml(practice.resultsHeadingEn)}</span></h3>
         </div>
         <div class="practice-grid">${candidates}</div>
       </section>
@@ -267,11 +267,11 @@
       <fieldset class="practice-question${canConfirm ? " is-complete" : ""}${incorrect ? " is-incorrect" : ""}" data-practice-question>
         <legend>
           <span class="question-copy">
-            <strong>示例题 / Practice Question</strong>
+            <strong>示例题 <span class="en-inline" lang="en">/ Practice Question</span></strong>
             <small>${escapeHtml(practice.questionZh)}</small>
             <small class="question-en" lang="en">${escapeHtml(practice.questionEn)}</small>
           </span>
-          <span class="selection-count">已选 / Selected <b>${saved.length}</b>/2</span>
+          <span class="selection-count">已选 <span class="en-inline" lang="en">/ Selected</span> <b>${saved.length}</b>/2</span>
         </legend>
         <div class="candidate-options practice-options">${options}</div>
       </fieldset>
@@ -349,9 +349,9 @@
     if (count < 2) {
       guidance.innerHTML = "<span>请先比较输入图像与三个结果，并选择两个答案。</span><span lang=\"en\">Compare the input image with the three results, then select two answers.</span>";
     } else if (incorrect) {
-      guidance.innerHTML = `<strong>再看一下：为什么不能选择 C？ / Try again: why should C not be selected?</strong><span>${escapeHtml(config.practice.incorrectExplanationZh)}</span><span lang="en">${escapeHtml(config.practice.incorrectExplanationEn)}</span>`;
+      guidance.innerHTML = `<strong>再看一下：为什么不能选择 C？ <span class="en-inline" lang="en">/ Try again: why should C not be selected?</span></strong><span>${escapeHtml(config.practice.incorrectExplanationZh)}</span><span lang="en">${escapeHtml(config.practice.incorrectExplanationEn)}</span>`;
     } else {
-      guidance.innerHTML = `<strong>为什么选择 A 和 B，而不是 C？ / Why A and B rather than C?</strong><span>${escapeHtml(config.practice.correctExplanationZh)}</span><span lang="en">${escapeHtml(config.practice.correctExplanationEn)}</span><span class="practice-transition"><b>${escapeHtml(config.practice.transitionZh)}</b><b lang="en">${escapeHtml(config.practice.transitionEn)}</b></span>`;
+      guidance.innerHTML = `<strong>为什么选择 A 和 B，而不是 C？ <span class="en-inline" lang="en">/ Why A and B rather than C?</span></strong><span>${escapeHtml(config.practice.correctExplanationZh)}</span><span lang="en">${escapeHtml(config.practice.correctExplanationEn)}</span><span class="practice-transition"><b>${escapeHtml(config.practice.transitionZh)}</b><b lang="en">${escapeHtml(config.practice.transitionEn)}</b></span>`;
     }
   }
 
@@ -374,11 +374,11 @@
                 data-response-key="${escapeHtml(key)}">
         <legend>
           <span class="question-copy">
-            <strong><span class="question-number">${escapeHtml(criterion.number)}</span>${escapeHtml(criterion.nameEn)} <em>（${escapeHtml(criterion.nameZh)}）</em></strong>
+            <strong><span class="question-number">${escapeHtml(criterion.number)}</span><span class="en-inline" lang="en">${escapeHtml(criterion.nameEn)}</span> <em>（${escapeHtml(criterion.nameZh)}）</em></strong>
             <small>${escapeHtml(criterion.promptZh)}</small>
             <small class="question-en" lang="en">${escapeHtml(criterion.promptEn)}</small>
           </span>
-          <span class="selection-count">已选 / Selected <b>${saved.length}</b>/2</span>
+          <span class="selection-count">已选 <span class="en-inline" lang="en">/ Selected</span> <b>${saved.length}</b>/2</span>
         </legend>
         <div class="candidate-options">${options}</div>
       </fieldset>
@@ -391,19 +391,19 @@
     return `
       <article class="task-card" id="task-${escapeHtml(task.id)}" data-task-id="${escapeHtml(task.id)}">
         <header class="task-header">
-          <h2>${escapeHtml(task.labelZh)} <span>/ ${escapeHtml(task.labelEn)}</span></h2>
+          <h2>${escapeHtml(task.labelZh)} <span lang="en">/ ${escapeHtml(task.labelEn)}</span></h2>
           <span class="task-sequence">${taskIndex + 1} / ${config.tasks.length}</span>
         </header>
 
         <div class="prompt-box">
           <p><span class="prompt-label">任务说明：</span>${escapeHtml(task.instructionZh)}</p>
           <p lang="en"><span class="prompt-label">Instructions:</span>${escapeHtml(task.instructionEn)}</p>
-          <span class="task-context">${escapeHtml(task.contextZh)} / ${escapeHtml(task.contextEn)}</span>
+          <span class="task-context">${escapeHtml(task.contextZh)} <span class="en-inline" lang="en">/ ${escapeHtml(task.contextEn)}</span></span>
         </div>
 
         <section class="reference-section" aria-label="输入图像与标注 / Input image and annotation">
           <div class="media-section-heading">
-            <h3>输入图像与标注 <span>/ Input image &amp; annotation</span></h3>
+            <h3>输入图像与标注 <span lang="en">/ Input image &amp; annotation</span></h3>
           </div>
           <div class="reference-card">
             <div class="reference-media">${referenceMarkup(task)}</div>
@@ -412,15 +412,15 @@
 
         <section class="candidate-section" aria-label="候选结果 / Candidate results">
           <div class="media-section-heading">
-            <h3>候选结果 <span>/ Candidate results</span></h3>
-            <p>六个匿名结果 / Six anonymous results</p>
+            <h3>候选结果 <span lang="en">/ Candidate results</span></h3>
+            <p>六个匿名结果 <span class="en-inline" lang="en">/ Six anonymous results</span></p>
           </div>
           <div class="candidate-grid">${candidates}</div>
         </section>
 
         <div class="question-section-heading">
-          <h3>请分别完成以下五项评价 <span>/ Rate all five criteria</span></h3>
-          <p>每项选择两个候选，所选结果不排序 / Select two per criterion; no ranking</p>
+          <h3>请分别完成以下五项评价 <span lang="en">/ Rate all five criteria</span></h3>
+          <p>每项选择两个候选，所选结果不排序 <span class="en-inline" lang="en">/ Select two per criterion; no ranking</span></p>
         </div>
         <div class="question-list">${questions}</div>
       </article>
@@ -571,7 +571,7 @@
       questionnaireUrl = url;
       externalLink.hidden = false;
       externalLink.classList.remove("is-unconfigured");
-      externalLink.innerHTML = `${escapeHtml(config.questionnaireLabel)} <span aria-hidden="true">↗</span>`;
+      externalLink.innerHTML = `${escapeHtml(config.questionnaireLabelZh)} <span class="en-inline" lang="en">/ ${escapeHtml(config.questionnaireLabelEn)}</span> <span aria-hidden="true">↗</span>`;
     } else {
       questionnaireUrl = "";
       externalLink.hidden = true;
@@ -608,7 +608,11 @@
 
   function showToast(message, tone = "default") {
     if (toastTimer) window.clearTimeout(toastTimer);
-    toast.textContent = message;
+    const separator = " / ";
+    const separatorIndex = message.indexOf(separator);
+    toast.innerHTML = separatorIndex < 0
+      ? escapeHtml(message)
+      : `${escapeHtml(message.slice(0, separatorIndex))} <span class="en-inline" lang="en">/ ${escapeHtml(message.slice(separatorIndex + separator.length))}</span>`;
     toast.dataset.tone = tone;
     toast.classList.add("is-visible");
     toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 3800);
