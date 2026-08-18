@@ -351,7 +351,7 @@
     } else if (incorrect) {
       guidance.innerHTML = `<strong>再看一下：为什么不能选择 C？ <span class="en-inline" lang="en">/ Try again: why should C not be selected?</span></strong><span>${escapeHtml(config.practice.incorrectExplanationZh)}</span><span lang="en">${escapeHtml(config.practice.incorrectExplanationEn)}</span>`;
     } else {
-      guidance.innerHTML = `<strong>为什么选择 A 和 B，而不是 C？ <span class="en-inline" lang="en">/ Why A and B rather than C?</span></strong><span>${escapeHtml(config.practice.correctExplanationZh)}</span><span lang="en">${escapeHtml(config.practice.correctExplanationEn)}</span><span class="practice-transition"><b>${escapeHtml(config.practice.transitionZh)}</b><b lang="en">${escapeHtml(config.practice.transitionEn)}</b></span>`;
+      guidance.innerHTML = `<strong>为什么选择 A 和 B，而不是 C？ <span class="en-inline" lang="en">/ Why A and B rather than C?</span></strong><span>${escapeHtml(config.practice.correctExplanationZh)}</span><span lang="en">${escapeHtml(config.practice.correctExplanationEn)}</span><span class="practice-transition"><b>${escapeHtml(config.practice.transitionZh)}</b><b lang="en">${escapeHtml(config.practice.transitionEn)}</b></span><span class="practice-target-cue" role="note"><strong>${escapeHtml(config.practice.targetCueZh)}</strong><strong lang="en">${escapeHtml(config.practice.targetCueEn)}</strong></span>`;
     }
   }
 

@@ -758,6 +758,31 @@ h1 span[lang="en"] {
   font-weight: 600;
 }
 
+.practice-target-cue {
+  display: grid !important;
+  gap: 4px;
+  margin-top: 7px;
+  padding: 10px 12px;
+  border-left: 4px solid #cf1322;
+  border-radius: 6px;
+  color: #cf1322;
+  background: #fff1f0;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.practice-target-cue strong {
+  display: block;
+  color: inherit;
+  font-weight: 800;
+}
+
+.practice-target-cue strong[lang="en"] {
+  color: #a61d24;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .submit-panel {
   margin-top: 34px;
   margin-bottom: 40px;

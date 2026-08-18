@@ -35,7 +35,7 @@ window.VISUAL_SURVEY_CONFIG = {
   questionnaireLabelZh: "打开腾讯问卷",
   questionnaireLabelEn: "Open Tencent Survey",
   practice: {
-    id: "worked_removal_practice_v2",
+    id: "worked_removal_practice_v3",
     titleZh: "物体移除作答示例",
     titleEn: "Worked Object-Removal Example",
     instructionZh: "请先观察带有红色线条的输入图像，确定需要移除的目标，再比较三张候选结果并选出最好的两张。页面会根据你的选择说明判断依据。本示例仅用于理解任务，不计入正式研究结果。",
@@ -58,6 +58,8 @@ window.VISUAL_SURVEY_CONFIG = {
     incorrectExplanationEn: "This selection is not correct yet. In C, the chair marked by the red lines remains intact, so the requested removal has not been completed. Select the two results that actually remove the chair while keeping the scene reasonably natural.",
     transitionZh: "接下来的 10 个正式题目任务都与本示例相同：先根据红线确定需要移除的目标，再按照每项评价标准选出最好的 2 个结果。",
     transitionEn: "The next 10 formal tasks follow the same procedure: identify the target to remove from the red lines, then select the two best results under each evaluation criterion.",
+    targetCueZh: "重要：红色线条用于模拟用户对待移除目标的粗略标示，并不代表目标的精确边界。模型应根据线条提示推断完整目标并将其整体移除；即使目标的部分区域未被红线覆盖，也应一并移除。",
+    targetCueEn: "Important: The red lines simulate a user's coarse indication of the target, not its exact boundary. A model is expected to infer the complete target from this cue and remove it in full, including any parts not directly covered by the red lines.",
     confirmationZh: "我已经确认：我理解应先判断红线指示的移除目标，再在正式题的每项标准下选择且只能选择 2 个最好的结果。",
     confirmationEn: "I confirm that I understand how to identify the removal target from the red lines and select exactly two best results for each criterion in the formal tasks.",
     candidates: [
