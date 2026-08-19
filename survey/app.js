@@ -23,6 +23,10 @@
   const responseCode = document.getElementById("response-code");
   const externalLink = document.getElementById("external-survey-link");
   const submissionReadiness = document.getElementById("submission-readiness");
+  const incompleteNavigation = document.getElementById("incomplete-navigation");
+  const remainingCount = document.getElementById("remaining-count");
+  const remainingCopyEn = document.getElementById("remaining-copy-en");
+  const jumpButton = document.getElementById("jump-to-first-incomplete");
   const resetButton = document.getElementById("reset-responses");
   const toast = document.getElementById("toast");
   let toastTimer = null;
@@ -457,6 +461,28 @@
     if (counter) counter.textContent = String(count);
   }
 
+  function firstIncompleteQuestion() {
+    return Array.from(tasksContainer.querySelectorAll(".criterion-question"))
+      .find((row) => !row.classList.contains("is-complete")) || null;
+  }
+
+  function jumpToFirstIncomplete() {
+    const row = firstIncompleteQuestion();
+    if (!row) return;
+
+    row.classList.remove("is-jump-target");
+    void row.offsetWidth;
+    row.classList.add("is-jump-target");
+    row.scrollIntoView({ behavior: "instant", block: "center" });
+
+    const firstUnchecked = row.querySelector('input[type="checkbox"]:not(:checked)');
+    window.requestAnimationFrame(() => {
+      if (firstUnchecked) firstUnchecked.focus({ preventScroll: true });
+    });
+    window.setTimeout(() => row.classList.remove("is-jump-target"), 2200);
+    showToast("已定位到第一项未完成评价。 / Moved to the first incomplete rating.");
+  }
+
   function orderedResponses() {
     return config.tasks.flatMap((task) => config.criteria.map((criterion) => {
       const key = responseKey(task.id, criterion.id);
@@ -532,10 +558,24 @@
     if (!practiceIsReady()) {
       submissionReadiness.innerHTML = "请先完成作答示例并勾选“我已经确认”。<br><span lang=\"en\">Complete the practice example and select “I confirm” before submission.</span>";
     } else if (completeRows !== totalRows) {
-      submissionReadiness.innerHTML = `请完成全部 ${totalRows} 项正式评价。<br><span lang="en">Complete all ${totalRows} formal rating rows before submission.</span>`;
+      const remainingRows = totalRows - completeRows;
+      const remainingTextEn = remainingRows === 1
+        ? "1 formal rating row remains."
+        : `${remainingRows} formal rating rows remain.`;
+      submissionReadiness.innerHTML = `还有 ${remainingRows} 项正式评价未完成。<br><span lang="en">${remainingTextEn}</span>`;
     } else {
       submissionReadiness.innerHTML = "全部必填内容已完成，可以复制回答代码并前往腾讯问卷。<br><span lang=\"en\">All required items are complete. You may copy the response code and continue to Tencent Survey.</span>";
     }
+  }
+
+  function updateIncompleteNavigation(completeRows) {
+    const remainingRows = totalRows - completeRows;
+    remainingCount.textContent = String(remainingRows);
+    remainingCopyEn.textContent = remainingRows === 1
+      ? "1 incomplete rating remains"
+      : `${remainingRows} incomplete ratings remain`;
+    incompleteNavigation.hidden = remainingRows === 0;
+    jumpButton.disabled = remainingRows === 0;
   }
 
   function updateProgress() {
@@ -556,6 +596,7 @@
     copyButton.disabled = !ready;
     updateExternalLink(ready);
     updateSubmissionReadiness(completeRows, ready);
+    updateIncompleteNavigation(completeRows);
 
     if (ready) {
       responseCode.value = JSON.stringify(buildResponsePayload());
@@ -624,6 +665,7 @@
   updateProgress();
 
   copyButton.addEventListener("click", copyResponse);
+  jumpButton.addEventListener("click", jumpToFirstIncomplete);
   externalLink.addEventListener("click", (event) => {
     if (externalLink.getAttribute("aria-disabled") === "true") {
       event.preventDefault();

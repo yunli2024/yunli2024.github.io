@@ -63,6 +63,16 @@
           <span lang="en">Complete the practice example and select “I confirm” before submission.</span>
         </p>
 
+        <div id="incomplete-navigation" class="incomplete-navigation" aria-live="polite" hidden>
+          <span class="incomplete-copy">
+            <strong>还有 <span id="remaining-count">0</span> 项未完成</strong>
+            <span id="remaining-copy-en" lang="en">0 incomplete ratings remain</span>
+          </span>
+          <button id="jump-to-first-incomplete" class="button jump-button" type="button">
+            前往第一项未完成 <span class="en-inline" lang="en">/ Go to first incomplete item</span>
+          </button>
+        </div>
+
         <label class="output-label" for="response-code">回答代码 <span class="en-inline" lang="en">/ Response code</span></label>
         <textarea id="response-code" readonly placeholder="完成所有评价后生成 / Generated after all ratings are completed"></textarea>
 

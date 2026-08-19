@@ -62,8 +62,8 @@ configuration.
   persistence, copy-to-clipboard, and a complete Tencent Survey submission.
 
 The two form routes currently expose the frozen
-`sraw-two-form-20case-v4` stimulus set. Both forms use the opaque
-`assets/sraw-v4` root, with ten disjoint formal tasks per form and six blinded
+`sraw300-two-form-20case-v5` stimulus set. Both forms use the opaque
+`assets/sraw-v5` root, with ten disjoint formal tasks per form and six blinded
 candidates per task. The static page does not
 upload answers by itself; a response enters the study dataset only after the
 participant copies its response code into the configured Tencent Survey.
@@ -74,7 +74,7 @@ After the practice gate and all formal rows are complete, the page emits one
 compact JSON object (abbreviated to one task below for readability):
 
 ```json
-{"v":2,"s":"visual-removal-preference-v1","m":"sraw-two-form-20case-v4","id":"SV-0123456789AB","t":[1786851000,1786851900],"o":["351624"],"a":[["AB","CF","DE","AC","BF"]],"form_id":1}
+{"v":2,"s":"visual-removal-preference-v1","m":"sraw300-two-form-20case-v5","id":"SV-0123456789AB","t":[1786851000,1786851900],"o":["351624"],"a":[["AB","CF","DE","AC","BF"]],"form_id":1}
 ```
 
 - `v`: compact response schema version;

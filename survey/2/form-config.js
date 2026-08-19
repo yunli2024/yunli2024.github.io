@@ -4,7 +4,7 @@
   const config = window.VISUAL_SURVEY_CONFIG;
   if (!config) throw new Error("Survey configuration must load before form configuration.");
   const formId = 2;
-  const assetRoot = "../assets/sraw-v4";
+  const assetRoot = "../assets/sraw-v5";
   const practiceAssetRoot = "../assets/sraw-practice-v2";
 
   function makeTask(taskNumber) {
@@ -26,9 +26,9 @@
   }
 
   config.formId = formId;
-  config.schemaVersion = 8;
+  config.schemaVersion = 9;
   config.responseSchemaVersion = 2;
-  config.assignmentManifestId = "sraw-two-form-20case-v4";
+  config.assignmentManifestId = "sraw300-two-form-20case-v5";
   config.practice.referenceSrc = `${practiceAssetRoot}/input.png`;
   config.practice.candidates.forEach((candidate, index) => {
     candidate.src = `${practiceAssetRoot}/p${String(index + 1).padStart(2, "0")}.png`;
