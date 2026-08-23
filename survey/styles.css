@@ -63,6 +63,31 @@ a {
   box-shadow: var(--shadow);
 }
 
+.collection-closed {
+  margin-bottom: 20px;
+  padding: 22px 28px;
+  border: 3px solid #cf1322;
+  background: #fff1f0;
+  font-size: clamp(24px, 3vw, 36px);
+  text-align: center;
+}
+
+.collection-closed p {
+  margin: 0;
+  color: #cf1322;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.collection-closed-zh {
+  font-size: 1em;
+}
+
+.collection-closed .collection-closed-en {
+  margin-top: 8px;
+  font-size: 0.78em;
+}
+
 .site-header {
   margin-bottom: 28px;
   padding: 24px 28px;
