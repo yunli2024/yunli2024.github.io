@@ -3,182 +3,136 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Single-task anonymous object-removal quality evaluation interface.">
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="color-scheme" content="light">
-  <title>Object Removal Result Evaluation</title>
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-  <link rel="stylesheet" href="../../survey/styles.css">
-  <script src="app.js" defer></script>
+  <meta name="robots" content="noindex,nofollow">
+  <title>RolloutRemover User Study Interface</title>
+  <link rel="stylesheet" href="paper.css">
 </head>
 <body>
-  <header class="site-header page-card" aria-labelledby="page-title">
-    <h1 id="page-title">Object Removal Result Evaluation</h1>
-    <p class="intro">
-      Thank you for participating in this anonymous user study. The red lines coarsely indicate the complete target to remove rather than its exact boundary.
-      Compare the six anonymous results and select <strong>exactly two</strong> candidates.
-    </p>
-  </header>
+  <main class="paper" aria-label="RolloutRemover user study interface figures">
+    <figure class="paper-figure">
+      <section class="stimuli-panel" aria-labelledby="task-heading">
+        <header class="task-header">
+          <h1 id="task-heading">Task 1</h1>
+          <span>1 / 1</span>
+        </header>
 
-  <main>
-    <article class="task-card" id="task-study-item-01">
-      <header class="task-header">
-        <h2 id="task-title">Task 1</h2>
-        <span class="task-sequence">1 / 1</span>
-      </header>
+        <p class="instruction">
+          Remove the marked object, reconstruct the region naturally, and preserve the remaining scene.
+        </p>
 
-      <div class="prompt-box">
-        <p><span class="prompt-label">Instructions:</span>Remove the marked target object, reconstruct the removed region naturally, and preserve the rest of the scene as much as possible.</p>
-      </div>
+        <div class="stimuli-layout">
+          <section class="input-group" aria-labelledby="input-label">
+            <h2 id="input-label">Input</h2>
+            <div class="image-frame input-frame">
+              <img src="../../survey/assets/sraw-v5/f2/t10/input.png"
+                   alt="Input scene with the target object marked for removal">
+            </div>
+          </section>
 
-      <section class="reference-section" aria-labelledby="reference-heading">
-        <div class="media-section-heading">
-          <h3 id="reference-heading">Input image</h3>
-        </div>
-        <div class="reference-card">
-          <div class="reference-media">
-            <img
-              src="../../survey/assets/sraw-v5/f2/t10/input.png"
-              alt="Outdoor scene with red lines indicating the complete target to remove"
-              width="960"
-              height="540"
-            >
-          </div>
-        </div>
-      </section>
-
-      <section class="candidate-section" aria-labelledby="candidate-heading">
-        <div class="media-section-heading">
-          <h3 id="candidate-heading">Candidate results</h3>
-        </div>
-        <div class="candidate-grid">
-          <article class="candidate-card">
-            <div class="candidate-media"><img src="../../survey/assets/sraw-v5/f2/t10/c02.png" alt="A anonymous candidate result" width="960" height="540"></div>
-            <div class="anonymous-label">A</div>
-          </article>
-          <article class="candidate-card">
-            <div class="candidate-media"><img src="../../survey/assets/sraw-v5/f2/t10/c05.png" alt="B anonymous candidate result" width="960" height="540"></div>
-            <div class="anonymous-label">B</div>
-          </article>
-          <article class="candidate-card">
-            <div class="candidate-media"><img src="../../survey/assets/sraw-v5/f2/t10/c04.png" alt="C anonymous candidate result" width="960" height="540"></div>
-            <div class="anonymous-label">C</div>
-          </article>
-          <article class="candidate-card">
-            <div class="candidate-media"><img src="../../survey/assets/sraw-v5/f2/t10/c06.png" alt="D anonymous candidate result" width="960" height="540"></div>
-            <div class="anonymous-label">D</div>
-          </article>
-          <article class="candidate-card">
-            <div class="candidate-media"><img src="../../survey/assets/sraw-v5/f2/t10/c03.png" alt="E anonymous candidate result" width="960" height="540"></div>
-            <div class="anonymous-label">E</div>
-          </article>
-          <article class="candidate-card">
-            <div class="candidate-media"><img src="../../survey/assets/sraw-v5/f2/t10/c01.png" alt="F anonymous candidate result" width="960" height="540"></div>
-            <div class="anonymous-label">F</div>
-          </article>
+          <section class="candidate-group" aria-labelledby="candidate-label">
+            <h2 id="candidate-label">Candidate results</h2>
+            <div class="candidate-grid">
+              <article class="candidate">
+                <div class="image-frame">
+                  <img src="../../survey/assets/sraw-v5/f2/t10/c02.png" alt="Candidate result A">
+                </div>
+                <div class="candidate-label">A</div>
+              </article>
+              <article class="candidate">
+                <div class="image-frame">
+                  <img src="../../survey/assets/sraw-v5/f2/t10/c05.png" alt="Candidate result B">
+                </div>
+                <div class="candidate-label">B</div>
+              </article>
+              <article class="candidate">
+                <div class="image-frame">
+                  <img src="../../survey/assets/sraw-v5/f2/t10/c04.png" alt="Candidate result C">
+                </div>
+                <div class="candidate-label">C</div>
+              </article>
+              <article class="candidate">
+                <div class="image-frame">
+                  <img src="../../survey/assets/sraw-v5/f2/t10/c06.png" alt="Candidate result D">
+                </div>
+                <div class="candidate-label">D</div>
+              </article>
+              <article class="candidate">
+                <div class="image-frame">
+                  <img src="../../survey/assets/sraw-v5/f2/t10/c03.png" alt="Candidate result E">
+                </div>
+                <div class="candidate-label">E</div>
+              </article>
+              <article class="candidate">
+                <div class="image-frame">
+                  <img src="../../survey/assets/sraw-v5/f2/t10/c01.png" alt="Candidate result F">
+                </div>
+                <div class="candidate-label">F</div>
+              </article>
+            </div>
+          </section>
         </div>
       </section>
+      <figcaption>
+        <span class="caption-label">Figure 13:</span> Task presentation and candidate outputs in the user study interface.
+      </figcaption>
+    </figure>
 
-      <div class="question-section-heading">
-        <h3>Rate the following criteria</h3>
-      </div>
+    <figure class="paper-figure">
+      <section class="criteria-panel" aria-labelledby="criteria-heading">
+        <h1 id="criteria-heading">Evaluation criteria</h1>
 
-      <form id="response-form">
-        <div class="question-list">
-          <fieldset class="criterion-question">
-            <legend>
-              <span class="question-copy">
-                <strong><span class="question-number">01</span>Removal Completeness</strong>
-                <small>Which two results most completely remove the target object indicated by the red lines and its associated visual effects (e.g., shadows or reflections, if present), leaving the fewest visible remnants?</small>
-              </span>
-              <span class="selection-count" aria-live="polite">Selected <b>0</b>/2</span>
-            </legend>
-            <div class="candidate-options" aria-label="Answer choices for Removal Completeness">
-              <label class="candidate-option"><input type="checkbox" name="removal_completeness" value="A"><span class="option-key">A</span></label>
-              <label class="candidate-option"><input type="checkbox" name="removal_completeness" value="B"><span class="option-key">B</span></label>
-              <label class="candidate-option"><input type="checkbox" name="removal_completeness" value="C"><span class="option-key">C</span></label>
-              <label class="candidate-option"><input type="checkbox" name="removal_completeness" value="D"><span class="option-key">D</span></label>
-              <label class="candidate-option"><input type="checkbox" name="removal_completeness" value="E"><span class="option-key">E</span></label>
-              <label class="candidate-option"><input type="checkbox" name="removal_completeness" value="F"><span class="option-key">F</span></label>
+        <ol class="criteria-list">
+          <li class="criterion">
+            <div class="criterion-copy">
+              <h2>Removal Completeness</h2>
+              <p>Which two results most completely remove the marked object and its associated effects, with the fewest visible remnants?</p>
             </div>
-          </fieldset>
-
-          <fieldset class="criterion-question">
-            <legend>
-              <span class="question-copy">
-                <strong><span class="question-number">02</span>Background Plausibility</strong>
-                <small>Which two results restore the background in the removed region most consistently with the surrounding scene and make it look most realistic and natural?</small>
-              </span>
-              <span class="selection-count" aria-live="polite">Selected <b>0</b>/2</span>
-            </legend>
-            <div class="candidate-options" aria-label="Answer choices for Background Plausibility">
-              <label class="candidate-option"><input type="checkbox" name="background_plausibility" value="A"><span class="option-key">A</span></label>
-              <label class="candidate-option"><input type="checkbox" name="background_plausibility" value="B"><span class="option-key">B</span></label>
-              <label class="candidate-option"><input type="checkbox" name="background_plausibility" value="C"><span class="option-key">C</span></label>
-              <label class="candidate-option"><input type="checkbox" name="background_plausibility" value="D"><span class="option-key">D</span></label>
-              <label class="candidate-option"><input type="checkbox" name="background_plausibility" value="E"><span class="option-key">E</span></label>
-              <label class="candidate-option"><input type="checkbox" name="background_plausibility" value="F"><span class="option-key">F</span></label>
+            <div class="option-row" aria-label="Static selection controls for Removal Completeness">
+              <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
             </div>
-          </fieldset>
-
-          <fieldset class="criterion-question">
-            <legend>
-              <span class="question-copy">
-                <strong><span class="question-number">03</span>Edge Seamlessness</strong>
-                <small>Which two results blend the boundary of the removed region most naturally with its surroundings, with the fewest visible seams or artifacts?</small>
-              </span>
-              <span class="selection-count" aria-live="polite">Selected <b>0</b>/2</span>
-            </legend>
-            <div class="candidate-options" aria-label="Answer choices for Edge Seamlessness">
-              <label class="candidate-option"><input type="checkbox" name="edge_seamlessness" value="A"><span class="option-key">A</span></label>
-              <label class="candidate-option"><input type="checkbox" name="edge_seamlessness" value="B"><span class="option-key">B</span></label>
-              <label class="candidate-option"><input type="checkbox" name="edge_seamlessness" value="C"><span class="option-key">C</span></label>
-              <label class="candidate-option"><input type="checkbox" name="edge_seamlessness" value="D"><span class="option-key">D</span></label>
-              <label class="candidate-option"><input type="checkbox" name="edge_seamlessness" value="E"><span class="option-key">E</span></label>
-              <label class="candidate-option"><input type="checkbox" name="edge_seamlessness" value="F"><span class="option-key">F</span></label>
+          </li>
+          <li class="criterion">
+            <div class="criterion-copy">
+              <h2>Background Plausibility</h2>
+              <p>Which two results reconstruct the removed region with the most realistic and context-consistent background?</p>
             </div>
-          </fieldset>
-
-          <fieldset class="criterion-question">
-            <legend>
-              <span class="question-copy">
-                <strong><span class="question-number">04</span>Non-Target Preservation</strong>
-                <small>Which two results best preserve non-target objects, scene content, and details, with the fewest unintended removals or unrelated changes?</small>
-              </span>
-              <span class="selection-count" aria-live="polite">Selected <b>0</b>/2</span>
-            </legend>
-            <div class="candidate-options" aria-label="Answer choices for Non-Target Preservation">
-              <label class="candidate-option"><input type="checkbox" name="non_target_preservation" value="A"><span class="option-key">A</span></label>
-              <label class="candidate-option"><input type="checkbox" name="non_target_preservation" value="B"><span class="option-key">B</span></label>
-              <label class="candidate-option"><input type="checkbox" name="non_target_preservation" value="C"><span class="option-key">C</span></label>
-              <label class="candidate-option"><input type="checkbox" name="non_target_preservation" value="D"><span class="option-key">D</span></label>
-              <label class="candidate-option"><input type="checkbox" name="non_target_preservation" value="E"><span class="option-key">E</span></label>
-              <label class="candidate-option"><input type="checkbox" name="non_target_preservation" value="F"><span class="option-key">F</span></label>
+            <div class="option-row" aria-label="Static selection controls for Background Plausibility">
+              <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
             </div>
-          </fieldset>
-
-          <fieldset class="criterion-question">
-            <legend>
-              <span class="question-copy">
-                <strong><span class="question-number">05</span>Overall Performance</strong>
-                <small>Overall, which two results most successfully accomplish the object-removal task and are most suitable as the final outputs?</small>
-              </span>
-              <span class="selection-count" aria-live="polite">Selected <b>0</b>/2</span>
-            </legend>
-            <div class="candidate-options" aria-label="Answer choices for Overall Performance">
-              <label class="candidate-option"><input type="checkbox" name="overall_performance" value="A"><span class="option-key">A</span></label>
-              <label class="candidate-option"><input type="checkbox" name="overall_performance" value="B"><span class="option-key">B</span></label>
-              <label class="candidate-option"><input type="checkbox" name="overall_performance" value="C"><span class="option-key">C</span></label>
-              <label class="candidate-option"><input type="checkbox" name="overall_performance" value="D"><span class="option-key">D</span></label>
-              <label class="candidate-option"><input type="checkbox" name="overall_performance" value="E"><span class="option-key">E</span></label>
-              <label class="candidate-option"><input type="checkbox" name="overall_performance" value="F"><span class="option-key">F</span></label>
+          </li>
+          <li class="criterion">
+            <div class="criterion-copy">
+              <h2>Edge Seamlessness</h2>
+              <p>Which two results blend the removed region most seamlessly with its surroundings, with the fewest boundary artifacts?</p>
             </div>
-          </fieldset>
-        </div>
-      </form>
-    </article>
+            <div class="option-row" aria-label="Static selection controls for Edge Seamlessness">
+              <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
+            </div>
+          </li>
+          <li class="criterion">
+            <div class="criterion-copy">
+              <h2>Non-Target Preservation</h2>
+              <p>Which two results best preserve non-target objects and scene details, with the fewest unintended changes?</p>
+            </div>
+            <div class="option-row" aria-label="Static selection controls for Non-Target Preservation">
+              <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
+            </div>
+          </li>
+          <li class="criterion">
+            <div class="criterion-copy">
+              <h2>Overall Performance</h2>
+              <p>Which two results provide the best overall object-removal outputs?</p>
+            </div>
+            <div class="option-row" aria-label="Static selection controls for Overall Performance">
+              <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
+            </div>
+          </li>
+        </ol>
+      </section>
+      <figcaption>
+        <span class="caption-label">Figure 14:</span> Evaluation criteria and Top-2 selection controls in the user study interface.
+      </figcaption>
+    </figure>
   </main>
-
-  <footer class="site-footer">Anonymous Object Removal User Study</footer>
 </body>
 </html>
