@@ -8,9 +8,8 @@
   <link rel="stylesheet" href="paper.css">
 </head>
 <body>
-  <main class="paper" aria-label="RolloutRemover user study interface figures">
-    <figure class="paper-figure">
-      <section class="stimuli-panel" aria-labelledby="task-heading">
+  <main class="paper" aria-label="RolloutRemover user study interface">
+    <section class="study-block stimuli-panel" aria-labelledby="task-heading">
         <header class="task-header">
           <h1 id="task-heading">Task 1</h1>
           <span>1 / 1</span>
@@ -71,68 +70,90 @@
             </div>
           </section>
         </div>
-      </section>
-      <figcaption>
-        <span class="caption-label">Figure 13:</span> Task presentation and candidate outputs in the user study interface.
-      </figcaption>
-    </figure>
+    </section>
 
-    <figure class="paper-figure">
-      <section class="criteria-panel" aria-labelledby="criteria-heading">
-        <h1 id="criteria-heading">Evaluation criteria</h1>
+    <section class="study-block criteria-panel" aria-labelledby="criteria-heading">
+      <h1 id="criteria-heading">Evaluation criteria</h1>
 
-        <ol class="criteria-list">
-          <li class="criterion">
-            <div class="criterion-copy">
-              <h2>Removal Completeness</h2>
-              <p>Which two results most completely remove the marked object and its associated effects, with the fewest visible remnants?</p>
-            </div>
-            <div class="option-row" aria-label="Static selection controls for Removal Completeness">
-              <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
-            </div>
-          </li>
-          <li class="criterion">
-            <div class="criterion-copy">
-              <h2>Background Plausibility</h2>
-              <p>Which two results reconstruct the removed region with the most realistic and context-consistent background?</p>
-            </div>
-            <div class="option-row" aria-label="Static selection controls for Background Plausibility">
-              <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
-            </div>
-          </li>
-          <li class="criterion">
-            <div class="criterion-copy">
-              <h2>Edge Seamlessness</h2>
-              <p>Which two results blend the removed region most seamlessly with its surroundings, with the fewest boundary artifacts?</p>
-            </div>
-            <div class="option-row" aria-label="Static selection controls for Edge Seamlessness">
-              <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
-            </div>
-          </li>
-          <li class="criterion">
-            <div class="criterion-copy">
-              <h2>Non-Target Preservation</h2>
-              <p>Which two results best preserve non-target objects and scene details, with the fewest unintended changes?</p>
-            </div>
-            <div class="option-row" aria-label="Static selection controls for Non-Target Preservation">
-              <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
-            </div>
-          </li>
-          <li class="criterion">
-            <div class="criterion-copy">
-              <h2>Overall Performance</h2>
-              <p>Which two results provide the best overall object-removal outputs?</p>
-            </div>
-            <div class="option-row" aria-label="Static selection controls for Overall Performance">
-              <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
-            </div>
-          </li>
-        </ol>
-      </section>
-      <figcaption>
-        <span class="caption-label">Figure 14:</span> Evaluation criteria and Top-2 selection controls in the user study interface.
-      </figcaption>
-    </figure>
+      <ol class="criteria-list">
+        <li class="criterion">
+          <div class="criterion-copy">
+            <h2>Removal Completeness</h2>
+            <p>Which two results most completely remove the marked object and its associated effects, with the fewest visible remnants?</p>
+          </div>
+          <div class="option-row" role="group" aria-label="Select two results for Removal Completeness">
+            <button type="button" class="choice" aria-pressed="false">A</button>
+            <button type="button" class="choice" aria-pressed="false">B</button>
+            <button type="button" class="choice" aria-pressed="false">C</button>
+            <button type="button" class="choice" aria-pressed="false">D</button>
+            <button type="button" class="choice" aria-pressed="false">E</button>
+            <button type="button" class="choice" aria-pressed="false">F</button>
+          </div>
+          <span class="selection-status" aria-live="polite">No results selected.</span>
+        </li>
+        <li class="criterion">
+          <div class="criterion-copy">
+            <h2>Background Plausibility</h2>
+            <p>Which two results reconstruct the removed region with the most realistic and context-consistent background?</p>
+          </div>
+          <div class="option-row" role="group" aria-label="Select two results for Background Plausibility">
+            <button type="button" class="choice" aria-pressed="false">A</button>
+            <button type="button" class="choice" aria-pressed="false">B</button>
+            <button type="button" class="choice" aria-pressed="false">C</button>
+            <button type="button" class="choice" aria-pressed="false">D</button>
+            <button type="button" class="choice" aria-pressed="false">E</button>
+            <button type="button" class="choice" aria-pressed="false">F</button>
+          </div>
+          <span class="selection-status" aria-live="polite">No results selected.</span>
+        </li>
+        <li class="criterion">
+          <div class="criterion-copy">
+            <h2>Edge Seamlessness</h2>
+            <p>Which two results blend the removed region most seamlessly with its surroundings, with the fewest boundary artifacts?</p>
+          </div>
+          <div class="option-row" role="group" aria-label="Select two results for Edge Seamlessness">
+            <button type="button" class="choice" aria-pressed="false">A</button>
+            <button type="button" class="choice" aria-pressed="false">B</button>
+            <button type="button" class="choice" aria-pressed="false">C</button>
+            <button type="button" class="choice" aria-pressed="false">D</button>
+            <button type="button" class="choice" aria-pressed="false">E</button>
+            <button type="button" class="choice" aria-pressed="false">F</button>
+          </div>
+          <span class="selection-status" aria-live="polite">No results selected.</span>
+        </li>
+        <li class="criterion">
+          <div class="criterion-copy">
+            <h2>Non-Target Preservation</h2>
+            <p>Which two results best preserve non-target objects and scene details, with the fewest unintended changes?</p>
+          </div>
+          <div class="option-row" role="group" aria-label="Select two results for Non-Target Preservation">
+            <button type="button" class="choice" aria-pressed="false">A</button>
+            <button type="button" class="choice" aria-pressed="false">B</button>
+            <button type="button" class="choice" aria-pressed="false">C</button>
+            <button type="button" class="choice" aria-pressed="false">D</button>
+            <button type="button" class="choice" aria-pressed="false">E</button>
+            <button type="button" class="choice" aria-pressed="false">F</button>
+          </div>
+          <span class="selection-status" aria-live="polite">No results selected.</span>
+        </li>
+        <li class="criterion">
+          <div class="criterion-copy">
+            <h2>Overall Performance</h2>
+            <p>Which two results provide the best overall object-removal outputs?</p>
+          </div>
+          <div class="option-row" role="group" aria-label="Select two results for Overall Performance">
+            <button type="button" class="choice" aria-pressed="false">A</button>
+            <button type="button" class="choice" aria-pressed="false">B</button>
+            <button type="button" class="choice" aria-pressed="false">C</button>
+            <button type="button" class="choice" aria-pressed="false">D</button>
+            <button type="button" class="choice" aria-pressed="false">E</button>
+            <button type="button" class="choice" aria-pressed="false">F</button>
+          </div>
+          <span class="selection-status" aria-live="polite">No results selected.</span>
+        </li>
+      </ol>
+    </section>
   </main>
+  <script src="app.js" defer></script>
 </body>
 </html>

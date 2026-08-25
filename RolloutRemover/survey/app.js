@@ -1,29 +1,39 @@
 (function () {
   "use strict";
 
-  const form = document.getElementById("response-form");
-  const rows = Array.from(form.querySelectorAll(".criterion-question"));
+  const rows = Array.from(document.querySelectorAll(".criterion"));
 
-  function selectedInputs(row) {
-    return Array.from(row.querySelectorAll('input[type="checkbox"]:checked'));
+  function choices(row) {
+    return Array.from(row.querySelectorAll(".choice"));
   }
 
   function renderRow(row) {
-    const selected = selectedInputs(row);
-    const count = row.querySelector(".selection-count b");
-    count.textContent = String(selected.length);
+    const buttons = choices(row);
+    const selected = buttons.filter((button) => button.getAttribute("aria-pressed") === "true");
+    const atLimit = selected.length === 2;
+    const status = row.querySelector(".selection-status");
+
+    buttons.forEach((button) => {
+      const isSelected = button.getAttribute("aria-pressed") === "true";
+      button.disabled = atLimit && !isSelected;
+    });
+
     row.classList.toggle("is-complete", selected.length === 2);
+    status.textContent = selected.length === 0
+      ? "No results selected."
+      : `${selected.length} of 2 results selected: ${selected.map((button) => button.textContent.trim()).join(", ")}.`;
   }
 
   rows.forEach((row) => {
-    row.addEventListener("change", (event) => {
-      const input = event.target.closest('input[type="checkbox"]');
-      if (!input) return;
-      if (input.checked && selectedInputs(row).length > 2) {
-        input.checked = false;
-      }
+    row.addEventListener("click", (event) => {
+      const button = event.target.closest(".choice");
+      if (!button || button.disabled) return;
+
+      const isSelected = button.getAttribute("aria-pressed") === "true";
+      button.setAttribute("aria-pressed", String(!isSelected));
       renderRow(row);
     });
+
     renderRow(row);
   });
 })();
