@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Scribble-guided object removal with RolloutRemover.">
+  <title>RolloutRemover Interactive</title>
+  <link rel="icon" href="assets/rolloutremover-logo.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="brand" aria-label="RolloutRemover">
+    <div class="brand-crop">
+      <img src="assets/rolloutremover-logo.png" alt="RolloutRemover">
+    </div>
+  </header>
+
+  <main class="demo-shell">
+    <div class="stage-grid">
+      <section class="stage-card input-card" aria-labelledby="input-heading">
+        <header class="stage-bar">
+          <h1 id="input-heading">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4Z"></path>
+              <path d="m13.5 6.5 4 4"></path>
+            </svg>
+            Input
+          </h1>
+
+          <div class="tools" aria-label="Scribble tools">
+            <label class="tool-button upload-button" title="Upload image">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M12 16V4"></path>
+                <path d="m7 9 5-5 5 5"></path>
+                <path d="M5 14v5h14v-5"></path>
+              </svg>
+              <span>Upload</span>
+              <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+            </label>
+
+            <button class="tool-button icon-button" id="undoButton" type="button" title="Undo" aria-label="Undo last scribble" disabled>
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M9 7 4 12l5 5"></path>
+                <path d="M5 12h8a6 6 0 0 1 6 6"></path>
+              </svg>
+            </button>
+
+            <button class="tool-button icon-button" id="clearButton" type="button" title="Clear" aria-label="Clear scribbles" disabled>
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M5 7h14"></path>
+                <path d="M9 7V4h6v3"></path>
+                <path d="m7 7 1 13h8l1-13"></path>
+              </svg>
+            </button>
+
+            <label class="brush-control" title="Brush size">
+              <span class="brush-dot" aria-hidden="true"></span>
+              <input id="brushSize" type="range" min="10" max="34" step="2" value="20" aria-label="Brush size">
+            </label>
+          </div>
+        </header>
+
+        <div class="media-surface input-surface" id="inputSurface">
+          <img id="inputImage" src="assets/teaware-input.png" alt="Object-removal input">
+          <canvas id="scribbleCanvas" aria-label="Draw a scribble over the object to remove"></canvas>
+        </div>
+      </section>
+
+      <section class="stage-card output-card" aria-labelledby="output-heading">
+        <header class="stage-bar">
+          <h1 id="output-heading">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M4 17V7h16v10H4Z"></path>
+              <path d="m10 9 5 3-5 3V9Z"></path>
+            </svg>
+            Rollout
+          </h1>
+
+          <button class="tool-button icon-button replay-button" id="replayButton" type="button" title="Replay rollout" aria-label="Replay rollout" hidden>
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M20 11a8 8 0 1 0-2.3 5.7"></path>
+              <path d="M20 5v6h-6"></path>
+            </svg>
+          </button>
+        </header>
+
+        <div class="media-surface output-surface" id="outputSurface" data-state="empty">
+          <div class="output-placeholder" id="outputPlaceholder" aria-hidden="true">
+            <svg viewBox="0 0 96 96">
+              <path class="placeholder-track" d="M20 49h49"></path>
+              <path class="placeholder-arrow" d="m58 34 16 15-16 15"></path>
+              <circle class="placeholder-dot dot-one" cx="24" cy="49" r="5"></circle>
+              <circle class="placeholder-dot dot-two" cx="44" cy="49" r="5"></circle>
+            </svg>
+          </div>
+          <div class="processing-mark" id="processingMark" aria-label="Preparing rollout" hidden>
+            <span></span><span></span><span></span>
+          </div>
+          <video id="outputVideo" muted playsinline preload="metadata" hidden></video>
+          <img id="resultImage" alt="RolloutRemover result" hidden>
+          <div class="cache-message" id="cacheMessage" hidden>No cached rollout</div>
+        </div>
+      </section>
+    </div>
+
+    <button class="run-button" id="runButton" type="button">
+      <span class="run-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="m9 6 9 6-9 6V6Z"></path>
+        </svg>
+      </span>
+      <span class="run-label">Run RolloutRemover</span>
+    </button>
+
+    <section class="examples" aria-labelledby="examples-heading">
+      <h2 id="examples-heading">Examples</h2>
+      <div class="example-list">
+        <button class="example-button" type="button" data-example="street-chair" aria-label="Load chair example">
+          <img src="assets/street-chair-input.png" alt="">
+          <span>Chair</span>
+        </button>
+        <button class="example-button is-active" type="button" data-example="teaware" aria-label="Load tea set example" aria-current="true">
+          <img src="assets/teaware-input.png" alt="">
+          <span>Tea set</span>
+        </button>
+        <button class="example-button" type="button" data-example="mascot" aria-label="Load mascot example">
+          <img src="assets/mascot-input.png" alt="">
+          <span>Mascot</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
