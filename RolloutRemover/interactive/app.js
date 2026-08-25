@@ -26,7 +26,9 @@
   const fileInput = document.getElementById("fileInput");
   const undoButton = document.getElementById("undoButton");
   const clearButton = document.getElementById("clearButton");
-  const brushSize = document.getElementById("brushSize");
+  const brushControl = document.getElementById("brushControl");
+  const brushDecrease = document.getElementById("brushDecrease");
+  const brushIncrease = document.getElementById("brushIncrease");
   const brushDot = document.querySelector(".brush-dot");
   const runButton = document.getElementById("runButton");
   const runLabel = runButton.querySelector(".run-label");
@@ -45,6 +47,23 @@
   let activeStroke = null;
   let drawing = false;
   let outputTimer = null;
+  const brushSizes = [12, 20, 30];
+  let brushIndex = 1;
+
+  function updateBrushControl() {
+    const currentSize = brushSizes[brushIndex];
+    const previewScales = [0.72, 1, 1.42];
+    brushDot.style.setProperty("--brush-scale", previewScales[brushIndex]);
+    brushControl.dataset.size = String(currentSize);
+    brushControl.setAttribute("aria-label", `Brush size ${currentSize} pixels`);
+    brushDecrease.disabled = brushIndex === 0;
+    brushIncrease.disabled = brushIndex === brushSizes.length - 1;
+  }
+
+  function changeBrushSize(direction) {
+    brushIndex = Math.max(0, Math.min(brushSizes.length - 1, brushIndex + direction));
+    updateBrushControl();
+  }
 
   function canvasPoint(event) {
     const bounds = canvas.getBoundingClientRect();
@@ -141,7 +160,7 @@
     canvas.setPointerCapture(event.pointerId);
     drawing = true;
     activeStroke = {
-      width: Number(brushSize.value),
+      width: brushSizes[brushIndex],
       points: [point]
     };
     updateScribbleControls();
@@ -296,10 +315,8 @@
 
   clearButton.addEventListener("click", clearStrokes);
 
-  brushSize.addEventListener("input", () => {
-    const scale = 0.72 + ((Number(brushSize.value) - 10) / 24) * 0.62;
-    brushDot.style.setProperty("--brush-scale", scale.toFixed(2));
-  });
+  brushDecrease.addEventListener("click", () => changeBrushSize(-1));
+  brushIncrease.addEventListener("click", () => changeBrushSize(1));
 
   fileInput.addEventListener("change", () => {
     const file = fileInput.files && fileInput.files[0];
@@ -336,6 +353,6 @@
     if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
   });
 
-  brushSize.dispatchEvent(new Event("input"));
+  updateBrushControl();
   resizeCanvas();
 })();

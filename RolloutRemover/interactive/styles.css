@@ -187,12 +187,56 @@ label {
 .brush-control {
   display: flex;
   min-height: 39px;
-  padding: 0 10px;
+  padding: 4px 6px;
   align-items: center;
-  gap: 7px;
+  gap: 3px;
   border: 1px solid var(--line-strong);
   border-radius: 10px;
   background: #fff;
+}
+
+.brush-label {
+  margin: 0 5px 0 2px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.brush-step {
+  appearance: none;
+  display: grid;
+  width: 27px;
+  height: 29px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  place-items: center;
+  color: var(--ink-deep);
+  background: transparent;
+  cursor: pointer;
+  font: 800 18px/1 Arial, sans-serif;
+  transition: color 120ms ease, background-color 120ms ease, opacity 120ms ease;
+}
+
+.brush-step:hover:not(:disabled),
+.brush-step:focus-visible {
+  color: var(--blue);
+  background: var(--blue-soft);
+  outline: none;
+}
+
+.brush-step:disabled {
+  cursor: default;
+  opacity: 0.25;
+}
+
+.brush-preview {
+  display: grid;
+  width: 28px;
+  height: 29px;
+  flex: 0 0 auto;
+  place-items: center;
 }
 
 .brush-dot {
@@ -204,12 +248,6 @@ label {
   box-shadow: 0 0 0 3px rgba(255, 63, 85, 0.12);
   transform: scale(var(--brush-scale, 1));
   transition: transform 120ms ease;
-}
-
-.brush-control input {
-  width: 62px;
-  accent-color: var(--scribble);
-  cursor: pointer;
 }
 
 .media-surface {
@@ -569,7 +607,7 @@ label {
     justify-content: flex-end;
   }
 
-  .brush-control {
+  .brush-label {
     display: none;
   }
 
@@ -612,6 +650,19 @@ label {
     height: 1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
+  }
+}
+
+@media (max-width: 360px) {
+  .input-card .stage-bar {
+    min-height: 106px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tools {
+    width: 100%;
+    justify-content: flex-start;
   }
 }
 

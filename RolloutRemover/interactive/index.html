@@ -54,10 +54,14 @@
               </svg>
             </button>
 
-            <label class="brush-control" title="Brush size">
-              <span class="brush-dot" aria-hidden="true"></span>
-              <input id="brushSize" type="range" min="10" max="34" step="2" value="20" aria-label="Brush size">
-            </label>
+            <div class="brush-control" id="brushControl" role="group" aria-label="Brush size 20 pixels">
+              <span class="brush-label">Brush</span>
+              <button class="brush-step" id="brushDecrease" type="button" title="Thinner brush" aria-label="Use a thinner brush">−</button>
+              <span class="brush-preview" aria-hidden="true">
+                <span class="brush-dot"></span>
+              </span>
+              <button class="brush-step" id="brushIncrease" type="button" title="Thicker brush" aria-label="Use a thicker brush">+</button>
+            </div>
           </div>
         </header>
 
