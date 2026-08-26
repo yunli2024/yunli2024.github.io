@@ -2,20 +2,20 @@
   "use strict";
 
   const examples = {
-    "street-chair": {
-      input: "assets/street-chair-input.png",
-      rollout: "assets/street-chair-rollout.mp4",
-      result: "assets/street-chair-result.png"
+    bonsai: {
+      input: "assets/bonsai-input.png",
+      rollout: "assets/bonsai-rollout.mp4",
+      result: "assets/bonsai-result.png"
     },
-    teaware: {
-      input: "assets/teaware-input.png",
-      rollout: "assets/teaware-rollout.mp4",
-      result: "assets/teaware-result.png"
+    plate: {
+      input: "assets/plate-input.png",
+      rollout: "assets/plate-rollout.mp4",
+      result: "assets/plate-result.png"
     },
-    mascot: {
-      input: "assets/mascot-input.png",
-      rollout: "assets/mascot-rollout.mp4",
-      result: "assets/mascot-result.png"
+    "traffic-cone": {
+      input: "assets/traffic-cone-input.png",
+      rollout: "assets/traffic-cone-rollout.mp4",
+      result: "assets/traffic-cone-result.png"
     }
   };
 
@@ -45,7 +45,7 @@
   const replayButton = document.getElementById("replayButton");
   const exampleButtons = Array.from(document.querySelectorAll(".example-button"));
 
-  let currentExample = "teaware";
+  let currentExample = "bonsai";
   let uploadedImageUrl = null;
   let strokes = [];
   let activeStroke = null;

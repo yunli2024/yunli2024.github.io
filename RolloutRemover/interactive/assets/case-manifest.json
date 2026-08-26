@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "selection_type": "success_conditioned_illustrative",
+  "purpose": "RolloutRemover interaction demo only; not representative or quantitative evidence.",
+  "candidate_pool": "demo-video-backhalf-paper-cases-user-selected-20260826-v2 (35 cases)",
+  "selection_rule": "Prefer large, legible targets and distinct scribble motions while preserving all comparison_main and gallery_main cases for earlier video sections.",
+  "selected": [
+    {
+      "sample_key": "bench600:idx280:release000281",
+      "label": "Bonsai",
+      "source_role": "gallery_supplement",
+      "reason": "Large organic silhouette, clean endpoint, and an easy-to-read scribble gesture.",
+      "assets": {
+        "input": {
+          "path": "bonsai-input.png",
+          "sha256": "d6d6d5ffc58b2e3af43d38d3e34219569cabed6b0b55758e4da3e64ba1e841d0"
+        },
+        "result": {
+          "path": "bonsai-result.png",
+          "sha256": "4b57e9d00c8029894364892bfe69a78c9e739936c2e4a7d6cb5a32eff4aa72d2"
+        },
+        "rollout": {
+          "path": "bonsai-rollout.mp4",
+          "sha256": "4e94b916516a82bb60f7788c8a8c07fa251c68dbe31d9aaeb2f765ab3a77cb3a"
+        }
+      }
+    },
+    {
+      "sample_key": "bench600:idx569:release000570",
+      "label": "Plate",
+      "source_role": "comparison_supplement",
+      "reason": "Large circular tabletop target with a clean endpoint and square input-to-rollout geometry.",
+      "assets": {
+        "input": {
+          "path": "plate-input.png",
+          "sha256": "77688de664dbc37873720a3763a9c70e649179288dc282cd7d2a8677ebfaa251"
+        },
+        "result": {
+          "path": "plate-result.png",
+          "sha256": "8697a9200363a884c0ffeffb562942f8423e2607fa9961712560f193b739719f"
+        },
+        "rollout": {
+          "path": "plate-rollout.mp4",
+          "sha256": "d220eb139361f7851836932a6fe75c7885d056886e4682e78b2c26be3f7f2c3b"
+        }
+      }
+    },
+    {
+      "sample_key": "bench600:idx128:release000129",
+      "label": "Traffic cone",
+      "source_role": "gallery_supplement_reserve",
+      "reason": "Simple upright silhouette on a structured road surface; square geometry and easy recording motion without consuming a primary gallery case.",
+      "assets": {
+        "input": {
+          "path": "traffic-cone-input.png",
+          "sha256": "01b1902da06919933221e8dab15295eabf25f5871b3381cb23695173169e159f"
+        },
+        "result": {
+          "path": "traffic-cone-result.png",
+          "sha256": "925ddabab89c23529307026ea5305d1a3b296ead121714aaef33cbe2313cc184"
+        },
+        "rollout": {
+          "path": "traffic-cone-rollout.mp4",
+          "sha256": "87265aa2acce4bcfb2583f6ee6aee197442ac62925362509eaf2247504dbe78d"
+        }
+      }
+    }
+  ]
+}
