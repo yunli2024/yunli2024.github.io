@@ -53,7 +53,20 @@
   const resultImage = document.getElementById("resultImage");
   const cacheMessage = document.getElementById("cacheMessage");
   const replayButton = document.getElementById("replayButton");
-  const exampleButtons = Array.from(document.querySelectorAll(".example-button"));
+  const exampleRail = document.getElementById("exampleRail");
+  const exampleList = document.getElementById("exampleList");
+  const originalExampleButtons = Array.from(exampleList.querySelectorAll(".example-button"));
+
+  originalExampleButtons.forEach((button) => {
+    const clone = button.cloneNode(true);
+    clone.dataset.clone = "true";
+    clone.setAttribute("aria-hidden", "true");
+    clone.removeAttribute("aria-current");
+    clone.tabIndex = -1;
+    exampleList.appendChild(clone);
+  });
+
+  const exampleButtons = Array.from(exampleList.querySelectorAll(".example-button"));
 
   let currentExample = "red-bucket";
   let uploadedImageUrl = null;
@@ -86,6 +99,20 @@
   function changeBrushSize(direction) {
     brushIndex = Math.max(0, Math.min(brushSizes.length - 1, brushIndex + direction));
     updateBrushControl();
+  }
+
+  function updateExampleLoopMetrics() {
+    const firstOriginal = exampleList.querySelector(".example-button:not([data-clone])");
+    const firstClone = exampleList.querySelector('.example-button[data-clone="true"]');
+    if (!firstOriginal || !firstClone) return;
+
+    const loopDistance = firstClone.offsetLeft - firstOriginal.offsetLeft;
+    if (loopDistance <= 0) return;
+
+    const pixelsPerSecond = 22;
+    const duration = Math.max(24, loopDistance / pixelsPerSecond);
+    exampleList.style.setProperty("--example-loop-distance", `${-loopDistance}px`);
+    exampleList.style.setProperty("--example-loop-duration", `${duration.toFixed(2)}s`);
   }
 
   function canvasPoint(event) {
@@ -390,7 +417,7 @@
     exampleButtons.forEach((button) => {
       const isActive = button.dataset.example === key;
       button.classList.toggle("is-active", isActive);
-      if (isActive) button.setAttribute("aria-current", "true");
+      if (isActive && button.dataset.clone !== "true") button.setAttribute("aria-current", "true");
       else button.removeAttribute("aria-current");
     });
   }
@@ -549,10 +576,14 @@
 
   const resizeObserver = new ResizeObserver(resizeCanvas);
   resizeObserver.observe(inputSurface);
+  const exampleResizeObserver = new ResizeObserver(updateExampleLoopMetrics);
+  exampleResizeObserver.observe(exampleRail);
+  window.addEventListener("load", updateExampleLoopMetrics);
   window.addEventListener("beforeunload", () => {
     if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
   });
 
   updateBrushControl();
   resizeCanvas();
+  updateExampleLoopMetrics();
 })();
