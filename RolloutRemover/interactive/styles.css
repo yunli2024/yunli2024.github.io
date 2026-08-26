@@ -51,15 +51,15 @@ label {
 
 .brand {
   display: grid;
-  min-height: 184px;
-  padding: 16px 24px 8px;
+  min-height: 164px;
+  padding: 12px 24px 6px;
   place-items: center;
   pointer-events: none;
 }
 
 .brand-crop {
   position: relative;
-  width: clamp(260px, 31vw, 455px);
+  width: clamp(245px, 28vw, 410px);
   aspect-ratio: 2.2 / 1;
   overflow: hidden;
   filter: drop-shadow(0 8px 15px rgba(1, 49, 112, 0.12));
@@ -453,7 +453,7 @@ label {
 }
 
 .run-button:disabled {
-  cursor: wait;
+  cursor: default;
   filter: saturate(0.75);
 }
 
@@ -564,7 +564,7 @@ label {
 
 @media (max-width: 1040px) {
   .brand {
-    min-height: 158px;
+    min-height: 148px;
   }
 
   .demo-shell {
@@ -609,12 +609,12 @@ label {
   }
 
   .brand {
-    min-height: 138px;
-    padding: 16px 18px 4px;
+    min-height: 126px;
+    padding: 12px 18px 2px;
   }
 
   .brand-crop {
-    width: min(330px, 82vw);
+    width: min(300px, 76vw);
   }
 
   .demo-shell {

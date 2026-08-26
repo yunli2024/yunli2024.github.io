@@ -52,9 +52,8 @@
   let drawing = false;
   let inferenceFrameRequest = null;
   let maskFrameRequest = null;
-  let maskFallbackTimer = null;
   const brushSizes = [12, 20, 30];
-  const customMaskFrameEnd = 0.25;
+  const customMaskFrameEnd = 0.4;
   let brushIndex = 1;
 
   function updateBrushControl() {
@@ -137,12 +136,8 @@
   }
 
   function stopMaskFrameMonitor() {
-    if (maskFrameRequest !== null && typeof outputVideo.cancelVideoFrameCallback === "function") {
-      outputVideo.cancelVideoFrameCallback(maskFrameRequest);
-    }
+    if (maskFrameRequest !== null) window.cancelAnimationFrame(maskFrameRequest);
     maskFrameRequest = null;
-    window.clearTimeout(maskFallbackTimer);
-    maskFallbackTimer = null;
   }
 
   function hideUserMaskPreview() {
@@ -155,30 +150,16 @@
     userMaskPreview.hidden = false;
     redrawUserMaskPreview();
 
-    if (typeof outputVideo.requestVideoFrameCallback === "function") {
-      const checkFrame = (now, metadata) => {
-        maskFrameRequest = null;
-        if (userMaskPreview.hidden) return;
-        if (metadata.mediaTime >= customMaskFrameEnd) {
-          hideUserMaskPreview();
-          return;
-        }
-        maskFrameRequest = outputVideo.requestVideoFrameCallback(checkFrame);
-      };
-      maskFrameRequest = outputVideo.requestVideoFrameCallback(checkFrame);
-      return;
-    }
-
     const checkPlaybackTime = () => {
-      maskFallbackTimer = null;
+      maskFrameRequest = null;
       if (userMaskPreview.hidden) return;
       if (outputVideo.currentTime >= customMaskFrameEnd) {
         hideUserMaskPreview();
         return;
       }
-      maskFallbackTimer = window.setTimeout(checkPlaybackTime, 50);
+      maskFrameRequest = window.requestAnimationFrame(checkPlaybackTime);
     };
-    maskFallbackTimer = window.setTimeout(checkPlaybackTime, 50);
+    maskFrameRequest = window.requestAnimationFrame(checkPlaybackTime);
   }
 
   function updateScribbleControls() {
@@ -195,12 +176,17 @@
     updateScribbleControls();
   }
 
+  function invalidateOutput() {
+    if (outputSurface.dataset.state !== "empty") resetOutput();
+  }
+
   function beginStroke(event) {
     if (event.button !== undefined && event.button !== 0) return;
     const point = canvasPoint(event);
     if (!isInsideImage(point)) return;
 
     event.preventDefault();
+    invalidateOutput();
     canvas.setPointerCapture(event.pointerId);
     drawing = true;
     activeStroke = {
@@ -379,7 +365,6 @@
 
     resetOutput();
     runButton.disabled = true;
-    runLabel.textContent = "Inferring...";
     outputPlaceholder.hidden = true;
     processingMark.hidden = false;
     outputSurface.dataset.state = "processing";
@@ -392,12 +377,16 @@
   canvas.addEventListener("pointercancel", endStroke);
 
   undoButton.addEventListener("click", () => {
+    invalidateOutput();
     strokes.pop();
     redrawStrokes();
     updateScribbleControls();
   });
 
-  clearButton.addEventListener("click", clearStrokes);
+  clearButton.addEventListener("click", () => {
+    invalidateOutput();
+    clearStrokes();
+  });
 
   brushDecrease.addEventListener("click", () => changeBrushSize(-1));
   brushIncrease.addEventListener("click", () => changeBrushSize(1));
