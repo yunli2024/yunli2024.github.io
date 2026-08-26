@@ -73,27 +73,8 @@
     };
   }
 
-  function imageBounds() {
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    const naturalWidth = inputImage.naturalWidth || width;
-    const naturalHeight = inputImage.naturalHeight || height;
-    const scale = Math.min(width / naturalWidth, height / naturalHeight);
-    const renderedWidth = naturalWidth * scale;
-    const renderedHeight = naturalHeight * scale;
-    return {
-      left: (width - renderedWidth) / 2,
-      top: (height - renderedHeight) / 2,
-      right: (width + renderedWidth) / 2,
-      bottom: (height + renderedHeight) / 2
-    };
-  }
-
   function isInsideImage(point) {
-    const bounds = imageBounds();
-    const x = point.x * canvas.clientWidth;
-    const y = point.y * canvas.clientHeight;
-    return x >= bounds.left && x <= bounds.right && y >= bounds.top && y <= bounds.bottom;
+    return point.x >= 0 && point.x <= 1 && point.y >= 0 && point.y <= 1;
   }
 
   function resizeCanvas() {

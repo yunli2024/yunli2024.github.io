@@ -273,6 +273,8 @@ label {
 }
 
 .input-surface img {
+  object-fit: cover;
+  object-position: center;
   user-select: none;
   pointer-events: none;
 }
@@ -423,6 +425,13 @@ label {
 .run-button:disabled {
   cursor: wait;
   filter: saturate(0.75);
+}
+
+.run-label {
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .run-icon {
