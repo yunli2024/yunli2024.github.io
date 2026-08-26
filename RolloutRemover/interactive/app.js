@@ -51,9 +51,13 @@
   let activeStroke = null;
   let drawing = false;
   let inferenceFrameRequest = null;
-  let maskFrameRequest = null;
+  let maskPreviewTimer = null;
+  let maskPreviewResolve = null;
+  let playbackGeneration = 0;
   const brushSizes = [12, 20, 30];
-  const customMaskFrameEnd = 0.4;
+  const rolloutSourceFrameRate = 4;
+  const rolloutPlaybackRate = 0.75;
+  const maskPreviewDurationMs = 1000 / (rolloutSourceFrameRate * rolloutPlaybackRate);
   let brushIndex = 1;
 
   function updateBrushControl() {
@@ -135,31 +139,34 @@
     strokes.forEach((stroke) => drawStrokeOn(userMaskContext, userMaskPreview, stroke, "#fff"));
   }
 
-  function stopMaskFrameMonitor() {
-    if (maskFrameRequest !== null) window.cancelAnimationFrame(maskFrameRequest);
-    maskFrameRequest = null;
+  function stopMaskPreviewTimer() {
+    if (maskPreviewTimer !== null) window.clearTimeout(maskPreviewTimer);
+    maskPreviewTimer = null;
+    if (maskPreviewResolve) maskPreviewResolve(false);
+    maskPreviewResolve = null;
   }
 
   function hideUserMaskPreview() {
-    stopMaskFrameMonitor();
+    stopMaskPreviewTimer();
     userMaskPreview.hidden = true;
   }
 
   function showUserMaskPreview() {
-    stopMaskFrameMonitor();
+    stopMaskPreviewTimer();
     userMaskPreview.hidden = false;
     redrawUserMaskPreview();
+  }
 
-    const checkPlaybackTime = () => {
-      maskFrameRequest = null;
-      if (userMaskPreview.hidden) return;
-      if (outputVideo.currentTime >= customMaskFrameEnd) {
-        hideUserMaskPreview();
-        return;
-      }
-      maskFrameRequest = window.requestAnimationFrame(checkPlaybackTime);
-    };
-    maskFrameRequest = window.requestAnimationFrame(checkPlaybackTime);
+  function waitForMaskPreview(generation) {
+    stopMaskPreviewTimer();
+    return new Promise((resolve) => {
+      maskPreviewResolve = resolve;
+      maskPreviewTimer = window.setTimeout(() => {
+        maskPreviewTimer = null;
+        maskPreviewResolve = null;
+        resolve(generation === playbackGeneration);
+      }, maskPreviewDurationMs);
+    });
   }
 
   function updateScribbleControls() {
@@ -228,6 +235,53 @@
     delete inferenceProgress.dataset.durationMs;
   }
 
+  function waitForVideoReady(generation) {
+    if (generation !== playbackGeneration) return Promise.resolve(false);
+    if (outputVideo.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) return Promise.resolve(true);
+
+    return new Promise((resolve) => {
+      let settled = false;
+      const timeout = window.setTimeout(() => finish(false), 5000);
+
+      const cleanup = () => {
+        window.clearTimeout(timeout);
+        outputVideo.removeEventListener("canplay", onReady);
+        outputVideo.removeEventListener("error", onUnavailable);
+        outputVideo.removeEventListener("emptied", onUnavailable);
+      };
+
+      const finish = (ready) => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        resolve(ready && generation === playbackGeneration);
+      };
+
+      const onReady = () => finish(true);
+      const onUnavailable = () => finish(false);
+      outputVideo.addEventListener("canplay", onReady);
+      outputVideo.addEventListener("error", onUnavailable);
+      outputVideo.addEventListener("emptied", onUnavailable);
+    });
+  }
+
+  async function startVideoPlayback(generation) {
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      if (generation !== playbackGeneration) return false;
+      try {
+        await outputVideo.play();
+        return true;
+      } catch (error) {
+        if (generation !== playbackGeneration) return false;
+        if (attempt === 0) {
+          await new Promise((resolve) => window.setTimeout(resolve, 120));
+          continue;
+        }
+      }
+    }
+    return false;
+  }
+
   function finishInference() {
     inferenceFrameRequest = null;
     runButton.disabled = false;
@@ -240,10 +294,7 @@
       return;
     }
 
-    const example = examples[currentExample];
-    outputVideo.src = example.rollout;
-    outputVideo.load();
-    playRollout();
+    void playRollout();
   }
 
   function startInferenceProgress() {
@@ -269,6 +320,7 @@
   }
 
   function resetOutput() {
+    playbackGeneration += 1;
     resetInferenceProgress();
     hideUserMaskPreview();
     outputVideo.pause();
@@ -334,9 +386,23 @@
     replayButton.hidden = false;
   }
 
-  function playRollout() {
+  async function playRollout() {
     const example = examples[currentExample];
     if (!example) return;
+
+    const generation = playbackGeneration + 1;
+    playbackGeneration = generation;
+    const isReady = await waitForVideoReady(generation);
+    if (generation !== playbackGeneration) return;
+    if (!isReady) {
+      revealResult();
+      return;
+    }
+
+    outputVideo.pause();
+    outputVideo.currentTime = 0;
+    outputVideo.defaultPlaybackRate = rolloutPlaybackRate;
+    outputVideo.playbackRate = rolloutPlaybackRate;
 
     processingMark.hidden = true;
     outputPlaceholder.hidden = true;
@@ -347,14 +413,13 @@
     outputSurface.classList.add("is-revealing");
     replayButton.hidden = true;
 
-    outputVideo.currentTime = 0;
     showUserMaskPreview();
-    const playPromise = outputVideo.play();
-    if (playPromise) {
-      playPromise.catch((error) => {
-        if (error.name !== "AbortError") revealResult();
-      });
-    }
+    const shouldPlay = await waitForMaskPreview(generation);
+    if (!shouldPlay || generation !== playbackGeneration) return;
+    hideUserMaskPreview();
+
+    const didStart = await startVideoPlayback(generation);
+    if (!didStart && generation === playbackGeneration) revealResult();
   }
 
   function runDemo() {
@@ -364,6 +429,13 @@
     }
 
     resetOutput();
+    if (currentExample) {
+      const example = examples[currentExample];
+      outputVideo.src = example.rollout;
+      outputVideo.defaultPlaybackRate = rolloutPlaybackRate;
+      outputVideo.playbackRate = rolloutPlaybackRate;
+      outputVideo.load();
+    }
     runButton.disabled = true;
     outputPlaceholder.hidden = true;
     processingMark.hidden = false;
@@ -411,7 +483,9 @@
 
   inputImage.addEventListener("load", resizeCanvas);
   runButton.addEventListener("click", runDemo);
-  replayButton.addEventListener("click", playRollout);
+  replayButton.addEventListener("click", () => {
+    void playRollout();
+  });
 
   outputVideo.addEventListener("ended", revealResult);
   outputVideo.addEventListener("error", revealResult);
