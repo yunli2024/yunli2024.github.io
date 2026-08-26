@@ -7,10 +7,10 @@
       rollout: "assets/red-bucket-rollout.mp4",
       result: "assets/red-bucket-result.png"
     },
-    "green-object": {
-      input: "assets/green-object-input.png",
-      rollout: "assets/green-object-rollout.mp4",
-      result: "assets/green-object-result.png"
+    "wall-planter": {
+      input: "assets/wall-planter-input.png",
+      rollout: "assets/wall-planter-rollout.mp4",
+      result: "assets/wall-planter-result.png"
     },
     "traffic-cone": {
       input: "assets/traffic-cone-input.png",

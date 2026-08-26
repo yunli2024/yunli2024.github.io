@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "selection_manifest_id": "rolloutremover-interaction-demo-cases-20260826-v3",
+  "selection_type": "success_conditioned_illustrative",
+  "paper_admission": false,
+  "evidence_release_id": null,
+  "purpose": "Website interaction demo and video recording only; not representative or quantitative evidence.",
+  "candidate_pool": {
+    "source_manifest": "demo-video-backhalf-paper-cases-user-selected-20260826-v2",
+    "total_cases": 35,
+    "eligible_cases": 11,
+    "eligibility_rule": "Input and rollout must have square geometry so the visible scribble and cached rollout share one coordinate system."
+  },
+  "model_identity": {
+    "method": "RolloutRemover-1.3B no-RoPE",
+    "checkpoint": 1800,
+    "num_inference_steps": 50,
+    "guidance_scale": 5.0,
+    "seed_policy": "Bench600 fixed-reset-per-sample seed 42"
+  },
+  "review": {
+    "path": "case-review-v3.csv",
+    "sha256": "80e6619407e0b0b38c0d9c344b78cde728e8d07e8937f266b6087f00a308a2ee",
+    "reviewers": [
+      "user",
+      "codex"
+    ],
+    "quality_gate": "Full-size endpoint review for residue, seam, texture discontinuity, local color block, blur, and global tone or sharpness shift; metrics were used only for candidate recall."
+  },
+  "recording_order": [
+    "bench600:idx041:release000042",
+    "bench600:idx320:release000321",
+    "bench600:idx128:release000129"
+  ],
+  "backup_only": [
+    "bench600:idx280:release000281",
+    "bench600:idx569:release000570"
+  ],
+  "rejected": [
+    "bench600:idx002:release000003",
+    "bench600:idx005:release000006",
+    "legacy_sraw:idx017:key00000049",
+    "bench600:idx205:release000206",
+    "bench600:idx213:release000214"
+  ],
+  "retired_from_ui": [
+    "bench600:idx531:release000532"
+  ],
+  "pending": [],
+  "package_directory": "RolloutRemover/interactive/assets",
+  "overwrite_policy": "v3 adds idx320 under new wall-planter filenames and updates only the runtime case mapping and example rail. The superseded idx531 files and all v2 records remain intact.",
+  "panel_mapping": {
+    "input": "source input",
+    "result": "RolloutRemover endpoint",
+    "rollout": "14-frame full rollout MP4"
+  },
+  "selected": [
+    {
+      "sample_key": "bench600:idx041:release000042",
+      "label": "Red bucket",
+      "usage": "recording_primary",
+      "source_role": "gallery_main",
+      "assets": {
+        "input": {
+          "path": "red-bucket-input.png",
+          "sha256": "d49219f7d590402ceb396996a985c680f7de8a6bba46ac77fda2567f56cd2b16"
+        },
+        "result": {
+          "path": "red-bucket-result.png",
+          "sha256": "e8ef4924c3c2165500108c3e626a102aadbc2fb0ad173b291252663de66ea938"
+        },
+        "rollout": {
+          "path": "red-bucket-rollout.mp4",
+          "sha256": "d473ddad646dcf681c8682511a0206eace26a6e8272ecc006c1ebc5333f99b27"
+        }
+      }
+    },
+    {
+      "sample_key": "bench600:idx320:release000321",
+      "label": "Wall planter",
+      "usage": "recording_primary",
+      "source_role": "gallery_supplement",
+      "assets": {
+        "input": {
+          "path": "wall-planter-input.png",
+          "sha256": "f5901334383b8eb46f9a997a9712029c9bc2d0a87a726030f8573cff4af2010e"
+        },
+        "result": {
+          "path": "wall-planter-result.png",
+          "sha256": "e37d8bc49603195553f11218a9aea2115cf3ef3ac3d66696866530e673fc3dc8"
+        },
+        "rollout": {
+          "path": "wall-planter-rollout.mp4",
+          "sha256": "9f1468c65c99a839d2ee8fe51c546ec2a343502fb85795021230f7142758217a"
+        }
+      }
+    },
+    {
+      "sample_key": "bench600:idx128:release000129",
+      "label": "Traffic cone",
+      "usage": "recording_primary",
+      "source_role": "gallery_supplement_reserve",
+      "assets": {
+        "input": {
+          "path": "traffic-cone-input.png",
+          "sha256": "01b1902da06919933221e8dab15295eabf25f5871b3381cb23695173169e159f"
+        },
+        "result": {
+          "path": "traffic-cone-result.png",
+          "sha256": "925ddabab89c23529307026ea5305d1a3b296ead121714aaef33cbe2313cc184"
+        },
+        "rollout": {
+          "path": "traffic-cone-rollout.mp4",
+          "sha256": "87265aa2acce4bcfb2583f6ee6aee197442ac62925362509eaf2247504dbe78d"
+        }
+      }
+    },
+    {
+      "sample_key": "bench600:idx280:release000281",
+      "label": "Bonsai",
+      "usage": "backup_only",
+      "source_role": "gallery_supplement",
+      "assets": {
+        "input": {
+          "path": "bonsai-input.png",
+          "sha256": "d6d6d5ffc58b2e3af43d38d3e34219569cabed6b0b55758e4da3e64ba1e841d0"
+        },
+        "result": {
+          "path": "bonsai-result.png",
+          "sha256": "4b57e9d00c8029894364892bfe69a78c9e739936c2e4a7d6cb5a32eff4aa72d2"
+        },
+        "rollout": {
+          "path": "bonsai-rollout.mp4",
+          "sha256": "4e94b916516a82bb60f7788c8a8c07fa251c68dbe31d9aaeb2f765ab3a77cb3a"
+        }
+      }
+    },
+    {
+      "sample_key": "bench600:idx569:release000570",
+      "label": "Plate",
+      "usage": "backup_only",
+      "source_role": "comparison_supplement",
+      "assets": {
+        "input": {
+          "path": "plate-input.png",
+          "sha256": "77688de664dbc37873720a3763a9c70e649179288dc282cd7d2a8677ebfaa251"
+        },
+        "result": {
+          "path": "plate-result.png",
+          "sha256": "8697a9200363a884c0ffeffb562942f8423e2607fa9961712560f193b739719f"
+        },
+        "rollout": {
+          "path": "plate-rollout.mp4",
+          "sha256": "d220eb139361f7851836932a6fe75c7885d056886e4682e78b2c26be3f7f2c3b"
+        }
+      }
+    }
+  ]
+}

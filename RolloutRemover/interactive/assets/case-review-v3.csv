@@ -1,0 +1,12 @@
+sample_key,decision,category,reason,reviewer
+bench600:idx041:release000042,selected,recording_primary,"Square geometry; structured color/pavement boundary is restored without visible residue, seam, texture break, or local color block at full-size review.",codex
+bench600:idx531:release000532,retired_from_ui,superseded,"Replaced by idx320 at the owner's explicit request; the prior accepted case and its deployed assets are retained for provenance and possible reuse.",user
+bench600:idx128:release000129,selected,recording_primary,"Square geometry; owner explicitly approved the traffic-cone result for recording.",user
+bench600:idx280:release000281,selected,backup_only,"Owner reports that the bonsai case is already assigned to a teammate video; retain on the site but do not use for this recording.",user
+bench600:idx569:release000570,selected,backup_only,"Owner observed a visible artifact in the plate result; retain on the site but do not use for this recording.",user
+bench600:idx002:release000003,rejected,quality_gate,"Full-size endpoint has visible global softness and local pavement smoothing.",codex
+bench600:idx005:release000006,rejected,quality_gate,"Endpoint contains an unnatural dark/blurred road patch near the parked vehicle.",codex
+legacy_sraw:idx017:key00000049,rejected,quality_gate,"High-frequency floor restoration contains a conspicuous light patch and local texture mismatch.",codex
+bench600:idx205:release000206,rejected,quality_gate,"Target removal is clean at thumbnail scale but the full-size endpoint is visibly softer than the ground truth.",codex
+bench600:idx213:release000214,rejected,quality_gate,"Removal is strong but the full-size endpoint shows broader pavement softness and is reserved for the primary gallery pool.",codex
+bench600:idx320:release000321,selected,recording_primary,"Owner explicitly requested idx320 to replace the fruit case on the interaction page. The earlier full-frame sharpness/tone caveat remains documented; this selection is illustrative demo material only.",user
