@@ -2,6 +2,21 @@
   "use strict";
 
   const examples = {
+    "red-bucket": {
+      input: "assets/red-bucket-input.png",
+      rollout: "assets/red-bucket-rollout.mp4",
+      result: "assets/red-bucket-result.png"
+    },
+    "green-object": {
+      input: "assets/green-object-input.png",
+      rollout: "assets/green-object-rollout.mp4",
+      result: "assets/green-object-result.png"
+    },
+    "traffic-cone": {
+      input: "assets/traffic-cone-input.png",
+      rollout: "assets/traffic-cone-rollout.mp4",
+      result: "assets/traffic-cone-result.png"
+    },
     bonsai: {
       input: "assets/bonsai-input.png",
       rollout: "assets/bonsai-rollout.mp4",
@@ -11,11 +26,6 @@
       input: "assets/plate-input.png",
       rollout: "assets/plate-rollout.mp4",
       result: "assets/plate-result.png"
-    },
-    "traffic-cone": {
-      input: "assets/traffic-cone-input.png",
-      rollout: "assets/traffic-cone-rollout.mp4",
-      result: "assets/traffic-cone-result.png"
     }
   };
 
@@ -45,7 +55,7 @@
   const replayButton = document.getElementById("replayButton");
   const exampleButtons = Array.from(document.querySelectorAll(".example-button"));
 
-  let currentExample = "bonsai";
+  let currentExample = "red-bucket";
   let uploadedImageUrl = null;
   let strokes = [];
   let activeStroke = null;
