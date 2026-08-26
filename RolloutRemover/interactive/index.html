@@ -98,8 +98,13 @@
               <circle class="placeholder-dot dot-two" cx="44" cy="49" r="5"></circle>
             </svg>
           </div>
-          <div class="processing-mark" id="processingMark" aria-label="Preparing rollout" hidden>
-            <span></span><span></span><span></span>
+          <div class="processing-mark" id="processingMark" aria-label="Running inference" hidden>
+            <div class="inference-progress" id="inferenceProgress" role="progressbar" aria-label="Inference progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="inference-label">Infer...</div>
+              <div class="inference-track" aria-hidden="true">
+                <span class="inference-fill" id="inferenceFill"></span>
+              </div>
+            </div>
           </div>
           <video id="outputVideo" muted playsinline preload="metadata" hidden></video>
           <canvas class="user-mask-preview" id="userMaskPreview" aria-hidden="true" hidden></canvas>

@@ -35,6 +35,8 @@
   const outputSurface = document.getElementById("outputSurface");
   const outputPlaceholder = document.getElementById("outputPlaceholder");
   const processingMark = document.getElementById("processingMark");
+  const inferenceProgress = document.getElementById("inferenceProgress");
+  const inferenceFill = document.getElementById("inferenceFill");
   const outputVideo = document.getElementById("outputVideo");
   const userMaskPreview = document.getElementById("userMaskPreview");
   const userMaskContext = userMaskPreview.getContext("2d", { alpha: false });
@@ -48,7 +50,7 @@
   let strokes = [];
   let activeStroke = null;
   let drawing = false;
-  let outputTimer = null;
+  let inferenceFrameRequest = null;
   let maskFrameRequest = null;
   let maskFallbackTimer = null;
   const brushSizes = [12, 20, 30];
@@ -232,9 +234,56 @@
     redrawStrokes();
   }
 
+  function resetInferenceProgress() {
+    if (inferenceFrameRequest !== null) window.cancelAnimationFrame(inferenceFrameRequest);
+    inferenceFrameRequest = null;
+    inferenceFill.style.transform = "scaleX(0)";
+    inferenceProgress.setAttribute("aria-valuenow", "0");
+    delete inferenceProgress.dataset.durationMs;
+  }
+
+  function finishInference() {
+    inferenceFrameRequest = null;
+    runButton.disabled = false;
+    runLabel.textContent = "Run RolloutRemover";
+
+    if (!currentExample) {
+      processingMark.hidden = true;
+      cacheMessage.hidden = false;
+      outputSurface.dataset.state = "missing";
+      return;
+    }
+
+    const example = examples[currentExample];
+    outputVideo.src = example.rollout;
+    outputVideo.load();
+    playRollout();
+  }
+
+  function startInferenceProgress() {
+    const duration = 2000 + Math.random() * 1500;
+    const startedAt = performance.now();
+    inferenceProgress.dataset.durationMs = String(Math.round(duration));
+
+    const updateProgress = (now) => {
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const percent = Math.round(progress * 100);
+      inferenceFill.style.transform = `scaleX(${progress.toFixed(4)})`;
+      inferenceProgress.setAttribute("aria-valuenow", String(percent));
+
+      if (progress < 1) {
+        inferenceFrameRequest = window.requestAnimationFrame(updateProgress);
+        return;
+      }
+
+      finishInference();
+    };
+
+    inferenceFrameRequest = window.requestAnimationFrame(updateProgress);
+  }
+
   function resetOutput() {
-    window.clearTimeout(outputTimer);
-    outputTimer = null;
+    resetInferenceProgress();
     hideUserMaskPreview();
     outputVideo.pause();
     outputVideo.removeAttribute("src");
@@ -245,6 +294,8 @@
     processingMark.hidden = true;
     outputPlaceholder.hidden = false;
     replayButton.hidden = true;
+    runButton.disabled = false;
+    runLabel.textContent = "Run RolloutRemover";
     outputSurface.dataset.state = "empty";
     outputSurface.classList.remove("is-revealing");
   }
@@ -328,27 +379,11 @@
 
     resetOutput();
     runButton.disabled = true;
-    runLabel.textContent = "Preparing rollout";
+    runLabel.textContent = "Inferring...";
     outputPlaceholder.hidden = true;
     processingMark.hidden = false;
     outputSurface.dataset.state = "processing";
-
-    outputTimer = window.setTimeout(() => {
-      runButton.disabled = false;
-      runLabel.textContent = "Run RolloutRemover";
-
-      if (!currentExample) {
-        processingMark.hidden = true;
-        cacheMessage.hidden = false;
-        outputSurface.dataset.state = "missing";
-        return;
-      }
-
-      const example = examples[currentExample];
-      outputVideo.src = example.rollout;
-      outputVideo.load();
-      playRollout();
-    }, 620);
+    startInferenceProgress();
   }
 
   canvas.addEventListener("pointerdown", beginStroke);

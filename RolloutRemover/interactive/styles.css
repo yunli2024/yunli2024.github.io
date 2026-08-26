@@ -359,31 +359,46 @@ label {
 }
 
 .processing-mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  display: grid;
+  place-items: center;
   background: rgba(248, 251, 255, 0.90);
   backdrop-filter: blur(6px);
 }
 
-.processing-mark span {
-  width: 15px;
-  height: 15px;
+.inference-progress {
+  display: grid;
+  width: min(310px, 66%);
+  gap: 14px;
+}
+
+.inference-label {
+  color: var(--ink-deep);
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.inference-track {
+  height: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(6, 104, 215, 0.22);
   border-radius: 999px;
-  background: var(--cyan);
-  box-shadow: 0 5px 14px rgba(6, 104, 215, 0.18);
-  animation: rollout-beat 850ms ease-in-out infinite;
+  background: #fff;
+  box-shadow: inset 0 1px 3px rgba(5, 43, 99, 0.08), 0 6px 16px rgba(6, 104, 215, 0.10);
 }
 
-.processing-mark span:nth-child(2) {
-  background: var(--blue);
-  animation-delay: 120ms;
-}
-
-.processing-mark span:nth-child(3) {
-  background: var(--orange);
-  animation-delay: 240ms;
+.inference-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  box-shadow: 0 0 14px rgba(16, 205, 243, 0.34);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
 }
 
 .cache-message {
@@ -524,11 +539,6 @@ label {
 .example-button.is-active {
   border-color: var(--blue);
   box-shadow: 0 8px 20px rgba(6, 104, 215, 0.13), inset 0 0 0 1px var(--blue);
-}
-
-@keyframes rollout-beat {
-  0%, 100% { transform: translateY(0) scale(0.82); opacity: 0.52; }
-  50% { transform: translateY(-7px) scale(1); opacity: 1; }
 }
 
 @keyframes arrow-breathe {
