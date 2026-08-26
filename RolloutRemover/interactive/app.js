@@ -56,8 +56,11 @@
   let playbackGeneration = 0;
   const brushSizes = [12, 20, 30];
   const rolloutSourceFrameRate = 4;
+  const rolloutSourceMaskFrameCount = 2;
   const rolloutPlaybackRate = 0.75;
+  const rolloutReplacementStartTime = rolloutSourceMaskFrameCount / rolloutSourceFrameRate;
   const maskPreviewDurationMs = 1000 / (rolloutSourceFrameRate * rolloutPlaybackRate);
+  const rolloutMaskSkipPlaybackRate = rolloutReplacementStartTime / (maskPreviewDurationMs / 1000);
   let brushIndex = 1;
 
   function updateBrushControl() {
@@ -265,6 +268,28 @@
     });
   }
 
+  function waitForVideoTime(time, generation) {
+    return new Promise((resolve) => {
+      const deadline = performance.now() + 3000;
+      const checkTime = (now) => {
+        if (generation !== playbackGeneration) {
+          resolve(false);
+          return;
+        }
+        if (outputVideo.currentTime >= time) {
+          resolve(true);
+          return;
+        }
+        if (now >= deadline) {
+          resolve(false);
+          return;
+        }
+        window.requestAnimationFrame(checkTime);
+      };
+      window.requestAnimationFrame(checkTime);
+    });
+  }
+
   async function startVideoPlayback(generation) {
     for (let attempt = 0; attempt < 2; attempt += 1) {
       if (generation !== playbackGeneration) return false;
@@ -402,7 +427,7 @@
     outputVideo.pause();
     outputVideo.currentTime = 0;
     outputVideo.defaultPlaybackRate = rolloutPlaybackRate;
-    outputVideo.playbackRate = rolloutPlaybackRate;
+    outputVideo.playbackRate = rolloutMaskSkipPlaybackRate;
 
     processingMark.hidden = true;
     outputPlaceholder.hidden = true;
@@ -414,8 +439,26 @@
     replayButton.hidden = true;
 
     showUserMaskPreview();
-    const shouldPlay = await waitForMaskPreview(generation);
+    const didStartMaskSkip = await startVideoPlayback(generation);
+    if (!didStartMaskSkip || generation !== playbackGeneration) {
+      hideUserMaskPreview();
+      if (generation === playbackGeneration) revealResult();
+      return;
+    }
+
+    const [shouldPlay, reachedImageRollout] = await Promise.all([
+      waitForMaskPreview(generation),
+      waitForVideoTime(rolloutReplacementStartTime, generation)
+    ]);
     if (!shouldPlay || generation !== playbackGeneration) return;
+    outputVideo.pause();
+    if (!reachedImageRollout) {
+      hideUserMaskPreview();
+      revealResult();
+      return;
+    }
+    outputVideo.defaultPlaybackRate = rolloutPlaybackRate;
+    outputVideo.playbackRate = rolloutPlaybackRate;
     hideUserMaskPreview();
 
     const didStart = await startVideoPlayback(generation);
