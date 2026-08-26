@@ -54,15 +54,33 @@ label {
   min-height: 164px;
   padding: 12px 24px 6px;
   place-items: center;
-  pointer-events: none;
 }
 
 .brand-crop {
   position: relative;
+  display: block;
   width: clamp(245px, 28vw, 410px);
   aspect-ratio: 2.2 / 1;
   overflow: hidden;
+  border-radius: 14px;
+  cursor: pointer;
   filter: drop-shadow(0 8px 15px rgba(1, 49, 112, 0.12));
+  transition: filter 160ms ease, transform 160ms ease;
+}
+
+.brand-crop:hover {
+  filter: drop-shadow(0 10px 18px rgba(1, 49, 112, 0.18));
+  transform: translateY(-1px);
+}
+
+.brand-crop:focus-visible {
+  outline: 3px solid rgba(16, 205, 243, 0.78);
+  outline-offset: 4px;
+}
+
+.brand-crop:active {
+  filter: drop-shadow(0 6px 11px rgba(1, 49, 112, 0.12));
+  transform: translateY(1px) scale(0.995);
 }
 
 .brand img {
@@ -72,6 +90,8 @@ label {
   display: block;
   width: 102%;
   height: auto;
+  pointer-events: none;
+  user-select: none;
 }
 
 .demo-shell {
