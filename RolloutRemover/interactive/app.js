@@ -313,7 +313,11 @@
     outputVideo.currentTime = 0;
     showUserMaskPreview();
     const playPromise = outputVideo.play();
-    if (playPromise) playPromise.catch(revealResult);
+    if (playPromise) {
+      playPromise.catch((error) => {
+        if (error.name !== "AbortError") revealResult();
+      });
+    }
   }
 
   function runDemo() {
