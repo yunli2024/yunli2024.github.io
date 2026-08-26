@@ -36,6 +36,8 @@
   const outputPlaceholder = document.getElementById("outputPlaceholder");
   const processingMark = document.getElementById("processingMark");
   const outputVideo = document.getElementById("outputVideo");
+  const userMaskPreview = document.getElementById("userMaskPreview");
+  const userMaskContext = userMaskPreview.getContext("2d", { alpha: false });
   const resultImage = document.getElementById("resultImage");
   const cacheMessage = document.getElementById("cacheMessage");
   const replayButton = document.getElementById("replayButton");
@@ -47,7 +49,10 @@
   let activeStroke = null;
   let drawing = false;
   let outputTimer = null;
+  let maskFrameRequest = null;
+  let maskFallbackTimer = null;
   const brushSizes = [12, 20, 30];
+  const customMaskFrameEnd = 0.25;
   let brushIndex = 1;
 
   function updateBrushControl() {
@@ -86,36 +91,92 @@
     redrawStrokes();
   }
 
-  function drawStroke(stroke) {
+  function drawStrokeOn(targetContext, targetCanvas, stroke, strokeStyle) {
     if (!stroke || stroke.points.length === 0) return;
 
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    context.beginPath();
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.strokeStyle = "rgba(255, 63, 85, 0.90)";
-    context.lineWidth = stroke.width;
+    const width = targetCanvas.clientWidth;
+    const height = targetCanvas.clientHeight;
+    targetContext.beginPath();
+    targetContext.lineCap = "round";
+    targetContext.lineJoin = "round";
+    targetContext.strokeStyle = strokeStyle;
+    targetContext.lineWidth = stroke.width;
 
     const first = stroke.points[0];
-    context.moveTo(first.x * width, first.y * height);
+    targetContext.moveTo(first.x * width, first.y * height);
 
     if (stroke.points.length === 1) {
-      context.lineTo(first.x * width + 0.01, first.y * height + 0.01);
+      targetContext.lineTo(first.x * width + 0.01, first.y * height + 0.01);
     } else {
       for (let index = 1; index < stroke.points.length; index += 1) {
         const point = stroke.points[index];
-        context.lineTo(point.x * width, point.y * height);
+        targetContext.lineTo(point.x * width, point.y * height);
       }
     }
 
-    context.stroke();
+    targetContext.stroke();
   }
 
   function redrawStrokes() {
     context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-    strokes.forEach(drawStroke);
-    if (activeStroke) drawStroke(activeStroke);
+    strokes.forEach((stroke) => drawStrokeOn(context, canvas, stroke, "rgba(255, 63, 85, 0.90)"));
+    if (activeStroke) drawStrokeOn(context, canvas, activeStroke, "rgba(255, 63, 85, 0.90)");
+  }
+
+  function redrawUserMaskPreview() {
+    const bounds = userMaskPreview.getBoundingClientRect();
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    userMaskPreview.width = Math.max(1, Math.round(bounds.width * ratio));
+    userMaskPreview.height = Math.max(1, Math.round(bounds.height * ratio));
+    userMaskContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+    userMaskContext.fillStyle = "#000";
+    userMaskContext.fillRect(0, 0, bounds.width, bounds.height);
+    strokes.forEach((stroke) => drawStrokeOn(userMaskContext, userMaskPreview, stroke, "#fff"));
+  }
+
+  function stopMaskFrameMonitor() {
+    if (maskFrameRequest !== null && typeof outputVideo.cancelVideoFrameCallback === "function") {
+      outputVideo.cancelVideoFrameCallback(maskFrameRequest);
+    }
+    maskFrameRequest = null;
+    window.clearTimeout(maskFallbackTimer);
+    maskFallbackTimer = null;
+  }
+
+  function hideUserMaskPreview() {
+    stopMaskFrameMonitor();
+    userMaskPreview.hidden = true;
+  }
+
+  function showUserMaskPreview() {
+    stopMaskFrameMonitor();
+    userMaskPreview.hidden = false;
+    redrawUserMaskPreview();
+
+    if (typeof outputVideo.requestVideoFrameCallback === "function") {
+      const checkFrame = (now, metadata) => {
+        maskFrameRequest = null;
+        if (userMaskPreview.hidden) return;
+        if (metadata.mediaTime >= customMaskFrameEnd) {
+          hideUserMaskPreview();
+          return;
+        }
+        maskFrameRequest = outputVideo.requestVideoFrameCallback(checkFrame);
+      };
+      maskFrameRequest = outputVideo.requestVideoFrameCallback(checkFrame);
+      return;
+    }
+
+    const checkPlaybackTime = () => {
+      maskFallbackTimer = null;
+      if (userMaskPreview.hidden) return;
+      if (outputVideo.currentTime >= customMaskFrameEnd) {
+        hideUserMaskPreview();
+        return;
+      }
+      maskFallbackTimer = window.setTimeout(checkPlaybackTime, 50);
+    };
+    maskFallbackTimer = window.setTimeout(checkPlaybackTime, 50);
   }
 
   function updateScribbleControls() {
@@ -174,6 +235,7 @@
   function resetOutput() {
     window.clearTimeout(outputTimer);
     outputTimer = null;
+    hideUserMaskPreview();
     outputVideo.pause();
     outputVideo.removeAttribute("src");
     outputVideo.load();
@@ -224,6 +286,7 @@
     const example = examples[currentExample];
     if (!example) return;
 
+    hideUserMaskPreview();
     outputVideo.hidden = true;
     resultImage.src = example.result;
     resultImage.hidden = false;
@@ -248,6 +311,7 @@
     replayButton.hidden = true;
 
     outputVideo.currentTime = 0;
+    showUserMaskPreview();
     const playPromise = outputVideo.play();
     if (playPromise) playPromise.catch(revealResult);
   }
