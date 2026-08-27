@@ -2,10 +2,10 @@
   "use strict";
 
   const examples = {
-    "red-bucket": {
-      input: "assets/red-bucket-input.png",
-      rollout: "assets/red-bucket-rollout.mp4",
-      result: "assets/red-bucket-result.png"
+    "person-equipment": {
+      input: "assets/person-equipment-input.png",
+      rollout: "assets/person-equipment-rollout.mp4",
+      result: "assets/person-equipment-result.png"
     },
     "wall-planter": {
       input: "assets/wall-planter-input.png",
@@ -68,7 +68,7 @@
 
   const exampleButtons = Array.from(exampleList.querySelectorAll(".example-button"));
 
-  let currentExample = "red-bucket";
+  let currentExample = "person-equipment";
   let uploadedImageUrl = null;
   let strokes = [];
   let activeStroke = null;

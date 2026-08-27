@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "selection_manifest_id": "rolloutremover-interaction-demo-cases-20260827-v4",
+  "selection_type": "user_selected",
+  "paper_admission": false,
+  "evidence_release_id": null,
+  "purpose": "Website interaction demo and video recording only; not representative or quantitative evidence.",
+  "supersedes": {
+    "path": "case-manifest-v3.json",
+    "sha256": "fa11a7ea5492d40f3d04ee8b01365e1dce79635cdb117f6b299be57f648f5f46"
+  },
+  "candidate_pool": {
+    "source_manifest": "demo-video-backhalf-paper-cases-user-selected-20260826-v2",
+    "total_cases": 35,
+    "eligibility_rule": "Native-square cases or explicitly reviewed center-square derivatives whose input, endpoint, and every rollout frame share the same normalized scene crop."
+  },
+  "model_identity": {
+    "method": "RolloutRemover-1.3B no-RoPE",
+    "checkpoint": 1800,
+    "num_inference_steps": 50,
+    "guidance_scale": 5.0,
+    "seed_policy": "Bench600 fixed-reset-per-sample seed 42"
+  },
+  "review": {
+    "path": "case-review-v4.csv",
+    "sha256": "ce52096944f2a4cf6f6c4a7a2bbf5088817a7ec395c8445ef9baf874dd2ea2c6",
+    "reviewers": [
+      "user",
+      "codex"
+    ],
+    "quality_gate": "Full-size endpoint review for residue, seam, texture discontinuity, local color block, blur, and global tone or sharpness shift; exact crop and rollout continuity were reviewed for non-native-square derivatives."
+  },
+  "recording_order": [
+    "bench600:idx086:release000087",
+    "bench600:idx320:release000321",
+    "bench600:idx128:release000129"
+  ],
+  "backup_only": [
+    "bench600:idx280:release000281",
+    "bench600:idx569:release000570"
+  ],
+  "retired_from_ui": [
+    "bench600:idx041:release000042",
+    "bench600:idx531:release000532"
+  ],
+  "rejected": [
+    "bench600:idx002:release000003",
+    "bench600:idx005:release000006",
+    "legacy_sraw:idx017:key00000049",
+    "bench600:idx205:release000206",
+    "bench600:idx213:release000214"
+  ],
+  "pending": [],
+  "package_directory": "RolloutRemover/interactive/assets",
+  "overwrite_policy": "v4 adds three idx086 derivative assets under new person-equipment filenames and updates only the runtime case mapping and example rail. All v3 manifests, reviews, and superseded media remain intact.",
+  "panel_mapping": {
+    "input": "source input after the recorded center-square crop",
+    "result": "RolloutRemover endpoint after the same normalized center-square crop",
+    "rollout": "14-frame full rollout MP4 after the same normalized center-square crop"
+  },
+  "selected": [
+    {
+      "sample_key": "bench600:idx086:release000087",
+      "label": "Person + gear",
+      "usage": "recording_primary",
+      "source_role": "gallery_supplement",
+      "source_package": "analysis_outputs/demo_video_backhalf_manual/assets/paper_cases_20260826_v1/01_gallery/01_multiple_or_multi_part_targets/bench600_idx086_release000087",
+      "transform": {
+        "normalized_scene_crop": {
+          "x_start": 0.21875,
+          "x_end": 0.78125,
+          "y_start": 0.0,
+          "y_end": 1.0
+        },
+        "input": "crop 960x540 at x=210,y=0,w=540,h=540; resize to 512x512",
+        "result": "crop 832x468 at x=182,y=0,w=468,h=468; resize to 480x480",
+        "rollout": "remove encoded 6px top/bottom padding and crop 832x480 at x=182,y=6,w=468,h=468; resize to 480x480; preserve 14 frames at 4 fps"
+      },
+      "sources": {
+        "input": {
+          "path": "input.png",
+          "sha256": "eb14f217cde6f35b3d39a080afdf2a6036990e64c155ba32a8d07a02a0899b80"
+        },
+        "result": {
+          "path": "ours_endpoint.png",
+          "sha256": "503d9c8c61c02bd5ebacea96fa25834928c32e275c9d3f58546e26d6622bb629"
+        },
+        "rollout": {
+          "path": "rollout_full.mp4",
+          "sha256": "9abff5fa1f39777c65e7058a38d7d8b65d17c95ff6afb03b4a8fcb4ad574e068"
+        }
+      },
+      "assets": {
+        "input": {
+          "path": "person-equipment-input.png",
+          "sha256": "a2b28ddb020d97fb05b72205d380320bb0402f78a733ca4a2919af6404a12af5"
+        },
+        "result": {
+          "path": "person-equipment-result.png",
+          "sha256": "dd98e72d2e2ebc53b028a9dcb8406b3bbb9a15a6c7418abbb4749a55934807fe"
+        },
+        "rollout": {
+          "path": "person-equipment-rollout.mp4",
+          "sha256": "0eb64020e604095778bf5564d09d3a26c7c5a23a9650adc74dd402be890998d4"
+        }
+      }
+    },
+    {
+      "sample_key": "bench600:idx320:release000321",
+      "label": "Wall planter",
+      "usage": "recording_primary",
+      "source_role": "gallery_supplement",
+      "assets": {
+        "input": {
+          "path": "wall-planter-input.png",
+          "sha256": "f5901334383b8eb46f9a997a9712029c9bc2d0a87a726030f8573cff4af2010e"
+        },
+        "result": {
+          "path": "wall-planter-result.png",
+          "sha256": "e37d8bc49603195553f11218a9aea2115cf3ef3ac3d66696866530e673fc3dc8"
+        },
+        "rollout": {
+          "path": "wall-planter-rollout.mp4",
+          "sha256": "9f1468c65c99a839d2ee8fe51c546ec2a343502fb85795021230f7142758217a"
+        }
+      }
+    },
+    {
+      "sample_key": "bench600:idx128:release000129",
+      "label": "Traffic cone",
+      "usage": "recording_primary",
+      "source_role": "gallery_supplement_reserve",
+      "assets": {
+        "input": {
+          "path": "traffic-cone-input.png",
+          "sha256": "01b1902da06919933221e8dab15295eabf25f5871b3381cb23695173169e159f"
+        },
+        "result": {
+          "path": "traffic-cone-result.png",
+          "sha256": "925ddabab89c23529307026ea5305d1a3b296ead121714aaef33cbe2313cc184"
+        },
+        "rollout": {
+          "path": "traffic-cone-rollout.mp4",
+          "sha256": "87265aa2acce4bcfb2583f6ee6aee197442ac62925362509eaf2247504dbe78d"
+        }
+      }
+    },
+    {
+      "sample_key": "bench600:idx280:release000281",
+      "label": "Bonsai",
+      "usage": "backup_only",
+      "source_role": "gallery_supplement",
+      "assets": {
+        "input": {
+          "path": "bonsai-input.png",
+          "sha256": "d6d6d5ffc58b2e3af43d38d3e34219569cabed6b0b55758e4da3e64ba1e841d0"
+        },
+        "result": {
+          "path": "bonsai-result.png",
+          "sha256": "4b57e9d00c8029894364892bfe69a78c9e739936c2e4a7d6cb5a32eff4aa72d2"
+        },
+        "rollout": {
+          "path": "bonsai-rollout.mp4",
+          "sha256": "4e94b916516a82bb60f7788c8a8c07fa251c68dbe31d9aaeb2f765ab3a77cb3a"
+        }
+      }
+    },
+    {
+      "sample_key": "bench600:idx569:release000570",
+      "label": "Plate",
+      "usage": "backup_only",
+      "source_role": "comparison_supplement",
+      "assets": {
+        "input": {
+          "path": "plate-input.png",
+          "sha256": "77688de664dbc37873720a3763a9c70e649179288dc282cd7d2a8677ebfaa251"
+        },
+        "result": {
+          "path": "plate-result.png",
+          "sha256": "8697a9200363a884c0ffeffb562942f8423e2607fa9961712560f193b739719f"
+        },
+        "rollout": {
+          "path": "plate-rollout.mp4",
+          "sha256": "d220eb139361f7851836932a6fe75c7885d056886e4682e78b2c26be3f7f2c3b"
+        }
+      }
+    }
+  ],
+  "retired_assets": [
+    {
+      "sample_key": "bench600:idx041:release000042",
+      "label": "Red bucket",
+      "reason": "Exact sample is already used in the final demo-video Gallery.",
+      "assets": {
+        "input": "red-bucket-input.png",
+        "result": "red-bucket-result.png",
+        "rollout": "red-bucket-rollout.mp4"
+      }
+    }
+  ],
+  "claim_scope": {
+    "illustrative_only": true,
+    "representative_population_claim_allowed": false,
+    "quantitative_rate_claim_allowed": false
+  }
+}
