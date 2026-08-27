@@ -2,10 +2,10 @@
   "use strict";
 
   const examples = {
-    "person-equipment": {
-      input: "assets/person-equipment-input.png",
-      rollout: "assets/person-equipment-rollout.mp4",
-      result: "assets/person-equipment-result.png"
+    bowl: {
+      input: "assets/bowl-input.png",
+      rollout: "assets/bowl-rollout.mp4",
+      result: "assets/bowl-result.png"
     },
     "wall-planter": {
       input: "assets/wall-planter-input.png",
@@ -68,7 +68,7 @@
 
   const exampleButtons = Array.from(exampleList.querySelectorAll(".example-button"));
 
-  let currentExample = "person-equipment";
+  let currentExample = "bowl";
   let uploadedImageUrl = null;
   let strokes = [];
   let activeStroke = null;
