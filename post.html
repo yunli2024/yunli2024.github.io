@@ -8,7 +8,7 @@
   <style>
     :root{--bg1:#eaf3ff;--bg2:#f8fbff;--surface:#f8fbff;--text:#0b1220;--muted:#64748b;--accent:#2563eb;--accent-soft:rgba(37,99,235,.12);--card-border:rgba(15,23,42,.08)}
     body{min-height:100vh;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
-    body.light{--bg1:#f6f8fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#64748b;--accent:#1d4ed8;--accent-soft:rgba(29,78,216,.1);--card-border:rgba(15,23,42,.08)}
+    body.light,html[data-theme="light"] body{--bg1:#f6f8fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#64748b;--accent:#1d4ed8;--accent-soft:rgba(29,78,216,.1);--card-border:rgba(15,23,42,.08)}
     .wrap{max-width:980px;margin:42px auto 24px;padding:20px;position:relative}
     .glass-card{margin-top:16px;padding:24px 26px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(248,251,255,.78));-webkit-backdrop-filter:blur(14px) saturate(165%);backdrop-filter:blur(14px) saturate(165%);border:1px solid var(--card-border);box-shadow:0 18px 48px rgba(37,99,235,.13),0 3px 12px rgba(15,23,42,.08)}
     @media (prefers-reduced-transparency: reduce){.glass-card{-webkit-backdrop-filter:none;backdrop-filter:none;background-color:#ffffff}}
@@ -143,7 +143,8 @@
       padding:.35em 0;
     }
   </style>
-  <link rel="stylesheet" href="source/ui-polish.css">
+  <script src="source/site-preferences.js?v=20260902"></script>
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -174,27 +175,27 @@
         'meta.description':'阅读云离个人档案中的一篇文章。',
         'post.back':'博客 / ← 返回文章列表',
         'post.content.label':'文章正文',
-        'post.loading':'正在加载文章…',
-        'post.error.noFile':'未指定文章文件。',
-        'post.error.invalidPath':'文章路径无效，必须指向 posts 目录下的 Markdown 文件。',
-        'post.error.read':'文章读取失败：{status}',
-        'post.error.generic':'由于网络或跨域问题，文章读取失败。',
+        'post.loading':'加载中…',
+        'post.error.noFile':'未指定文章文件',
+        'post.error.invalidPath':'文章路径不合法（必须是 posts/ 目录下的 Markdown 文件）',
+        'post.error.read':'读取文章失败：{status}',
+        'post.error.generic':'读取文章失败（网络或跨域错误）',
         'post.status.network':'网络错误',
         'post.fallbackTitle':'文章',
-        'post.rendererNotice':'Markdown 渲染器暂时不可用，以下显示文章原文。',
+        'post.rendererNotice':'Markdown 渲染器暂时未连接，以下显示文章原文。',
         'post.titleSuffix':'云离',
         'like.button':'给这篇文章点赞',
         'like.sending':'正在点赞…',
         'like.loading':'点赞 / …',
         'like.count':'点赞 / {count}',
         'like.unavailable':'点赞 / —',
-        'like.throttled':'操作有点频繁，请稍后再试。',
-        'like.failed':'连接失败，请稍后重试。',
+        'like.throttled':'请求过于频繁，请稍后再试',
+        'like.failed':'连接失败，请稍后重试',
         'footer.post':'© 云离 · 文章'
       }
     };
   </script>
-  <script src="source/site-ui.js" defer></script>
+  <script src="source/site-ui.js?v=20260902" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     window.MathJax = {
@@ -212,7 +213,7 @@
   <div class="reading-progress" aria-hidden="true"><span id="readingProgressBar"></span></div>
   <div class="bg"></div>
   <header>
-    <a href="index.html" class="brand" data-i18n="brand.name">Yunli</a>
+    <a href="./" class="brand" data-i18n="brand.name">Yunli</a>
     <div class="header-actions">
       <nav class="nav-links" aria-label="Main navigation" data-i18n-aria-label="nav.label">
         <a href="blog.html" aria-current="page" data-i18n="nav.blog">Blog</a>
@@ -220,8 +221,20 @@
         <a href="about.html" data-i18n="nav.about">About</a>
       </nav>
       <div class="utility-switches">
-        <button class="cute-switch language-switch" type="button" data-language-toggle aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">EN / 中</button>
-        <button class="cute-switch theme-switch" type="button" data-theme-toggle aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">☀️ / 🌙</button>
+        <button class="cute-switch language-switch" type="button" data-language-toggle data-state="en" role="switch" aria-checked="false" aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">
+          <span class="switch-track" aria-hidden="true">
+            <span class="switch-option switch-option-left">EN</span>
+            <span class="switch-option switch-option-right">中</span>
+            <span class="switch-thumb"></span>
+          </span>
+        </button>
+        <button class="cute-switch theme-switch" type="button" data-theme-toggle data-state="dark" role="switch" aria-checked="true" aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">
+          <span class="switch-track" aria-hidden="true">
+            <span class="switch-option switch-option-left">☀️</span>
+            <span class="switch-option switch-option-right">🌙</span>
+            <span class="switch-thumb"></span>
+          </span>
+        </button>
       </div>
     </div>
   </header>

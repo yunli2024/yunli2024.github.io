@@ -17,7 +17,8 @@
       --line:rgba(148,163,184,.22);
       --panel:rgba(15,23,42,.78);
     }
-    body.light{
+    body.light,
+    html[data-theme="light"] body{
       --bg1:#f7fbff;
       --bg2:#fff;
       --surface:#fff;
@@ -101,6 +102,7 @@
     .tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
     .tag{padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:.82rem;background:rgba(148,163,184,.06)}
     section{margin-top:26px}
+    #architecture{scroll-margin-top:120px}
     .section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:14px}
     h2{font-size:clamp(1.45rem,3vw,2rem);margin:0}
     .section-head p{margin:0;color:var(--muted)}
@@ -117,13 +119,16 @@
     .feature p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.65}
     .architecture{
       min-width:0;
-      overflow:hidden;
+      overflow-x:auto;
+      overscroll-behavior-inline:contain;
       padding:18px;
       border:1px solid var(--line);
       border-radius:20px;
       background:var(--panel);
     }
-    .architecture img{width:100%;display:block;border-radius:12px;background:#fff}
+    .architecture-link{display:block;color:inherit}
+    .architecture img{width:100%;height:auto;display:block;border-radius:12px;background:#fff}
+    .architecture-hint{margin:0 0 10px;color:var(--muted);font-size:.82rem}
     .note{
       display:grid;
       grid-template-columns:auto 1fr;
@@ -144,6 +149,9 @@
       .hero-media{min-height:260px}
       .feature-grid{grid-template-columns:repeat(2,1fr)}
     }
+    @media(max-width:700px){
+      #architecture{scroll-margin-top:160px}
+    }
     @media(max-width:560px){
       header{align-items:flex-start;gap:12px;flex-wrap:wrap}
       .nav-links{width:100%;justify-content:flex-start}
@@ -153,9 +161,11 @@
       .feature-grid{grid-template-columns:1fr}
       .section-head{display:block}
       .section-head p{margin-top:8px}
+      .architecture-link{min-width:720px}
     }
   </style>
-  <link rel="stylesheet" href="source/ui-polish.css">
+  <script src="source/site-preferences.js?v=20260902"></script>
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -190,6 +200,8 @@
         'project.architecture.title': 'CPU Architecture',
         'project.architecture.subtitle': 'Harvard architecture · single-cycle execution · observable state',
         'project.architecture.alt': 'Complete datapath and debugging architecture of the single-cycle RISC-V CPU',
+        'project.architecture.open': 'Open the full-size CPU architecture diagram',
+        'project.architecture.hint': 'Scroll sideways to inspect details, or open the full-size image.',
         'project.note.label': 'Repository access information',
         'project.note.mark': 'PRIVATE',
         'project.note.title': 'Why isn’t the source repository publicly accessible?',
@@ -198,49 +210,51 @@
       },
       zh: {
         'meta.title': 'CS202 RISC-V 处理器 — 云离',
-        'meta.description': 'CS202 计算机组成原理课程项目：使用 Verilog 与 Vivado 构建的单周期 RISC-V 处理器。',
+        'meta.description': 'CS202 计算机组成原理课程项目：基于 Verilog 与 Vivado 的单周期 RISC-V CPU。',
         'project.back': '← 返回项目列表',
         'project.eyebrow': '南方科技大学 · CS202 · 2026 年春季',
         'project.title': '单周期 RISC-V<br>处理器（CPU）',
-        'project.lede': '使用 Verilog 与 Vivado 构建的 32 位单周期 RV32I 处理器。从取指、译码、执行、访存到写回，实现完整的数据通路，并配有基于 UART 的调试功能，以及四款面向计算机组成原理的交互式教学工具。',
-        'project.tagsLabel': '技术栈',
+        'project.lede': '基于 Verilog 与 Vivado 构建的 32 位单周期 RV32I CPU。从取指、译码、执行、访存到写回，配套 UART 调试通路和四个计算机组成原理可视化教学工具。',
+        'project.tagsLabel': '技术标签',
         'project.tag.verilog': 'Verilog',
         'project.tag.riscv': 'RISC-V RV32I',
         'project.tag.vivado': 'Vivado',
         'project.tag.uart': 'UART 调试',
         'project.viewArchitecture': '查看架构',
         'project.privateRepository': '私有代码仓库 ↗',
-        'project.coverAlt': '单周期 RV32I 处理器数据通路与 UART 调试架构',
+        'project.coverAlt': '单周期 RV32I CPU 数据通路与 UART 调试架构封面',
         'project.highlights.title': '项目亮点',
         'project.highlights.subtitle': '从硬件数据通路到交互式教学工具',
         'project.feature1.index': '01 / 核心',
         'project.feature1.title': '单周期数据通路',
-        'project.feature1.description': '实现程序计数器（PC）、控制器、寄存器堆、立即数生成器、算术逻辑单元（ALU）、指令存储器（IMEM）、数据存储器（DMEM）与写回选择逻辑。',
+        'project.feature1.description': '实现 PC、控制器、寄存器堆、立即数生成、ALU、IMEM、DMEM 与写回选择。',
         'project.feature2.index': '02 / 指令集',
         'project.feature2.title': 'RV32I 指令支持',
-        'project.feature2.description': '支持算术与逻辑运算、立即数指令、加载、存储、条件分支，以及 JAL/JALR 跳转路径。',
+        'project.feature2.description': '覆盖算术逻辑、立即数、加载、存储、条件分支以及 JAL/JALR 跳转路径。',
         'project.feature3.index': '03 / 调试',
         'project.feature3.title': 'UART 硬件调试',
-        'project.feature3.description': '支持处理器暂停、单步执行与复位，并可调试访问寄存器、指令存储器和数据存储器。',
+        'project.feature3.description': '支持 CPU 暂停、单步执行、复位，以及寄存器、指令存储器和数据存储器的调试访问。',
         'project.feature4.index': '04 / 额外功能',
-        'project.feature4.title': '交互式教学工具',
+        'project.feature4.title': '可视化教学工具',
         'project.feature4.description': '包含算术单元、缓存（Cache）、RISC-V 指令编解码与汉明码 SEC/DED 四套交互工具。',
         'project.architecture.title': '处理器架构',
         'project.architecture.subtitle': '哈佛存储结构 · 单周期执行 · 可观测状态',
-        'project.architecture.alt': '单周期 RISC-V 处理器完整数据通路与调试架构图',
+        'project.architecture.alt': '单周期 RISC-V CPU 完整数据通路与调试结构图',
+        'project.architecture.open': '打开完整尺寸的处理器架构图',
+        'project.architecture.hint': '可横向滑动查看细节，也可以点击打开原图。',
         'project.note.label': '仓库访问说明',
         'project.note.mark': '私有仓库',
         'project.note.title': '为什么源代码仓库无法公开访问？',
-        'project.note.body': '源代码位于 GitHub Classroom 私有仓库。本页公开展示经过整理的项目介绍；只有已登录且获得课程组织授权的 GitHub 账号才能访问原始仓库。',
+        'project.note.body': '源代码位于 GitHub Classroom 私有仓库。详情页公开展示经过整理的项目介绍；只有已登录且获得课程组织授权的 GitHub 账号才能访问原始仓库。',
         'project.footer': '© 云离 · CS202 计算机组成原理'
       }
     };
   </script>
-  <script src="source/site-ui.js" defer></script>
+  <script src="source/site-ui.js?v=20260902" defer></script>
 </head>
 <body class="page-project-detail">
   <header>
-    <a href="index.html" class="brand" data-i18n="brand.name">Yunli</a>
+    <a href="./" class="brand" data-i18n="brand.name">Yunli</a>
     <div class="header-actions">
       <nav class="nav-links" aria-label="Main navigation" data-i18n-aria-label="nav.label">
         <a href="blog.html" data-i18n="nav.blog">Blog</a>
@@ -248,8 +262,20 @@
         <a href="about.html" data-i18n="nav.about">About</a>
       </nav>
       <div class="utility-switches">
-        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">EN / 中</button>
-        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">☀️ / 🌙</button>
+        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle data-state="en" role="switch" aria-checked="false" aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">
+          <span class="switch-track" aria-hidden="true">
+            <span class="switch-option switch-option-left">EN</span>
+            <span class="switch-option switch-option-right">中</span>
+            <span class="switch-thumb"></span>
+          </span>
+        </button>
+        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle data-state="dark" role="switch" aria-checked="true" aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">
+          <span class="switch-track" aria-hidden="true">
+            <span class="switch-option switch-option-left">☀️</span>
+            <span class="switch-option switch-option-right">🌙</span>
+            <span class="switch-thumb"></span>
+          </span>
+        </button>
       </div>
     </div>
   </header>
@@ -313,7 +339,10 @@
         <p data-i18n="project.architecture.subtitle">Harvard architecture · single-cycle execution · observable state</p>
       </div>
       <div class="architecture">
-        <img src="source/cs202_cpu_architecture.png" alt="Complete datapath and debugging architecture of the single-cycle RISC-V CPU" data-i18n-alt="project.architecture.alt" width="2348" height="1376" loading="lazy" decoding="async">
+        <p class="architecture-hint" data-i18n="project.architecture.hint">Scroll sideways to inspect details, or open the full-size image.</p>
+        <a class="architecture-link" href="source/cs202_cpu_architecture.png" target="_blank" rel="noopener" aria-label="Open the full-size CPU architecture diagram" data-i18n-aria-label="project.architecture.open">
+          <img src="source/cs202_cpu_architecture.png" alt="Complete datapath and debugging architecture of the single-cycle RISC-V CPU" data-i18n-alt="project.architecture.alt" width="2348" height="1376" loading="lazy" decoding="async">
+        </a>
       </div>
     </section>
 

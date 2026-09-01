@@ -30,7 +30,11 @@
   --ease:cubic-bezier(.2,.75,.25,1);
 }
 
-body.light{
+html[data-theme="dark"]{color-scheme:dark}
+html[data-theme="light"]{color-scheme:light}
+
+body.light,
+html[data-theme="light"] body{
   color-scheme:light;
   --bg:#eef1ec;
   --bg-elevated:#f4f6f1;
@@ -51,13 +55,16 @@ body.light{
 }
 
 body:has(#list){--accent:#d7f871;--accent-soft:rgba(215,248,113,.09);--accent-ink:#101604}
-body.light:has(#list){--accent:#557400;--accent-soft:rgba(85,116,0,.09);--accent-ink:#f8ffe8}
+body.light:has(#list),html[data-theme="light"] body:has(#list){--accent:#557400;--accent-soft:rgba(85,116,0,.09);--accent-ink:#f8ffe8}
 body:has(#content){--accent:#8ab9ff;--accent-soft:rgba(138,185,255,.1);--accent-ink:#08111f}
-body.light:has(#content){--accent:#185caa;--accent-soft:rgba(24,92,170,.09);--accent-ink:#f5f9ff}
+body.light:has(#content),html[data-theme="light"] body:has(#content){--accent:#185caa;--accent-soft:rgba(24,92,170,.09);--accent-ink:#f5f9ff}
 body:has(.about-top){--accent:#ffc966;--accent-soft:rgba(255,201,102,.1);--accent-ink:#1b1102}
-body.light:has(.about-top){--accent:#996000;--accent-soft:rgba(153,96,0,.09);--accent-ink:#fffaf0}
+body.light:has(.about-top),html[data-theme="light"] body:has(.about-top){--accent:#996000;--accent-soft:rgba(153,96,0,.09);--accent-ink:#fffaf0}
 
 *,*::before,*::after{box-sizing:border-box}
+
+html[data-i18n-pending="true"] [data-i18n],
+html[data-i18n-pending="true"] [data-i18n-html]{visibility:hidden}
 
 html{scroll-behavior:smooth}
 
@@ -294,7 +301,7 @@ body:has(.about-top) .nav-links a[href="about.html"]{color:var(--text) !importan
   place-items:center;
   min-width:0;
   color:var(--muted);
-  font:800 11px/1 "Nunito","ZCOOL KuaiLe","Microsoft YaHei",sans-serif;
+  font:800 11px/1 "Nunito","ZCOOL KuaiLe","YouYuan","Comic Sans MS",ui-rounded,"Microsoft YaHei",sans-serif;
   letter-spacing:.01em;
   transition:color .2s ease,transform .2s ease;
   user-select:none;
@@ -316,6 +323,22 @@ body:has(.about-top) .nav-links a[href="about.html"]{color:var(--text) !importan
 body.light .language-switch .switch-thumb{
   background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 90%,black),color-mix(in srgb,var(--accent) 76%,black));
 }
+html[data-theme="light"] .language-switch .switch-thumb{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 90%,black),color-mix(in srgb,var(--accent) 76%,black));
+}
+
+html[data-language="en"] .language-switch .switch-thumb{transform:translateX(0)}
+html[data-language="zh"] .language-switch .switch-thumb{transform:translateX(40px)}
+html[data-language="en"] .language-switch .switch-option-left,
+html[data-language="zh"] .language-switch .switch-option-right{color:var(--switch-active-ink);transform:scale(1.04)}
+html[data-language="en"] .language-switch .switch-option-right,
+html[data-language="zh"] .language-switch .switch-option-left{color:var(--muted);transform:none}
+html[data-theme="light"] .theme-switch .switch-thumb{transform:translateX(0);background:linear-gradient(145deg,#fff6ad,#f5b82e)}
+html[data-theme="dark"] .theme-switch .switch-thumb{transform:translateX(40px);background:linear-gradient(145deg,#b8c7ff,#7687d8)}
+html[data-theme="light"] .theme-switch .switch-option-left{color:#3a2500;transform:scale(1.04)}
+html[data-theme="light"] .theme-switch .switch-option-right{color:var(--muted);transform:none}
+html[data-theme="dark"] .theme-switch .switch-option-left{color:var(--muted);transform:none}
+html[data-theme="dark"] .theme-switch .switch-option-right{color:#09132c;transform:scale(1.04)}
 .cute-switch:hover .switch-track{border-color:var(--accent);background:var(--accent-soft)}
 .cute-switch:active .switch-thumb{transform:scale(.9)}
 .cute-switch[data-state="zh"]:active .switch-thumb,
@@ -658,7 +681,7 @@ html[lang="zh-CN"] .cards-grid .hero:first-child::after{
 html[lang="zh-CN"] .result-line::after{content:"同步 / 点赞"}
 html[lang="zh-CN"] .result-line.likes-ready::after{content:"排序 / 热度"}
 
-#list{border-bottom:1px solid var(--line-strong)}
+#list{min-height:45vh;min-height:45svh;border-bottom:1px solid var(--line-strong)}
 
 .list-status{
   display:flex;
@@ -708,7 +731,7 @@ html[lang="zh-CN"] .result-line.likes-ready::after{content:"排序 / 热度"}
 .post-content{min-width:0}
 
 .post h2{margin:0 0 13px;font-size:clamp(1.45rem,3vw,2.25rem);line-height:1.2}
-.post h2 a{color:var(--text);text-decoration:none}
+.post h2 a{display:inline-flex;align-items:center;min-width:44px;min-height:44px;color:var(--text);text-decoration:none}
 .post h2 a:hover{color:var(--accent)}
 
 .post-meta{
@@ -1104,7 +1127,7 @@ html[lang="zh-CN"] #content::before{content:"文章 / 正文"}
 
 /* Project detail inherits the same catalog language */
 body:has(.feature-grid) main{width:var(--content) !important;margin:58px auto 90px !important}
-body:has(.feature-grid) .back{color:var(--muted);font:500 11px/1 var(--font-mono)}
+body:has(.feature-grid) .back{display:inline-flex;align-items:center;min-height:44px;color:var(--muted);font:500 11px/1 var(--font-mono)}
 body:has(.feature-grid) .hero{
   border:1px solid var(--line) !important;
   border-radius:0 !important;
@@ -1151,10 +1174,12 @@ body:has(.feature-grid) .note-mark{color:var(--accent);font:600 9px/1 var(--font
 }
 
 @media(max-width:700px){
-  header{position:relative !important;flex-wrap:wrap;gap:12px;padding-top:14px !important}
-  .header-actions{width:100%;flex-wrap:wrap;gap:8px}
-  .nav-links{width:auto;flex:1 1 190px;justify-content:flex-start !important;overflow:visible;padding-bottom:3px}
-  .utility-switches{margin-left:auto}
+  header{position:sticky !important;display:grid !important;grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:6px 10px;padding:10px 0 !important}
+  .brand{grid-column:1;grid-row:1}
+  .brand::after{display:none}
+  .header-actions{display:contents}
+  .nav-links{grid-column:2;grid-row:1;width:auto;justify-self:end;justify-content:flex-end !important;overflow:visible;padding-bottom:0}
+  .utility-switches{grid-column:1 / -1;grid-row:2;justify-self:end;margin-left:0}
   .nav-links a{flex:0 0 auto;padding-right:10px !important;padding-left:10px !important}
   .nav-links a::after{right:10px;left:10px}
   h1{font-size:clamp(2.8rem,16vw,5rem)}
@@ -1211,7 +1236,7 @@ body:has(.feature-grid) .note-mark{color:var(--accent);font:600 9px/1 var(--font
 
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-delay:0s !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;transition-delay:0s !important}
   .reveal .projects-grid .card{opacity:1 !important;transform:none !important;animation:none !important}
 }
 

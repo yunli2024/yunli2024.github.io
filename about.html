@@ -30,7 +30,7 @@
 		a{color:var(--accent)}
 		footer{padding:28px;text-align:center;color:var(--muted)}
 
-		body.light{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,.06)}
+		body.light,html[data-theme="light"] body{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,.06)}
 
 		.bg{position:fixed;inset:0;background:radial-gradient(1000px 500px at 20% 10%,rgba(250,230,150,.14),transparent 55%),radial-gradient(700px 380px at 80% 30%,rgba(250,200,120,.1),transparent 50%),linear-gradient(180deg,var(--bg1),var(--bg2));z-index:-1}
 		.glass-card{max-width:760px;margin:36px auto;padding:20px 22px;border-radius:14px;background-color:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 20px rgba(2,6,23,.35);color:var(--text);will-change:backdrop-filter}
@@ -53,7 +53,8 @@
 		.reveal .glass-card:nth-of-type(3){animation-delay:500ms}
 		.reveal .glass-card:nth-of-type(4){animation-delay:680ms}
 	</style>
-	<link rel="stylesheet" href="source/ui-polish.css">
+	<script src="source/site-preferences.js?v=20260902"></script>
+	<link rel="stylesheet" href="source/ui-polish.css?v=20260902">
 	<script>
 		window.PAGE_I18N = {
 			en: {
@@ -89,13 +90,13 @@
 			zh: {
 				'meta.title':'关于 — 云离',
 				'meta.description':'认识云离：南方科技大学计算机专业学生，研究兴趣包括计算机视觉与图像编辑，也热爱长跑。',
-				'about.heading':'关于云离',
-				'about.intro.student':'我是南方科技大学计算机科学与工程系 2024 级本科生。',
-				'about.intro.site':'在这里，我会分享南科大课程笔记、学习与科研感悟，也会记录一些日常生活的小片段。',
-				'about.intro.update':'平时有点忙，拖延症又很严重，所以更新随缘——灵感赢了就来写。喵～',
-				'about.photo.alt':'云离的个人照片',
-				'about.photo.action':'切换云离的个人照片，当前为第 {number} 张，共 {total} 张。',
-				'about.photo.static':'云离的个人照片。当前仅有一张照片。',
+				'about.heading':'关于「云离」',
+				'about.intro.student':'我是南方科技大学24级计算机系学生。',
+				'about.intro.site':'在这个网站，我会分享南科大部分课程的心得、学习和科研体会，还有一些生活日常~',
+				'about.intro.update':'由于平时比较忙，而且拖延症非常严重，所以只能随缘更新喵',
+				'about.photo.alt':'云离的照片',
+				'about.photo.action':'查看并切换云离的个人照片，当前第 {number} 张',
+				'about.photo.static':'云离的照片。当前仅有一张。',
 				'about.photo.caption':'照片 / {number}',
 				'cv.heading':'个人履历',
 				'cv.school.label':'学校：',
@@ -103,9 +104,9 @@
 				'cv.department.label':'院系：',
 				'cv.department.value':'计算机科学与工程系（CSE）',
 				'cv.location.label':'常驻：',
-				'cv.location.value':'中国深圳',
+				'cv.location.value':'深圳',
 				'cv.github.label':'GitHub：',
-				'cv.privacy':'出于隐私保护，我不会在这里公开完整的个人简历（CV）与成绩单。如需查阅，欢迎通过 12410922@mail.sustech.edu.cn 与我联系。',
+				'cv.privacy':'出于隐私保护，我不能把正式的CV与成绩单放在这里，请通过12410922@mail.sustech.edu.cn联系获取',
 				'research.heading':'科研方向',
 				'research.interests':'我的研究兴趣主要集中在计算机视觉（Computer Vision）与图像编辑（Image Editing）。',
 				'research.advisor.label':'指导教师：',
@@ -113,19 +114,19 @@
 				'other.heading':'实验室之外',
 				'other.runner':'我也是一名业余马拉松跑者！',
 				'other.record.label':'半程马拉松 / 个人最好成绩',
-				'other.record.place':'@ 2026 杭州梦想小镇',
+				'other.record.place':'@ 26 杭州梦想小镇',
 				'footer.about':'© 云离 · 关于'
 			}
 		};
 	</script>
-	<script src="source/site-ui.js" defer></script>
-	<script src="source/typewriter.js" defer></script>
+	<script src="source/site-ui.js?v=20260902" defer></script>
+	<script src="source/typewriter.js?v=20260902" defer></script>
 </head>
 <body class="preload page-about">
 	<div class="bg"></div>
 	<div class="site">
 		<header>
-			<a href="index.html" class="brand" data-i18n="brand.name">Yunli</a>
+			<a href="./" class="brand" data-i18n="brand.name">Yunli</a>
 			<div class="header-actions">
 				<nav class="nav-links" aria-label="Main navigation" data-i18n-aria-label="nav.label">
 					<a href="blog.html" data-i18n="nav.blog">Blog</a>
@@ -133,8 +134,20 @@
 					<a href="about.html" aria-current="page" data-i18n="nav.about">About</a>
 				</nav>
 				<div class="utility-switches">
-				<button class="cute-switch language-switch" type="button" data-language-toggle aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">EN / 中</button>
-				<button class="cute-switch theme-switch" type="button" data-theme-toggle aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">☀️ / 🌙</button>
+				<button class="cute-switch language-switch" type="button" data-language-toggle data-state="en" role="switch" aria-checked="false" aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">
+					<span class="switch-track" aria-hidden="true">
+						<span class="switch-option switch-option-left">EN</span>
+						<span class="switch-option switch-option-right">中</span>
+						<span class="switch-thumb"></span>
+					</span>
+				</button>
+				<button class="cute-switch theme-switch" type="button" data-theme-toggle data-state="dark" role="switch" aria-checked="true" aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">
+					<span class="switch-track" aria-hidden="true">
+						<span class="switch-option switch-option-left">☀️</span>
+						<span class="switch-option switch-option-right">🌙</span>
+						<span class="switch-thumb"></span>
+					</span>
+				</button>
 				</div>
 			</div>
 		</header>

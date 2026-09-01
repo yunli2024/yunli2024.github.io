@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Blog — Yunli</title>
   <meta name="description" content="Notes on learning, research, and everyday life from Yunli.">
-  <link rel="stylesheet" href="source/ui-polish.css">
+  <script src="source/site-preferences.js?v=20260902"></script>
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -44,13 +45,13 @@
       },
       zh: {
         'meta.title': '博客 — 云离',
-        'meta.description': '云离关于学习、科研与日常生活的记录。',
+        'meta.description': '云离的个人博客与学习记录',
         'blog.eyebrow': '云离 / 随笔 / 2026',
         'blog.title': '博客',
-        'blog.note': '记下一些让自己开心的小事。',
+        'blog.note': '写点傻开心的东西',
         'blog.search.label': '检索博客文章',
         'blog.search.heading': '搜索',
-        'blog.search.placeholder': '搜索标题、标签或关键词',
+        'blog.search.placeholder': '输入标题、标签或关键词',
         'blog.search.clear': '清除',
         'blog.category.heading': '分类',
         'blog.category.all': '全部',
@@ -60,9 +61,9 @@
         'blog.category.daily-life': '日常',
         'blog.category.uncategorized': '未分类',
         'blog.status.sync': '同步 / 索引',
-        'blog.status.loading': '正在读取文章索引…',
+        'blog.status.loading': '正在读取文章索引',
         'blog.status.failed': '索引 / 暂不可用',
-        'blog.status.failureMessage': '文章索引读取失败，请稍后重试。',
+        'blog.status.failureMessage': '文章索引读取失败，请稍后重试',
         'blog.untitled': '未命名文章',
         'blog.dateFallback': '日期 —',
         'blog.meta.category': '分类 / {category}',
@@ -72,18 +73,18 @@
         'blog.results.many': '{count} 篇文章',
         'blog.results.loadingLikes': '正在加载点赞数据',
         'blog.results.likesUnavailable': '点赞数据暂不可用',
-        'blog.empty.search': '没有匹配当前关键词的文章。',
-        'blog.empty.category': '当前分类暂时没有文章。',
+        'blog.empty.search': '没有匹配当前关键词的文章',
+        'blog.empty.category': '当前分类暂时没有文章',
         'blog.footer': '© 云离 · 随笔档案'
       }
     };
   </script>
-  <script src="source/site-ui.js" defer></script>
-  <script src="source/typewriter.js" defer></script>
+  <script src="source/site-ui.js?v=20260902" defer></script>
+  <script src="source/typewriter.js?v=20260902" defer></script>
 </head>
 <body class="preload page-blog">
   <header>
-    <a href="index.html" class="brand" data-i18n="brand.name">Yunli</a>
+    <a href="./" class="brand" data-i18n="brand.name">Yunli</a>
     <div class="header-actions">
       <nav class="nav-links" aria-label="Main navigation" data-i18n-aria-label="nav.label">
         <a href="blog.html" aria-current="page" data-i18n="nav.blog">Blog</a>
@@ -91,8 +92,20 @@
         <a href="about.html" data-i18n="nav.about">About</a>
       </nav>
       <div class="utility-switches">
-        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">EN / 中</button>
-        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">☀️ / 🌙</button>
+        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle data-state="en" role="switch" aria-checked="false" aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">
+          <span class="switch-track" aria-hidden="true">
+            <span class="switch-option switch-option-left">EN</span>
+            <span class="switch-option switch-option-right">中</span>
+            <span class="switch-thumb"></span>
+          </span>
+        </button>
+        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle data-state="dark" role="switch" aria-checked="true" aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">
+          <span class="switch-track" aria-hidden="true">
+            <span class="switch-option switch-option-left">☀️</span>
+            <span class="switch-option switch-option-right">🌙</span>
+            <span class="switch-thumb"></span>
+          </span>
+        </button>
       </div>
     </div>
   </header>
@@ -154,7 +167,7 @@
       activeCategory: 'all',
       query: '',
       likes: new Map(),
-      failedCovers: new Set(),
+      availableCovers: new Set(),
       likesReady: false,
       likesStatus: 'loading',
       loadState: 'loading'
@@ -221,6 +234,21 @@
       return value.startsWith('/') ? value.slice(1) : value;
     }
 
+    function coverFileFor(item){
+      const baseName = normalizeFilePath(item.file).split('/').pop() || 'post.md';
+      return baseName.replace(/\.md$/i, '_cover.png');
+    }
+
+    async function loadCoverManifest(){
+      try{
+        const manifest = await tryFetch('source/blog-covers.json');
+        const covers = Array.isArray(manifest) ? manifest : manifest.covers;
+        state.availableCovers = new Set(Array.isArray(covers) ? covers.map(String) : []);
+      }catch(error){
+        state.availableCovers = new Set();
+      }
+    }
+
     async function getLikeCount(file){
       try{
         const response = await fetchWithTimeout(`${LIKE_API}?id=${encodeURIComponent(file)}`);
@@ -243,11 +271,10 @@
       const filePath = normalizeFilePath(item.file);
       const category = getCategory(item);
       const likes = state.likes.get(filePath);
-      const baseName = filePath.split('/').pop() || 'post.md';
-      const coverFile = baseName.replace(/\.md$/i, '_cover.png');
-      const coverKnownMissing = state.failedCovers.has(coverFile);
+      const coverFile = coverFileFor(item);
+      const coverAvailable = state.availableCovers.has(coverFile);
       const article = document.createElement('article');
-      article.className = `post pop-in${coverKnownMissing ? '' : ' has-cover'}`;
+      article.className = `post pop-in${coverAvailable ? ' has-cover' : ''}`;
       article.style.animationDelay = `${Math.min(index * 45, 270)}ms`;
 
       const number = document.createElement('span');
@@ -294,7 +321,7 @@
       }
       article.appendChild(content);
 
-      if(!coverKnownMissing){
+      if(coverAvailable){
         const cover = document.createElement('div');
         cover.className = 'post-cover';
         const image = document.createElement('img');
@@ -303,7 +330,6 @@
         image.loading = index > 1 ? 'lazy' : 'eager';
         image.decoding = 'async';
         image.addEventListener('error', () => {
-          state.failedCovers.add(coverFile);
           cover.hidden = true;
           article.classList.remove('has-cover');
         });
@@ -413,6 +439,7 @@
       }
 
       state.items = index;
+      await loadCoverManifest();
       state.loadState = 'ready';
       renderList();
       loadLikes();

@@ -36,7 +36,8 @@
     @media(max-width:720px){.hero h1{font-size:22px}}
 
     /* Light theme overrides (uses the .light flag on body) */
-    body.light{
+    body.light,
+    html[data-theme="light"] body{
       --bg1:#f5f7fb;--bg2:#ffffff;--surface:#ffffff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)
     }
     .hero, .site, section, footer{transition:background-color .2s,border-color .18s,color .18s}
@@ -68,7 +69,8 @@
     .glass-card{background-color:rgba(255,255,255,0.85);color:#0b1220}
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%)}}
   </style>
-  <link rel="stylesheet" href="source/ui-polish.css">
+  <script src="source/site-preferences.js?v=20260902"></script>
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -92,33 +94,33 @@
       },
       zh: {
         'meta.title': '云离 — 首页',
-        'meta.description': '云离的个人主页，记录学习、科研、项目与日常生活。',
+        'meta.description': '云离的个人主页',
         'home.greeting': '你好，我是云离',
-        'home.subtitle': '南方科技大学计算机系 2024 级本科生',
-        'home.about.title': '关于本站',
-        'home.about.copy1': '这里是云离的个人主页。随缘写写，也分享一些我觉得有趣的东西。',
-        'home.about.copy2': '你可以通过上方导航浏览博客与项目，也可以前往“关于”了解更多。',
-        'home.about.source': '查看本站源码',
+        'home.subtitle': '南方科技大学 2024 级本科生',
+        'home.about.title': '网站说明',
+        'home.about.copy1': '是云离的个人主页，随缘写写，分享点有趣的东西。',
+        'home.about.copy2': '上方导航可查看博客文章、项目等。也可以通过“关于”页面了解更多关于我~',
+        'home.about.source': '查看此网站仓库',
         'home.contact.title': '联系我',
-        'home.contact.email': '如果你有问题或想聊聊合作，欢迎发邮件至：',
-        'home.contact.github': '你也可以在 <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a> 找到我。',
-        'home.stats.title': '写作一览',
-        'home.stats.note': '根据全部 Markdown 文章统计。',
+        'home.contact.email': '有问题或合作请发邮件：',
+        'home.contact.github': '也可以在 <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a> 找到我。',
+        'home.stats.title': '统计量',
+        'home.stats.note': '来自所有的 Markdown 文章。',
         'home.stats.active': '活跃天数',
         'home.stats.updated': '上次更新时间',
-        'home.stats.characters': '总字符数',
+        'home.stats.characters': '总字数',
         'home.footer': '© 云离 · 首页'
       }
     };
   </script>
-  <script src="source/site-ui.js" defer></script>
-  <script src="source/typewriter.js" defer></script>
+  <script src="source/site-ui.js?v=20260902" defer></script>
+  <script src="source/typewriter.js?v=20260902" defer></script>
 </head>
 <body class="preload page-home">
   <div class="bg"></div>
   <div class="site">
     <header>
-      <a href="index.html" class="brand" aria-current="page" data-i18n="brand.name">Yunli</a>
+      <a href="./" class="brand" aria-current="page" data-i18n="brand.name">Yunli</a>
       <div class="header-actions">
         <nav class="nav-links" aria-label="Main navigation" data-i18n-aria-label="nav.label">
           <a href="blog.html" data-i18n="nav.blog">Blog</a>
@@ -126,8 +128,20 @@
           <a href="about.html" data-i18n="nav.about">About</a>
         </nav>
         <div class="utility-switches">
-        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">EN / 中</button>
-        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">☀️ / 🌙</button>
+        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle data-state="en" role="switch" aria-checked="false" aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">
+          <span class="switch-track" aria-hidden="true">
+            <span class="switch-option switch-option-left">EN</span>
+            <span class="switch-option switch-option-right">中</span>
+            <span class="switch-thumb"></span>
+          </span>
+        </button>
+        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle data-state="dark" role="switch" aria-checked="true" aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">
+          <span class="switch-track" aria-hidden="true">
+            <span class="switch-option switch-option-left">☀️</span>
+            <span class="switch-option switch-option-right">🌙</span>
+            <span class="switch-thumb"></span>
+          </span>
+        </button>
         </div>
       </div>
     </header>

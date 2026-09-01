@@ -8,7 +8,7 @@
   <style>
     :root{--bg1:#071026;--bg2:#061027;--surface:#071026;--text:#e6eef8;--muted:#94a3b8;--accent:#60a5fa;--card-border:rgba(255,255,255,0.03)}
     body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s}
-    body.light{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)}
+    body.light,html[data-theme="light"] body{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)}
     .wrap{max-width:1000px;margin:36px auto;padding:16px}
     a{color:var(--accent)}
     footer{padding:28px;text-align:center;color:var(--muted)}
@@ -74,7 +74,8 @@
     .reveal .projects-grid .card:nth-child(5){animation-delay:860ms}
     .reveal .projects-grid .card:nth-child(6){animation-delay:1040ms}
   </style>
-  <link rel="stylesheet" href="source/ui-polish.css">
+  <script src="source/site-preferences.js?v=20260902"></script>
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -128,31 +129,31 @@
         'meta.title': '项目 — 云离',
         'meta.description': '云离的课程项目与研究项目精选。',
         'projects.title': '项目',
-        'projects.intro': '这里主要记录课程项目，也会放一些有趣的实验。',
+        'projects.intro': '主要是一些课程项目啦。',
         'projects.score': '最终成绩：',
         'projects.repository': '代码仓库',
         'projects.details': '项目详情',
         'projects.privateRepository': '私有代码仓库',
-        'projects.cpu.coverAria': '查看 CS202 RISC-V 处理器项目详情',
-        'projects.cpu.repositoryTitle': '此 GitHub Classroom 仓库为私有仓库，访问需要授权。',
+        'projects.cpu.coverAria': '查看 CS202 RISC-V CPU 项目详情',
+        'projects.cpu.repositoryTitle': 'GitHub Classroom 私有仓库，访问需要授权',
         'projects.klotski.title': 'CS109 2025 年春季课程项目：三国华容道（Klotski）',
-        'projects.klotski.description': '计算机程序设计基础课程项目：使用 Java 实现的三国华容道小游戏。',
-        'projects.klotski.alt': '三国华容道（Klotski）游戏界面',
+        'projects.klotski.description': '计算机程序设计基础课程项目：三国华容道小游戏',
+        'projects.klotski.alt': '三国华容道 Klotski Game 项目界面',
         'projects.matrix.title': 'CS207 2025 年秋季课程项目：FPGA 矩阵计算器（Matrix Calculator）',
-        'projects.matrix.description': '数字逻辑课程项目：基于 FPGA 的矩阵计算器。',
-        'projects.matrix.alt': 'FPGA 矩阵计算器（Matrix Calculator）界面',
+        'projects.matrix.description': '数字逻辑课程项目：基于FPGA的矩阵计算器',
+        'projects.matrix.alt': 'FPGA 矩阵计算器演示界面',
         'projects.recipe1.title': 'CS307 2025 年秋季课程项目 I：南科大菜谱管理系统（SUSTech Recipe Management System）',
-        'projects.recipe1.description': '数据库原理课程项目 I：面向南科大的菜谱管理系统。',
-        'projects.recipe1.alt': '南科大菜谱管理系统（SUSTech Recipe Management System）数据库结构图',
+        'projects.recipe1.description': '数据库原理课程项目I：SUSTech 菜谱管理系统',
+        'projects.recipe1.alt': '菜谱管理系统数据库结构图',
         'projects.recipe2.title': 'CS307 2025 年秋季课程项目 II：南科大菜谱数据库系统（SUSTech Recipe Database System）',
-        'projects.recipe2.description': '数据库原理课程项目 II：面向南科大的菜谱数据库系统。',
-        'projects.recipe2.alt': '南科大菜谱数据库系统（SUSTech Recipe Database System）界面',
+        'projects.recipe2.description': '数据库原理课程项目II：SUSTech 菜谱数据库系统',
+        'projects.recipe2.alt': '菜谱数据库系统界面',
         'projects.visual.title': '新加坡国立大学计算机学院视觉计算课程项目：实时人脸与人体关键点分析（Real-Time Face and Body Keypoint Analysis）',
-        'projects.visual.description': '视觉计算课程项目：基于实时人脸与人体关键点，实现表情识别、舞蹈评分与体感游戏。',
-        'projects.visual.alt': '基于实时人体关键点的体感平台游戏界面',
+        'projects.visual.description': '新加坡国立大学视觉计算课程项目：基于人脸与人体关键点的表情识别、舞蹈评分与体感游戏。',
+        'projects.visual.alt': '实时人体关键点控制平台游戏',
         'projects.cpu.title': 'CS202 2026 年春季课程项目：单周期 RISC-V 处理器（CPU）',
-        'projects.cpu.description': '计算机组成原理课程项目：使用 Verilog 与 Vivado 构建单周期 RV32I 处理器，并支持 UART 调试与可视化教学工具。',
-        'projects.cpu.alt': '单周期 RV32I 处理器数据通路与 UART 调试架构',
+        'projects.cpu.description': '计算机组成原理课程项目：基于 Verilog 与 Vivado 的单周期 RV32I CPU，支持 UART 调试与可视化教学工具',
+        'projects.cpu.alt': '单周期 RV32I CPU 数据通路与 UART 调试架构封面',
         'tag.java': 'Java',
         'tag.game': '游戏',
         'tag.swing': 'Swing',
@@ -173,12 +174,12 @@
       }
     };
   </script>
-  <script src="source/site-ui.js" defer></script>
-  <script src="source/typewriter.js" defer></script>
+  <script src="source/site-ui.js?v=20260902" defer></script>
+  <script src="source/typewriter.js?v=20260902" defer></script>
 </head>
 <body class="preload page-projects">
   <header>
-    <a href="index.html" class="brand" data-i18n="brand.name">Yunli</a>
+    <a href="./" class="brand" data-i18n="brand.name">Yunli</a>
     <div class="header-actions">
       <nav class="nav-links" aria-label="Main navigation" data-i18n-aria-label="nav.label">
         <a href="blog.html" data-i18n="nav.blog">Blog</a>
@@ -186,8 +187,20 @@
         <a href="about.html" data-i18n="nav.about">About</a>
       </nav>
       <div class="utility-switches">
-        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">EN / 中</button>
-        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">☀️ / 🌙</button>
+        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle data-state="en" role="switch" aria-checked="false" aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">
+          <span class="switch-track" aria-hidden="true">
+            <span class="switch-option switch-option-left">EN</span>
+            <span class="switch-option switch-option-right">中</span>
+            <span class="switch-thumb"></span>
+          </span>
+        </button>
+        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle data-state="dark" role="switch" aria-checked="true" aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">
+          <span class="switch-track" aria-hidden="true">
+            <span class="switch-option switch-option-left">☀️</span>
+            <span class="switch-option switch-option-right">🌙</span>
+            <span class="switch-thumb"></span>
+          </span>
+        </button>
       </div>
     </div>
   </header>

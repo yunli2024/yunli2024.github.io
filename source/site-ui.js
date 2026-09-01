@@ -28,8 +28,8 @@
       'controls.language.label': '中文界面',
       'controls.language.action': '切换至英文',
       'controls.theme.label': '深色模式',
-      'controls.theme.toLight': '切换至浅色主题',
-      'controls.theme.toDark': '切换至深色主题'
+      'controls.theme.toLight': '切换到浅色主题',
+      'controls.theme.toDark': '切换到深色主题'
     }
   };
 
@@ -118,6 +118,7 @@
     if(description && translatedDescription !== 'meta.description'){
       description.setAttribute('content', translatedDescription);
     }
+    delete document.documentElement.dataset.i18nPending;
   }
 
   function buildSwitch(button, type){
@@ -188,6 +189,14 @@
     }));
   }
 
+  function restorePreferences(){
+    const language = readPreference(LANGUAGE_KEY, ['en', 'zh'], DEFAULT_LANGUAGE);
+    const theme = readPreference(THEME_KEY, ['dark', 'light'], DEFAULT_THEME);
+    applyTheme(theme, false);
+    applyLanguage(language, false);
+    document.documentElement.dataset.i18nReady = 'true';
+  }
+
   function init(){
     document.querySelectorAll('[data-language-toggle]').forEach(button => {
       button.addEventListener('click', () => {
@@ -203,11 +212,21 @@
     applyTheme(currentTheme, false);
     applyLanguage(currentLanguage, false);
     document.documentElement.dataset.i18nReady = 'true';
+
+    window.addEventListener('pageshow', event => {
+      if(event.persisted) restorePreferences();
+    });
+    window.addEventListener('storage', event => {
+      if(event.key === null || event.key === LANGUAGE_KEY || event.key === THEME_KEY){
+        restorePreferences();
+      }
+    });
   }
 
   window.SiteUI = {
     applyLanguage,
     applyTheme,
+    restorePreferences,
     t: translate,
     get language(){return currentLanguage},
     get theme(){return currentTheme}
