@@ -1,93 +1,194 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Blog — 云离</title>
-  <meta name="description" content="云离的个人博客与学习记录">
+  <title>Blog — Yunli</title>
+  <meta name="description" content="Notes on learning, research, and everyday life from Yunli.">
   <link rel="stylesheet" href="source/ui-polish.css">
+  <script>
+    window.PAGE_I18N = {
+      en: {
+        'meta.title': 'Blog — Yunli',
+        'meta.description': 'Notes on learning, research, and everyday life from Yunli.',
+        'blog.eyebrow': 'YL / FIELD NOTES / 2026',
+        'blog.title': 'Blog',
+        'blog.note': 'A small collection of things that make me smile.',
+        'blog.search.label': 'Search blog posts',
+        'blog.search.heading': 'SEARCH',
+        'blog.search.placeholder': 'Search titles, tags, or keywords',
+        'blog.search.clear': 'Clear',
+        'blog.category.heading': 'CATEGORY',
+        'blog.category.all': 'All',
+        'blog.category.course': 'Courses',
+        'blog.category.academic': 'Academic',
+        'blog.category.reflection': 'Reflections',
+        'blog.category.daily-life': 'Daily Life',
+        'blog.category.uncategorized': 'Uncategorized',
+        'blog.status.sync': 'SYNC / INDEX',
+        'blog.status.loading': 'Loading post index…',
+        'blog.status.failed': 'INDEX / UNAVAILABLE',
+        'blog.status.failureMessage': 'Couldn’t load the post index. Please try again later.',
+        'blog.untitled': 'Untitled post',
+        'blog.dateFallback': 'DATE —',
+        'blog.meta.category': 'CATEGORY / {category}',
+        'blog.meta.likes': 'LIKES / {likes}',
+        'blog.tags.label': 'Post tags',
+        'blog.results.one': '{count} POST',
+        'blog.results.many': '{count} POSTS',
+        'blog.results.loadingLikes': 'LOADING LIKES',
+        'blog.results.likesUnavailable': 'LIKES UNAVAILABLE',
+        'blog.empty.search': 'No posts match your search.',
+        'blog.empty.category': 'No posts in this category yet.',
+        'blog.footer': '© Yunli · Notes Archive'
+      },
+      zh: {
+        'meta.title': '博客 — 云离',
+        'meta.description': '云离关于学习、科研与日常生活的记录。',
+        'blog.eyebrow': '云离 / 随笔 / 2026',
+        'blog.title': '博客',
+        'blog.note': '记下一些让自己开心的小事。',
+        'blog.search.label': '检索博客文章',
+        'blog.search.heading': '搜索',
+        'blog.search.placeholder': '搜索标题、标签或关键词',
+        'blog.search.clear': '清除',
+        'blog.category.heading': '分类',
+        'blog.category.all': '全部',
+        'blog.category.course': '课程',
+        'blog.category.academic': '学术',
+        'blog.category.reflection': '思考',
+        'blog.category.daily-life': '日常',
+        'blog.category.uncategorized': '未分类',
+        'blog.status.sync': '同步 / 索引',
+        'blog.status.loading': '正在读取文章索引…',
+        'blog.status.failed': '索引 / 暂不可用',
+        'blog.status.failureMessage': '文章索引读取失败，请稍后重试。',
+        'blog.untitled': '未命名文章',
+        'blog.dateFallback': '日期 —',
+        'blog.meta.category': '分类 / {category}',
+        'blog.meta.likes': '点赞 / {likes}',
+        'blog.tags.label': '文章标签',
+        'blog.results.one': '{count} 篇文章',
+        'blog.results.many': '{count} 篇文章',
+        'blog.results.loadingLikes': '正在加载点赞数据',
+        'blog.results.likesUnavailable': '点赞数据暂不可用',
+        'blog.empty.search': '没有匹配当前关键词的文章。',
+        'blog.empty.category': '当前分类暂时没有文章。',
+        'blog.footer': '© 云离 · 随笔档案'
+      }
+    };
+  </script>
+  <script src="source/site-ui.js" defer></script>
   <script src="source/typewriter.js" defer></script>
 </head>
 <body class="preload page-blog">
   <header>
-    <a href="index.html" class="brand">云离</a>
-    <nav class="nav-links" aria-label="主导航">
-      <a href="blog.html" aria-current="page">Blog</a>
-      <a href="projects.html">Projects</a>
-      <a href="about.html">About</a>
-      <button id="themeSwitch" class="menu-btn" type="button" aria-label="切换到浅色主题" title="切换日/夜模式">🌙</button>
-    </nav>
+    <a href="index.html" class="brand" data-i18n="brand.name">Yunli</a>
+    <div class="header-actions">
+      <nav class="nav-links" aria-label="Main navigation" data-i18n-aria-label="nav.label">
+        <a href="blog.html" aria-current="page" data-i18n="nav.blog">Blog</a>
+        <a href="projects.html" data-i18n="nav.projects">Projects</a>
+        <a href="about.html" data-i18n="nav.about">About</a>
+      </nav>
+      <div class="utility-switches">
+        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">EN / 中</button>
+        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">☀️ / 🌙</button>
+      </div>
+    </div>
   </header>
 
   <main class="wrap blog-wrap">
     <section class="blog-intro" aria-labelledby="blog-title">
       <div>
-        <p class="eyebrow">YL / FIELD NOTES / 2026</p>
-        <h1 id="blog-title">Blog</h1>
+        <p class="eyebrow" data-i18n="blog.eyebrow">YL / FIELD NOTES / 2026</p>
+        <h1 id="blog-title" data-i18n="blog.title">Blog</h1>
       </div>
-      <p class="blog-type-note typewriter-line" data-typewriter data-typewriter-speed="120" data-typewriter-start="460">写点傻开心的东西</p>
+      <p class="blog-type-note typewriter-line" data-typewriter data-typewriter-speed="120" data-typewriter-start="460" data-i18n="blog.note">A small collection of things that make me smile.</p>
     </section>
 
-    <form class="query-panel" role="search" aria-label="检索博客文章">
+    <form class="query-panel" role="search" aria-label="Search blog posts" data-i18n-aria-label="blog.search.label">
       <div class="query-row">
-        <label class="query-label" for="searchInput">SEARCH</label>
+        <label class="query-label" for="searchInput" data-i18n="blog.search.heading">SEARCH</label>
         <div class="search-control">
           <span class="search-mark" aria-hidden="true">⌕</span>
-          <input id="searchInput" class="search-input" type="search" autocomplete="off" placeholder="输入标题、标签或关键词">
-          <button id="clearSearch" class="clear-search" type="button" hidden>清除</button>
+          <input id="searchInput" class="search-input" type="search" autocomplete="off" placeholder="Search titles, tags, or keywords" data-i18n-placeholder="blog.search.placeholder">
+          <button id="clearSearch" class="clear-search" type="button" hidden data-i18n="blog.search.clear">Clear</button>
         </div>
       </div>
 
       <div class="query-row">
-        <span class="query-label" id="categoryLabel">CHANNEL</span>
+        <span class="query-label" id="categoryLabel" data-i18n="blog.category.heading">CATEGORY</span>
         <div class="filter-list" role="group" aria-labelledby="categoryLabel">
-          <button class="filter-button is-active" type="button" data-category="all" aria-pressed="true">all</button>
-          <button class="filter-button" type="button" data-category="course" aria-pressed="false">course</button>
-          <button class="filter-button" type="button" data-category="academic" aria-pressed="false">academic</button>
-          <button class="filter-button" type="button" data-category="reflection" aria-pressed="false">reflection</button>
-          <button class="filter-button" type="button" data-category="daily-life" aria-pressed="false">daily-life</button>
+          <button class="filter-button is-active" type="button" data-category="all" aria-pressed="true" data-i18n="blog.category.all">All</button>
+          <button class="filter-button" type="button" data-category="course" aria-pressed="false" data-i18n="blog.category.course">Courses</button>
+          <button class="filter-button" type="button" data-category="academic" aria-pressed="false" data-i18n="blog.category.academic">Academic</button>
+          <button class="filter-button" type="button" data-category="reflection" aria-pressed="false" data-i18n="blog.category.reflection">Reflections</button>
+          <button class="filter-button" type="button" data-category="daily-life" aria-pressed="false" data-i18n="blog.category.daily-life">Daily Life</button>
         </div>
         <select id="categorySelect" class="visually-hidden" tabindex="-1" aria-hidden="true">
-          <option value="all">all</option>
-          <option value="course">course</option>
-          <option value="academic">academic</option>
-          <option value="reflection">reflection</option>
-          <option value="daily-life">daily-life</option>
+          <option value="all" data-i18n="blog.category.all">All</option>
+          <option value="course" data-i18n="blog.category.course">Courses</option>
+          <option value="academic" data-i18n="blog.category.academic">Academic</option>
+          <option value="reflection" data-i18n="blog.category.reflection">Reflections</option>
+          <option value="daily-life" data-i18n="blog.category.daily-life">Daily Life</option>
         </select>
       </div>
     </form>
 
-    <div id="resultMeta" class="result-line" aria-live="polite">SYNC / INDEX</div>
+    <div id="resultMeta" class="result-line" aria-live="polite" data-i18n="blog.status.sync">SYNC / INDEX</div>
     <div id="list" aria-busy="true">
-      <p class="list-status">正在读取文章索引</p>
+      <p class="list-status" data-i18n="blog.status.loading">Loading post index…</p>
     </div>
+    <noscript>
+      <style>#resultMeta,#list{display:none}</style>
+      <p class="list-status">JavaScript is required to load and filter the blog archive.</p>
+    </noscript>
   </main>
 
-  <footer>© 云离 / Notes archive</footer>
+  <footer><span data-i18n="blog.footer">© Yunli · Notes Archive</span></footer>
 
   <script>
     const LIKE_API = 'https://homepagelike.12410922.workers.dev/like';
-    const CATEGORY_LABELS = {
-      all: 'all',
-      course: 'course',
-      academic: 'academic',
-      reflection: 'reflection',
-      'daily-life': 'daily-life',
-      uncategorized: 'uncategorized'
-    };
-
     const state = {
       items: [],
       activeCategory: 'all',
       query: '',
       likes: new Map(),
-      likesReady: false
+      failedCovers: new Set(),
+      likesReady: false,
+      likesStatus: 'loading',
+      loadState: 'loading'
     };
+
+    const t = (key, replacements = {}) => {
+      if(window.SiteUI?.t) return window.SiteUI.t(key, replacements);
+      const language = document.documentElement.dataset.language === 'zh' ? 'zh' : 'en';
+      let value = window.PAGE_I18N?.[language]?.[key] ?? window.PAGE_I18N?.en?.[key] ?? key;
+      Object.entries(replacements).forEach(([name,replacement]) => {
+        value = value.replaceAll(`{${name}}`, String(replacement));
+      });
+      return value;
+    };
+
+    function categoryLabel(category){
+      const known = ['all','course','academic','reflection','daily-life','uncategorized'];
+      return t(`blog.category.${known.includes(category) ? category : 'uncategorized'}`);
+    }
 
     async function tryFetch(url){
       const response = await fetch(url);
       if(!response.ok) throw new Error(`${response.status} ${response.statusText}`);
       return response.json();
+    }
+
+    async function fetchWithTimeout(url, options = {}, timeout = 8000){
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), timeout);
+      try{
+        return await fetch(url, {...options, signal:controller.signal});
+      }finally{
+        window.clearTimeout(timer);
+      }
     }
 
     function normalizeTags(tags){
@@ -111,7 +212,7 @@
     function matchesQuery(item, query){
       const words = String(query || '').toLowerCase().trim().split(/[\s,]+/).filter(Boolean);
       if(words.length === 0) return true;
-      const haystack = `${item.title || ''} ${normalizeTags(item.tags).join(' ')}`.toLowerCase();
+      const haystack = `${item.title || ''} ${item.excerpt || ''} ${normalizeTags(item.tags).join(' ')}`.toLowerCase();
       return words.every(word => haystack.includes(word));
     }
 
@@ -122,12 +223,13 @@
 
     async function getLikeCount(file){
       try{
-        const response = await fetch(`${LIKE_API}?id=${encodeURIComponent(file)}`);
-        if(!response.ok) return 0;
+        const response = await fetchWithTimeout(`${LIKE_API}?id=${encodeURIComponent(file)}`);
+        if(!response.ok) return null;
         const data = await response.json();
-        return Number(data.likes) || 0;
+        const likes = Number(data.likes);
+        return Number.isFinite(likes) ? likes : null;
       }catch(error){
-        return 0;
+        return null;
       }
     }
 
@@ -141,8 +243,11 @@
       const filePath = normalizeFilePath(item.file);
       const category = getCategory(item);
       const likes = state.likes.get(filePath);
+      const baseName = filePath.split('/').pop() || 'post.md';
+      const coverFile = baseName.replace(/\.md$/i, '_cover.png');
+      const coverKnownMissing = state.failedCovers.has(coverFile);
       const article = document.createElement('article');
-      article.className = 'post pop-in has-cover';
+      article.className = `post pop-in${coverKnownMissing ? '' : ' has-cover'}`;
       article.style.animationDelay = `${Math.min(index * 45, 270)}ms`;
 
       const number = document.createElement('span');
@@ -156,15 +261,15 @@
       const heading = document.createElement('h2');
       const link = document.createElement('a');
       link.href = `post.html?file=${encodeURIComponent(filePath)}`;
-      link.textContent = item.title || '未命名文章';
+      link.textContent = item.title || t('blog.untitled');
       heading.appendChild(link);
       content.appendChild(heading);
 
       const meta = document.createElement('div');
       meta.className = 'post-meta';
-      appendMeta(meta, item.date || 'DATE —');
-      appendMeta(meta, `CHANNEL / ${CATEGORY_LABELS[category] || category}`);
-      appendMeta(meta, `SIGNAL / ${typeof likes === 'number' ? likes : '—'}`);
+      appendMeta(meta, item.date || t('blog.dateFallback'));
+      appendMeta(meta, t('blog.meta.category', {category: categoryLabel(category)}));
+      appendMeta(meta, t('blog.meta.likes', {likes: typeof likes === 'number' ? likes : '—'}));
       content.appendChild(meta);
 
       if(item.excerpt){
@@ -178,7 +283,7 @@
       if(tags.length){
         const tagList = document.createElement('div');
         tagList.className = 'post-tags';
-        tagList.setAttribute('aria-label', '文章标签');
+        tagList.setAttribute('aria-label', t('blog.tags.label'));
         tags.forEach(tag => {
           const tagItem = document.createElement('span');
           tagItem.className = 'post-tag';
@@ -189,21 +294,22 @@
       }
       article.appendChild(content);
 
-      const cover = document.createElement('div');
-      cover.className = 'post-cover';
-      const image = document.createElement('img');
-      const baseName = filePath.split('/').pop() || 'post.md';
-      const coverFile = baseName.replace(/\.md$/i, '_cover.png');
-      image.src = `source/${encodeURIComponent(coverFile)}`;
-      image.alt = '';
-      image.loading = index > 1 ? 'lazy' : 'eager';
-      image.decoding = 'async';
-      image.addEventListener('error', () => {
-        cover.hidden = true;
-        article.classList.remove('has-cover');
-      });
-      cover.appendChild(image);
-      article.appendChild(cover);
+      if(!coverKnownMissing){
+        const cover = document.createElement('div');
+        cover.className = 'post-cover';
+        const image = document.createElement('img');
+        image.src = `source/${encodeURIComponent(coverFile)}`;
+        image.alt = '';
+        image.loading = index > 1 ? 'lazy' : 'eager';
+        image.decoding = 'async';
+        image.addEventListener('error', () => {
+          state.failedCovers.add(coverFile);
+          cover.hidden = true;
+          article.classList.remove('has-cover');
+        });
+        cover.appendChild(image);
+        article.appendChild(cover);
+      }
 
       return article;
     }
@@ -229,17 +335,43 @@
     function renderList(){
       const list = document.getElementById('list');
       const resultMeta = document.getElementById('resultMeta');
+      if(state.loadState === 'loading'){
+        list.replaceChildren();
+        list.setAttribute('aria-busy', 'true');
+        resultMeta.textContent = t('blog.status.sync');
+        const loading = document.createElement('p');
+        loading.className = 'list-status';
+        loading.textContent = t('blog.status.loading');
+        list.appendChild(loading);
+        return;
+      }
+      if(state.loadState === 'failed'){
+        list.replaceChildren();
+        list.setAttribute('aria-busy', 'false');
+        resultMeta.textContent = t('blog.status.failed');
+        const failure = document.createElement('p');
+        failure.className = 'list-status';
+        failure.textContent = t('blog.status.failureMessage');
+        list.appendChild(failure);
+        return;
+      }
       const items = getFilteredItems();
       list.replaceChildren();
       list.setAttribute('aria-busy', 'false');
 
-      const mode = state.likesReady ? 'POPULARITY' : 'SYNCING SIGNAL';
-      resultMeta.textContent = `${String(items.length).padStart(2, '0')} ENTRIES / ${mode}`;
+      resultMeta.classList.toggle('likes-ready', state.likesStatus === 'ready');
+      const likesNote = state.likesStatus === 'loading'
+        ? t('blog.results.loadingLikes')
+        : state.likesStatus === 'unavailable'
+          ? t('blog.results.likesUnavailable')
+          : '';
+      resultMeta.textContent = t(items.length === 1 ? 'blog.results.one' : 'blog.results.many', {count: items.length})
+        + (likesNote ? ` / ${likesNote}` : '');
 
       if(items.length === 0){
         const empty = document.createElement('p');
         empty.className = 'list-status';
-        empty.textContent = state.query ? '没有匹配当前关键词的文章' : '当前分类暂时没有文章';
+        empty.textContent = t(state.query ? 'blog.empty.search' : 'blog.empty.category');
         list.appendChild(empty);
         return;
       }
@@ -252,9 +384,11 @@
     async function loadLikes(){
       await Promise.all(state.items.map(async item => {
         const filePath = normalizeFilePath(item.file);
-        state.likes.set(filePath, await getLikeCount(filePath));
+        const likes = await getLikeCount(filePath);
+        if(typeof likes === 'number') state.likes.set(filePath, likes);
       }));
-      state.likesReady = true;
+      state.likesReady = state.likes.size > 0;
+      state.likesStatus = state.likesReady ? 'ready' : 'unavailable';
       renderList();
     }
 
@@ -273,13 +407,13 @@
       }
 
       if(!Array.isArray(index)){
-        list.setAttribute('aria-busy', 'false');
-        list.innerHTML = '<p class="list-status">文章索引读取失败，请稍后重试</p>';
-        document.getElementById('resultMeta').textContent = 'SYNC / FAILED';
+        state.loadState = 'failed';
+        renderList();
         return;
       }
 
       state.items = index;
+      state.loadState = 'ready';
       renderList();
       loadLikes();
     }
@@ -317,29 +451,11 @@
     });
 
     document.querySelector('.query-panel').addEventListener('submit', event => event.preventDefault());
+    window.addEventListener('site-language-change', renderList);
     loadIndex();
   </script>
 
   <script>
-    const themeSwitch = document.getElementById('themeSwitch');
-
-    function applyTheme(theme){
-      const light = theme === 'light';
-      document.body.classList.toggle('light', light);
-      themeSwitch.textContent = light ? '☀️' : '🌙';
-      themeSwitch.setAttribute('aria-label', light ? '切换到深色主题' : '切换到浅色主题');
-      try{localStorage.setItem('site-theme', theme)}catch(error){}
-    }
-
-    (function(){
-      let theme = 'dark';
-      try{theme = localStorage.getItem('site-theme') || 'dark'}catch(error){}
-      applyTheme(theme);
-      themeSwitch.addEventListener('click', () => {
-        applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
-      });
-    })();
-
     window.addEventListener('load', () => {
       document.body.classList.add('reveal');
       document.body.classList.remove('preload');

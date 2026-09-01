@@ -1,20 +1,20 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>云离_About</title>
+	<meta name="description" content="Meet Yunli, a computer science student at SUSTech interested in computer vision, image editing, and long-distance running.">
+	<title>About — Yunli</title>
 	<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 	<style>
 		:root{
-			/* 淡黄色主题（仅限 about 页面） */
-			--bg1: #fff9e6; /* 明亮的浅黄 */
-			--bg2: #fff5cc; /* 更浅的黄色渐变 */
-			--surface: #fffaf0;
-			--text: #0b1220; /* 深色正文以保证可读性 */
-			--muted: #6b6b5f;
-			--accent: #b45309;
-			--card-border: rgba(11,18,32,0.06);
+			--bg1:#fff9e6;
+			--bg2:#fff5cc;
+			--surface:#fffaf0;
+			--text:#0b1220;
+			--muted:#6b6b5f;
+			--accent:#b45309;
+			--card-border:rgba(11,18,32,.06);
 		}
 		*{box-sizing:border-box}
 		body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s}
@@ -23,35 +23,30 @@
 		.brand{font-weight:700;font-size:26px}
 		nav{display:flex;gap:12px;align-items:center}
 		.nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
-		.menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer;transition:color .18s,border-color .18s,background-color .18s}
+		.header-actions,.utility-switches{display:flex;align-items:center}
+		.header-actions{gap:10px}
+		.utility-switches{gap:4px}
 		.wrap{max-width:760px;margin:36px auto;padding:16px}
 		a{color:var(--accent)}
 		footer{padding:28px;text-align:center;color:var(--muted)}
 
-		/* Light theme */
-		body.light{--bg1:#f5f7fb;--bg2:#ffffff;--surface:#ffffff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)}
+		body.light{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,.06)}
 
-		/* 背景与玻璃卡片样式 */
-		.bg{position:fixed;inset:0;background-image: url("");background-size:cover;background-position:center;background-repeat:no-repeat;background:radial-gradient(1000px 500px at 20% 10%, rgba(250,230,150,.14), transparent 55%),radial-gradient(700px 380px at 80% 30%, rgba(250,200,120,.10), transparent 50%),linear-gradient(180deg,var(--bg1),var(--bg2));z-index:-1}
-		.glass-card{max-width:760px;margin:36px auto;padding:20px 22px;border-radius:14px;background-color:rgba(255,255,255,0.12);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 20px rgba(2,6,23,0.35);color:var(--text);will-change:backdrop-filter}
-		@media (max-width:768px) and (hover:none){.glass-card{-webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);background-color:rgba(255,255,255,0.16)}}
-		@media (prefers-reduced-transparency: reduce){.glass-card{-webkit-backdrop-filter:none;backdrop-filter:none;background-color:rgba(255,255,255,0.92);color:#0b1220}}
-		@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text)}}
+		.bg{position:fixed;inset:0;background:radial-gradient(1000px 500px at 20% 10%,rgba(250,230,150,.14),transparent 55%),radial-gradient(700px 380px at 80% 30%,rgba(250,200,120,.1),transparent 50%),linear-gradient(180deg,var(--bg1),var(--bg2));z-index:-1}
+		.glass-card{max-width:760px;margin:36px auto;padding:20px 22px;border-radius:14px;background-color:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 20px rgba(2,6,23,.35);color:var(--text);will-change:backdrop-filter}
+		@media (max-width:768px) and (hover:none){.glass-card{-webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);background-color:rgba(255,255,255,.16)}}
+		@media (prefers-reduced-transparency:reduce){.glass-card{-webkit-backdrop-filter:none;backdrop-filter:none;background-color:rgba(255,255,255,.92);color:#0b1220}}
+		@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.glass-card{background-color:rgba(255,255,255,.12);color:var(--text)}}
 
-		/* 技能小标签样式 */
-		.skills{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:8px 0 0;list-style:none}
-		.skills li{background:rgba(11,18,32,0.04);padding:6px 10px;border-radius:10px;font-size:14px;color:var(--text)}
-
-		/* 关于区右侧照片样式 */
 		.about-top{display:flex;gap:18px;align-items:flex-start}
 		.about-photo img{width:clamp(96px,20vw,180px);height:clamp(96px,20vw,180px);object-fit:cover;border-radius:10px;cursor:pointer}
 		@media(max-width:760px){.about-top{flex-direction:column}.about-photo{align-self:center}}
-		@keyframes popInUp {
-			0% {opacity:0; transform:translateY(24px) scale(0.98)}
-			60% {opacity:1; transform:translateY(-4px) scale(1.01)}
-			100% {opacity:1; transform:translateY(0) scale(1)}
+		@keyframes popInUp{
+			0%{opacity:0;transform:translateY(24px) scale(.98)}
+			60%{opacity:1;transform:translateY(-4px) scale(1.01)}
+			100%{opacity:1;transform:translateY(0) scale(1)}
 		}
-		.preload .glass-card{opacity:0;transform:translateY(24px) scale(0.98)}
+		.preload .glass-card{opacity:0;transform:translateY(24px) scale(.98)}
 		.reveal .glass-card{opacity:0;animation:popInUp 1200ms ease-out forwards}
 		.reveal .glass-card:nth-of-type(1){animation-delay:140ms}
 		.reveal .glass-card:nth-of-type(2){animation-delay:320ms}
@@ -59,111 +54,188 @@
 		.reveal .glass-card:nth-of-type(4){animation-delay:680ms}
 	</style>
 	<link rel="stylesheet" href="source/ui-polish.css">
+	<script>
+		window.PAGE_I18N = {
+			en: {
+				'meta.title':'About — Yunli',
+				'meta.description':'Meet Yunli, a computer science student at SUSTech interested in computer vision, image editing, and long-distance running.',
+				'about.heading':'About Yunli',
+				'about.intro.student':'I’m a 2024-cohort undergraduate in SUSTech’s Department of Computer Science and Engineering.',
+				'about.intro.site':'Here I share notes from SUSTech courses, reflections on learning and research, and little moments from everyday life.',
+				'about.intro.update':'Life gets busy—and I am a world-class procrastinator—so new posts arrive whenever inspiration wins. Meow.',
+				'about.photo.alt':'Portrait of Yunli',
+				'about.photo.action':'Show Yunli’s next portrait. Currently showing photo {number} of {total}.',
+				'about.photo.static':'Portrait of Yunli. One photo is currently available.',
+				'about.photo.caption':'PORTRAIT / {number}',
+				'cv.heading':'CV',
+				'cv.school.label':'University:',
+				'cv.school.value':'Southern University of Science and Technology (SUSTech)',
+				'cv.department.label':'Department:',
+				'cv.department.value':'Department of Computer Science and Engineering (CSE)',
+				'cv.location.label':'Based in:',
+				'cv.location.value':'Shenzhen, China',
+				'cv.github.label':'GitHub:',
+				'cv.privacy':'To protect my privacy, I do not publish my full CV or transcript here. Feel free to email me at 12410922@mail.sustech.edu.cn to request them.',
+				'research.heading':'Research',
+				'research.interests':'My research interests center on computer vision and image editing.',
+				'research.advisor.label':'Supervised by:',
+				'research.advisor.name':'Professor Jianguo Zhang',
+				'other.heading':'Beyond the Lab',
+				'other.runner':'I am also an amateur marathon runner!',
+				'other.record.label':'HALF MARATHON / PERSONAL BEST',
+				'other.record.place':'@ Hangzhou Dream Town, 2026',
+				'footer.about':'© Yunli · About'
+			},
+			zh: {
+				'meta.title':'关于 — 云离',
+				'meta.description':'认识云离：南方科技大学计算机专业学生，研究兴趣包括计算机视觉与图像编辑，也热爱长跑。',
+				'about.heading':'关于云离',
+				'about.intro.student':'我是南方科技大学计算机科学与工程系 2024 级本科生。',
+				'about.intro.site':'在这里，我会分享南科大课程笔记、学习与科研感悟，也会记录一些日常生活的小片段。',
+				'about.intro.update':'平时有点忙，拖延症又很严重，所以更新随缘——灵感赢了就来写。喵～',
+				'about.photo.alt':'云离的个人照片',
+				'about.photo.action':'切换云离的个人照片，当前为第 {number} 张，共 {total} 张。',
+				'about.photo.static':'云离的个人照片。当前仅有一张照片。',
+				'about.photo.caption':'照片 / {number}',
+				'cv.heading':'个人履历',
+				'cv.school.label':'学校：',
+				'cv.school.value':'南方科技大学（SUSTech）',
+				'cv.department.label':'院系：',
+				'cv.department.value':'计算机科学与工程系（CSE）',
+				'cv.location.label':'常驻：',
+				'cv.location.value':'中国深圳',
+				'cv.github.label':'GitHub：',
+				'cv.privacy':'出于隐私保护，我不会在这里公开完整的个人简历（CV）与成绩单。如需查阅，欢迎通过 12410922@mail.sustech.edu.cn 与我联系。',
+				'research.heading':'科研方向',
+				'research.interests':'我的研究兴趣主要集中在计算机视觉（Computer Vision）与图像编辑（Image Editing）。',
+				'research.advisor.label':'指导教师：',
+				'research.advisor.name':'张建国教授（Jianguo Zhang）',
+				'other.heading':'实验室之外',
+				'other.runner':'我也是一名业余马拉松跑者！',
+				'other.record.label':'半程马拉松 / 个人最好成绩',
+				'other.record.place':'@ 2026 杭州梦想小镇',
+				'footer.about':'© 云离 · 关于'
+			}
+		};
+	</script>
+	<script src="source/site-ui.js" defer></script>
 	<script src="source/typewriter.js" defer></script>
 </head>
 <body class="preload page-about">
 	<div class="bg"></div>
 	<div class="site">
 		<header>
-			<a href="index.html" class="brand">云离</a>
-			<nav class="nav-links" aria-label="主导航">
-				<a href="blog.html">Blog</a>
-				<a href="projects.html">Projects</a>
-				<a href="about.html" aria-current="page">About</a>
-				<button id="themeSwitch" class="menu-btn" type="button" aria-label="切换到浅色主题" title="切换日/夜模式">🌙</button>
-			</nav>
+			<a href="index.html" class="brand" data-i18n="brand.name">Yunli</a>
+			<div class="header-actions">
+				<nav class="nav-links" aria-label="Main navigation" data-i18n-aria-label="nav.label">
+					<a href="blog.html" data-i18n="nav.blog">Blog</a>
+					<a href="projects.html" data-i18n="nav.projects">Projects</a>
+					<a href="about.html" aria-current="page" data-i18n="nav.about">About</a>
+				</nav>
+				<div class="utility-switches">
+				<button class="cute-switch language-switch" type="button" data-language-toggle aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">EN / 中</button>
+				<button class="cute-switch theme-switch" type="button" data-theme-toggle aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">☀️ / 🌙</button>
+				</div>
+			</div>
 		</header>
 
 		<main>
 			<section class="glass-card wrap">
 				<div class="about-top">
 					<div class="about-text" style="flex:1;min-width:0">
-						<h1>关于「云离」</h1>
-						<p class="about-type-line typewriter-line" data-typewriter data-typewriter-start="380">我是南方科技大学24级计算机系学生。</p>
-						<p class="about-type-line typewriter-line" data-typewriter>在这个网站，我会分享南科大部分课程的心得，学习和research体会，还有一些生活日常~</p>
-						<p class="about-type-line typewriter-line" data-typewriter>由于平时比较忙，而且拖延症非常严重，所以只能随缘更新喵</p>
-						
+						<h1 data-i18n="about.heading">About Yunli</h1>
+						<p class="about-type-line typewriter-line" data-typewriter data-typewriter-start="380" data-i18n="about.intro.student">I’m a 2024-cohort undergraduate in SUSTech’s Department of Computer Science and Engineering.</p>
+						<p class="about-type-line typewriter-line" data-typewriter data-i18n="about.intro.site">Here I share notes from SUSTech courses, reflections on learning and research, and little moments from everyday life.</p>
+						<p class="about-type-line typewriter-line" data-typewriter data-i18n="about.intro.update">Life gets busy—and I am a world-class procrastinator—so new posts arrive whenever inspiration wins. Meow.</p>
 					</div>
 					<div class="about-photo">
-						<button id="photoToggle" class="photo-switch" type="button" aria-label="查看并切换云离的个人照片，当前第 1 张">
-							<img id="about-photo" src="source/photo1.png" alt="云离的照片" width="1076" height="1076">
+						<button id="photoToggle" class="photo-switch" type="button" aria-label="Show Yunli’s next portrait. Currently showing photo 1 of 2." data-i18n-aria-label="about.photo.action">
+							<img id="about-photo" src="source/photo1.png" alt="Portrait of Yunli" data-i18n-alt="about.photo.alt" width="1076" height="1076">
 						</button>
-						<div id="photoCaption">PORTRAIT / 01</div>
+						<div id="photoCaption" data-i18n="about.photo.caption">PORTRAIT / 01</div>
 					</div>
 				</div>
 			</section>
 
 			<section class="glass-card wrap">
-				<h2>CV</h2>
-				<p><strong>School：</strong> <a href="https://www.sustech.edu.cn" target="_blank" rel="noopener">SUSTech 南方科技大学</a></p>
-				<p><strong>Department：</strong> <a href="https://cse.sustech.edu.cn" target="_blank" rel="noopener">CSE 计算机科学与工程系</a></p>
-        <p><strong>Base: 深圳</strong></p>
-
-        <p>GitHub: <a href="https://github.com/yunli2024">yunli2024</a></p>
-				<p>出于隐私保护，我不能把正式的CV与成绩单放在这里，请通过12410922@mail.sustech.edu.cn联系获取</p>
+				<h2 data-i18n="cv.heading">CV</h2>
+				<p><strong data-i18n="cv.school.label">University:</strong> <a href="https://www.sustech.edu.cn" target="_blank" rel="noopener" data-i18n="cv.school.value">Southern University of Science and Technology (SUSTech)</a></p>
+				<p><strong data-i18n="cv.department.label">Department:</strong> <a href="https://cse.sustech.edu.cn" target="_blank" rel="noopener" data-i18n="cv.department.value">Department of Computer Science and Engineering (CSE)</a></p>
+				<p><strong data-i18n="cv.location.label">Based in:</strong> <span data-i18n="cv.location.value">Shenzhen, China</span></p>
+				<p><strong data-i18n="cv.github.label">GitHub:</strong> <a href="https://github.com/yunli2024">yunli2024</a></p>
+				<p data-i18n="cv.privacy">To protect my privacy, I do not publish my full CV or transcript here. Feel free to email me at 12410922@mail.sustech.edu.cn to request them.</p>
 			</section>
 
 			<section class="glass-card wrap">
-				<h2>Research</h2>
-				<p><strong>Interested in Computer Vision and Image Editing</strong></p>
-				<p><strong>Supervised by:</strong> <a href="https://www.sustech.edu.cn/zh/faculties/zhangjianguo.html" id="advisor-link">Prof. JianGuo Zhang</a></p>
-      
+				<h2 data-i18n="research.heading">Research</h2>
+				<p><strong data-i18n="research.interests">My research interests center on computer vision and image editing.</strong></p>
+				<p><strong data-i18n="research.advisor.label">Supervised by:</strong> <a href="https://www.sustech.edu.cn/zh/faculties/zhangjianguo.html" id="advisor-link" data-i18n="research.advisor.name">Professor Jianguo Zhang</a></p>
 			</section>
 
 			<section class="glass-card wrap">
-				<h2>Others</h2>
-				<p>A Marathon Amateur!</p>
-				<p class="personal-record"><span>HALF MARATHON / PERSONAL BEST</span><strong>1:59:32</strong><small>@ 26 杭州梦想小镇</small></p>
+				<h2 data-i18n="other.heading">Beyond the Lab</h2>
+				<p data-i18n="other.runner">I am also an amateur marathon runner!</p>
+				<p class="personal-record"><span data-i18n="other.record.label">HALF MARATHON / PERSONAL BEST</span><strong>1:59:32</strong><small data-i18n="other.record.place">@ Hangzhou Dream Town, 2026</small></p>
 			</section>
 		</main>
 
-		<footer>© 云离-about</footer>
+		<footer data-i18n="footer.about">© Yunli · About</footer>
 	</div>
 
-	<!-- 清理后的主题脚本（确保页面主题开关工作） -->
 	<script>
-		const themeSwitch = document.getElementById('themeSwitch');
-		function applyTheme(theme){
-			const light = theme === 'light';
-			document.body.classList.toggle('light', light);
-			if(themeSwitch){
-				themeSwitch.textContent = light ? '☀️' : '🌙';
-				themeSwitch.setAttribute('aria-label', light ? '切换到深色主题' : '切换到浅色主题');
-			}
-			try{localStorage.setItem('site-theme', theme)}catch(e){}
-		}
-		(function(){
-			let t = 'dark';
-			try{const stored = localStorage.getItem('site-theme'); if(stored) t = stored;}catch(e){}
-			applyTheme(t);
-			if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
-		})();
-	</script>
-	<script>
-		// About page photo toggle. The button remains keyboard accessible.
 		(function(){
 			const photo = document.getElementById('about-photo');
 			const toggle = document.getElementById('photoToggle');
 			const caption = document.getElementById('photoCaption');
 			if(!photo || !toggle) return;
-			const imgs = ['source/photo1.png','source/photo2.png'];
-			let idx = imgs.indexOf(photo.getAttribute('src'));
-			if(idx === -1) idx = 0;
-			toggle.addEventListener('click', ()=>{
+
+			const images = ['source/photo1.png'];
+			let index = images.indexOf(photo.getAttribute('src'));
+			let photoTimer = 0;
+			if(index === -1) index = 0;
+
+			const fallbackTranslate = (key,replacements = {}) => {
+				const language = document.documentElement.dataset.language === 'zh' ? 'zh' : 'en';
+				let value = window.PAGE_I18N?.[language]?.[key] || key;
+				Object.entries(replacements).forEach(([name,replacement]) => {
+					value = value.replaceAll(`{${name}}`,String(replacement));
+				});
+				return value;
+			};
+			const translate = (key,replacements) => window.SiteUI?.t
+				? window.SiteUI.t(key,replacements)
+				: fallbackTranslate(key,replacements);
+
+			function renderPhotoText(){
+				const number = index + 1;
+				const paddedNumber = String(number).padStart(2,'0');
+				const canSwitch = images.length > 1;
+				toggle.disabled = !canSwitch;
+				toggle.classList.toggle('is-static',!canSwitch);
+				toggle.setAttribute('aria-label',translate(canSwitch ? 'about.photo.action' : 'about.photo.static',{number,total:images.length}));
+				if(caption) caption.textContent = translate('about.photo.caption',{number:paddedNumber});
+			}
+
+			toggle.addEventListener('click',()=>{
+				if(images.length < 2) return;
+				window.clearTimeout(photoTimer);
 				photo.style.opacity = '0';
-				setTimeout(()=>{
-					idx = (idx + 1) % imgs.length;
-					photo.src = imgs[idx];
+				photoTimer = window.setTimeout(()=>{
+					index = (index + 1) % images.length;
+					photo.src = images[index];
 					photo.style.opacity = '1';
-					toggle.setAttribute('aria-label', `查看并切换云离的个人照片，当前第 ${idx + 1} 张`);
-					if(caption) caption.textContent = `PORTRAIT / ${String(idx + 1).padStart(2, '0')}`;
-				}, 180);
+					renderPhotoText();
+				},180);
 			});
+
+			window.addEventListener('site-language-change',()=>{
+				renderPhotoText();
+			});
+			renderPhotoText();
 		})();
 	</script>
 	<script>
-		// Reveal animation on load
-		window.addEventListener('load', () => {
+		window.addEventListener('load',()=>{
 			document.body.classList.add('reveal');
 			document.body.classList.remove('preload');
 		});

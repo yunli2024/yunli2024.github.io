@@ -30,6 +30,7 @@
 
     return {
       line,
+      reserve,
       visual,
       characters: Array.from(text),
       group: line.dataset.typewriterGroup || 'page',
@@ -47,12 +48,16 @@
 
   const pause = duration => new Promise(resolve => window.setTimeout(resolve, duration));
   const isPunctuation = character => /[，。！？；：,.!?~]/.test(character);
+  let generation = 0;
 
-  async function playGroup(groupEntries){
+  async function playGroup(groupEntries, runGeneration){
     await pause(groupEntries[0].start);
+    if(runGeneration !== generation) return;
     for(const entry of groupEntries){
+      if(runGeneration !== generation) return;
       entry.line.classList.add('is-typing');
       for(const character of entry.characters){
+        if(runGeneration !== generation) return;
         entry.visual.textContent += character;
         const delay = isPunctuation(character)
           ? Math.max(125, entry.speed * 2.4)
@@ -66,10 +71,20 @@
     }
   }
 
-  const play = () => groups.forEach(groupEntries => { playGroup(groupEntries); });
+  const play = () => {
+    generation += 1;
+    const runGeneration = generation;
+    entries.forEach(entry => {
+      entry.characters = Array.from(entry.reserve.textContent.trim());
+      entry.visual.textContent = '';
+      entry.line.classList.remove('is-typing', 'is-complete');
+    });
+    groups.forEach(groupEntries => { playGroup(groupEntries, runGeneration); });
+  };
   if(document.readyState === 'complete'){
     play();
   }else{
     window.addEventListener('load', play, {once:true});
   }
+  window.addEventListener('site-language-change', play);
 })();

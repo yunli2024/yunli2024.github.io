@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>云离-Homepage</title>
-  <meta name="description" content="云离的个人主页">
+  <title>Yunli — Home</title>
+  <meta name="description" content="Yunli’s personal website—notes on learning, research, projects, and everyday life.">
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
   <style>
     :root{
@@ -69,19 +69,67 @@
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%)}}
   </style>
   <link rel="stylesheet" href="source/ui-polish.css">
+  <script>
+    window.PAGE_I18N = {
+      en: {
+        'meta.title': 'Yunli — Home',
+        'meta.description': 'Yunli’s personal website—notes on learning, research, projects, and everyday life.',
+        'home.greeting': 'Hi, I’m Yunli',
+        'home.subtitle': 'Computer Science undergraduate at SUSTech · 2024 cohort',
+        'home.about.title': 'About This Site',
+        'home.about.copy1': 'This is my little corner of the internet. I write whenever inspiration strikes and share things I find interesting.',
+        'home.about.copy2': 'Browse my notes and projects above, or visit About to get to know me a little better.',
+        'home.about.source': 'View this site’s source',
+        'home.contact.title': 'Get in Touch',
+        'home.contact.email': 'Have a question or want to collaborate? Email me at:',
+        'home.contact.github': 'You can also find me on <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a>.',
+        'home.stats.title': 'Writing at a Glance',
+        'home.stats.note': 'Calculated from all Markdown posts.',
+        'home.stats.active': 'Active Days',
+        'home.stats.updated': 'Last Updated',
+        'home.stats.characters': 'Total Characters',
+        'home.footer': '© Yunli · Home'
+      },
+      zh: {
+        'meta.title': '云离 — 首页',
+        'meta.description': '云离的个人主页，记录学习、科研、项目与日常生活。',
+        'home.greeting': '你好，我是云离',
+        'home.subtitle': '南方科技大学计算机系 2024 级本科生',
+        'home.about.title': '关于本站',
+        'home.about.copy1': '这里是云离的个人主页。随缘写写，也分享一些我觉得有趣的东西。',
+        'home.about.copy2': '你可以通过上方导航浏览博客与项目，也可以前往“关于”了解更多。',
+        'home.about.source': '查看本站源码',
+        'home.contact.title': '联系我',
+        'home.contact.email': '如果你有问题或想聊聊合作，欢迎发邮件至：',
+        'home.contact.github': '你也可以在 <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a> 找到我。',
+        'home.stats.title': '写作一览',
+        'home.stats.note': '根据全部 Markdown 文章统计。',
+        'home.stats.active': '活跃天数',
+        'home.stats.updated': '上次更新时间',
+        'home.stats.characters': '总字符数',
+        'home.footer': '© 云离 · 首页'
+      }
+    };
+  </script>
+  <script src="source/site-ui.js" defer></script>
   <script src="source/typewriter.js" defer></script>
 </head>
 <body class="preload page-home">
   <div class="bg"></div>
   <div class="site">
     <header>
-      <a href="index.html" class="brand" aria-current="page">云离</a>
-        <nav class="nav-links" aria-label="主导航">
-          <a href="blog.html">Blog</a>
-          <a href="projects.html">Projects</a>
-          <a href="about.html">About</a>
-          <button id="themeSwitch" class="menu-btn" type="button" aria-label="切换到浅色主题" title="切换日/夜模式">🌙</button>
+      <a href="index.html" class="brand" aria-current="page" data-i18n="brand.name">Yunli</a>
+      <div class="header-actions">
+        <nav class="nav-links" aria-label="Main navigation" data-i18n-aria-label="nav.label">
+          <a href="blog.html" data-i18n="nav.blog">Blog</a>
+          <a href="projects.html" data-i18n="nav.projects">Projects</a>
+          <a href="about.html" data-i18n="nav.about">About</a>
         </nav>
+        <div class="utility-switches">
+        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">EN / 中</button>
+        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">☀️ / 🌙</button>
+        </div>
+      </div>
     </header>
 
     <main>
@@ -99,38 +147,38 @@
       <div class="cards-grid">
         <article class="hero profile-hero">
           <div class="profile-copy">
-            <h1 class="typewriter-line" data-typewriter data-typewriter-speed="88" data-typewriter-start="360">你好，我是云离</h1>
-            <p class="typewriter-line" data-typewriter data-typewriter-speed="54">南方科技大学 2024 级本科生</p>
+            <h1 class="typewriter-line" data-typewriter data-typewriter-speed="88" data-typewriter-start="360" data-i18n="home.greeting">Hi, I’m Yunli</h1>
+            <p class="typewriter-line" data-typewriter data-typewriter-speed="54" data-i18n="home.subtitle">Computer Science undergraduate at SUSTech · 2024 cohort</p>
           </div>
         </article>
 
         <article class="hero">
-          <h2>网站说明</h2>
-          <p>是yunli的个人主页，随缘写写，分享点有趣的东西。</p>
-          <p>上方导航可查看博客文章，项目等。也可以通过About的内容了解更多关于我~</p>
-          <p style="margin-top:8px"><a href="https://github.com/yunli2024/yunli2024.github.io" style="color:var(--accent)">查看此网站仓库</a></p>
+          <h2 data-i18n="home.about.title">About This Site</h2>
+          <p data-i18n="home.about.copy1">This is my little corner of the internet. I write whenever inspiration strikes and share things I find interesting.</p>
+          <p data-i18n="home.about.copy2">Browse my notes and projects above, or visit About to get to know me a little better.</p>
+          <p style="margin-top:8px"><a href="https://github.com/yunli2024/yunli2024.github.io" style="color:var(--accent)" data-i18n="home.about.source">View this site’s source</a></p>
         </article>
 
         <article class="hero">
-          <h2>联系我</h2>
-          <p>有问题或合作请发邮件：<a href="mailto:12410922@mail.sustech.edu.cn" style="color:var(--accent)">12410922@mail.sustech.edu.cn</a></p>
-          <p style="margin-top:8px">也可以在 <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a> 找到我。</p>
+          <h2 data-i18n="home.contact.title">Get in Touch</h2>
+          <p><span data-i18n="home.contact.email">Have a question or want to collaborate? Email me at:</span> <a href="mailto:12410922@mail.sustech.edu.cn" style="color:var(--accent)">12410922@mail.sustech.edu.cn</a></p>
+          <p style="margin-top:8px" data-i18n-html="home.contact.github">You can also find me on <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a>.</p>
         </article>
 
         <article class="hero">
-          <h2>统计量</h2>
-          <p style="color:var(--muted)">来自所有的Markdown文章。</p>
+          <h2 data-i18n="home.stats.title">Writing at a Glance</h2>
+          <p style="color:var(--muted)" data-i18n="home.stats.note">Calculated from all Markdown posts.</p>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px">
             <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px">
-              <div style="color:var(--muted);font-size:12px">活跃天数</div>
+              <div style="color:var(--muted);font-size:12px" data-i18n="home.stats.active">Active Days</div>
               <div id="stat-active-days" style="font-size:20px;font-weight:700">—</div>
             </div>
             <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px">
-              <div style="color:var(--muted);font-size:12px">上次更新时间</div>
+              <div style="color:var(--muted);font-size:12px" data-i18n="home.stats.updated">Last Updated</div>
               <div id="stat-last-update" style="font-size:20px;font-weight:700">—</div>
             </div>
             <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px">
-              <div style="color:var(--muted);font-size:12px">总字数</div>
+              <div style="color:var(--muted);font-size:12px" data-i18n="home.stats.characters">Total Characters</div>
               <div id="stat-total-words" style="font-size:20px;font-weight:700">—</div>
             </div>
           </div>
@@ -140,27 +188,10 @@
     </main>
 
     <footer>
-      © 云离-Homepage
+      <span data-i18n="home.footer">© Yunli · Home</span>
     </footer>
   </div>
 
-  <script>
-    // Theme control (persist in localStorage)
-    const themeSwitch = document.getElementById('themeSwitch');
-    function applyTheme(theme){
-      const light = theme === 'light';
-      document.body.classList.toggle('light', light);
-      themeSwitch.textContent = light ? '☀️' : '🌙';
-      themeSwitch.setAttribute('aria-label', light ? '切换到深色主题' : '切换到浅色主题');
-      try{localStorage.setItem('site-theme', theme)}catch(e){}
-    }
-    (function(){
-      let t = 'dark';
-      try{const stored = localStorage.getItem('site-theme'); if(stored) t = stored;}catch(e){}
-      applyTheme(t);
-      if(themeSwitch){themeSwitch.addEventListener('click', ()=>{const cur = document.body.classList.contains('light') ? 'light' : 'dark'; applyTheme(cur === 'light' ? 'dark' : 'light');});}
-    })();
-  </script>
   <script>
     function typeTerminalValue(element, value, startDelay = 0){
       if(!element) return;

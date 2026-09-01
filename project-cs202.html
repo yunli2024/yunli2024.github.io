@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="CS202 计算机组成原理课程项目：基于 Verilog 与 Vivado 的单周期 RISC-V CPU。">
-  <title>CS202 RISC-V CPU — 云离</title>
+  <meta name="description" content="A single-cycle RISC-V CPU built with Verilog and Vivado for the CS202 Computer Organization course.">
+  <title>CS202 RISC-V CPU — Yunli</title>
   <style>
     :root{
       --bg1:#071026;
@@ -86,7 +86,7 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-height:42px;
+      min-height:44px;
       padding:0 16px;
       border-radius:999px;
       border:1px solid var(--line);
@@ -156,109 +156,176 @@
     }
   </style>
   <link rel="stylesheet" href="source/ui-polish.css">
+  <script>
+    window.PAGE_I18N = {
+      en: {
+        'meta.title': 'CS202 RISC-V CPU — Yunli',
+        'meta.description': 'A single-cycle RISC-V CPU built with Verilog and Vivado for the CS202 Computer Organization course.',
+        'project.back': '← Back to Projects',
+        'project.eyebrow': 'SUSTech · CS202 · Spring 2026',
+        'project.title': 'Single-Cycle<br>RISC-V CPU',
+        'project.lede': 'A 32-bit, single-cycle RV32I CPU built with Verilog and Vivado. It implements the complete fetch–decode–execute–memory–write-back path, along with UART-based debugging and four interactive teaching tools for computer organization.',
+        'project.tagsLabel': 'Technology stack',
+        'project.tag.verilog': 'Verilog',
+        'project.tag.riscv': 'RISC-V RV32I',
+        'project.tag.vivado': 'Vivado',
+        'project.tag.uart': 'UART Debugging',
+        'project.viewArchitecture': 'View Architecture',
+        'project.privateRepository': 'Private Repository ↗',
+        'project.coverAlt': 'Single-cycle RV32I CPU datapath and UART debugging architecture',
+        'project.highlights.title': 'Project Highlights',
+        'project.highlights.subtitle': 'From the hardware datapath to interactive teaching tools',
+        'project.feature1.index': '01 / CORE',
+        'project.feature1.title': 'Single-Cycle Datapath',
+        'project.feature1.description': 'Implements the program counter, control unit, register file, immediate generator, ALU, instruction memory, data memory, and write-back selection.',
+        'project.feature2.index': '02 / ISA',
+        'project.feature2.title': 'RV32I Instruction Support',
+        'project.feature2.description': 'Supports arithmetic and logical operations, immediate instructions, loads, stores, conditional branches, and the JAL/JALR jump paths.',
+        'project.feature3.index': '03 / DEBUG',
+        'project.feature3.title': 'UART Hardware Debugging',
+        'project.feature3.description': 'Supports CPU halt, single-step, and reset, plus debug access to registers, instruction memory, and data memory.',
+        'project.feature4.index': '04 / BONUS',
+        'project.feature4.title': 'Interactive Learning Tools',
+        'project.feature4.description': 'Includes four interactive tools covering arithmetic units, cache, RISC-V instruction encoding and decoding, and Hamming SEC/DED.',
+        'project.architecture.title': 'CPU Architecture',
+        'project.architecture.subtitle': 'Harvard architecture · single-cycle execution · observable state',
+        'project.architecture.alt': 'Complete datapath and debugging architecture of the single-cycle RISC-V CPU',
+        'project.note.label': 'Repository access information',
+        'project.note.mark': 'PRIVATE',
+        'project.note.title': 'Why isn’t the source repository publicly accessible?',
+        'project.note.body': 'The source code lives in a private GitHub Classroom repository. This page shares a curated overview of the project; the original repository is available only to signed-in GitHub accounts authorized by the course organization.',
+        'project.footer': '© Yunli · CS202 Computer Organization'
+      },
+      zh: {
+        'meta.title': 'CS202 RISC-V 处理器 — 云离',
+        'meta.description': 'CS202 计算机组成原理课程项目：使用 Verilog 与 Vivado 构建的单周期 RISC-V 处理器。',
+        'project.back': '← 返回项目列表',
+        'project.eyebrow': '南方科技大学 · CS202 · 2026 年春季',
+        'project.title': '单周期 RISC-V<br>处理器（CPU）',
+        'project.lede': '使用 Verilog 与 Vivado 构建的 32 位单周期 RV32I 处理器。从取指、译码、执行、访存到写回，实现完整的数据通路，并配有基于 UART 的调试功能，以及四款面向计算机组成原理的交互式教学工具。',
+        'project.tagsLabel': '技术栈',
+        'project.tag.verilog': 'Verilog',
+        'project.tag.riscv': 'RISC-V RV32I',
+        'project.tag.vivado': 'Vivado',
+        'project.tag.uart': 'UART 调试',
+        'project.viewArchitecture': '查看架构',
+        'project.privateRepository': '私有代码仓库 ↗',
+        'project.coverAlt': '单周期 RV32I 处理器数据通路与 UART 调试架构',
+        'project.highlights.title': '项目亮点',
+        'project.highlights.subtitle': '从硬件数据通路到交互式教学工具',
+        'project.feature1.index': '01 / 核心',
+        'project.feature1.title': '单周期数据通路',
+        'project.feature1.description': '实现程序计数器（PC）、控制器、寄存器堆、立即数生成器、算术逻辑单元（ALU）、指令存储器（IMEM）、数据存储器（DMEM）与写回选择逻辑。',
+        'project.feature2.index': '02 / 指令集',
+        'project.feature2.title': 'RV32I 指令支持',
+        'project.feature2.description': '支持算术与逻辑运算、立即数指令、加载、存储、条件分支，以及 JAL/JALR 跳转路径。',
+        'project.feature3.index': '03 / 调试',
+        'project.feature3.title': 'UART 硬件调试',
+        'project.feature3.description': '支持处理器暂停、单步执行与复位，并可调试访问寄存器、指令存储器和数据存储器。',
+        'project.feature4.index': '04 / 额外功能',
+        'project.feature4.title': '交互式教学工具',
+        'project.feature4.description': '包含算术单元、缓存（Cache）、RISC-V 指令编解码与汉明码 SEC/DED 四套交互工具。',
+        'project.architecture.title': '处理器架构',
+        'project.architecture.subtitle': '哈佛存储结构 · 单周期执行 · 可观测状态',
+        'project.architecture.alt': '单周期 RISC-V 处理器完整数据通路与调试架构图',
+        'project.note.label': '仓库访问说明',
+        'project.note.mark': '私有仓库',
+        'project.note.title': '为什么源代码仓库无法公开访问？',
+        'project.note.body': '源代码位于 GitHub Classroom 私有仓库。本页公开展示经过整理的项目介绍；只有已登录且获得课程组织授权的 GitHub 账号才能访问原始仓库。',
+        'project.footer': '© 云离 · CS202 计算机组成原理'
+      }
+    };
+  </script>
+  <script src="source/site-ui.js" defer></script>
 </head>
 <body class="page-project-detail">
   <header>
-    <a href="index.html" class="brand">云离</a>
-    <nav class="nav-links" aria-label="主导航">
-      <a href="blog.html">Blog</a>
-      <a href="projects.html" aria-current="page">Projects</a>
-      <a href="about.html">About</a>
-      <button id="themeSwitch" class="menu-btn" type="button" aria-label="切换到浅色主题" title="切换日/夜模式">🌙</button>
-    </nav>
+    <a href="index.html" class="brand" data-i18n="brand.name">Yunli</a>
+    <div class="header-actions">
+      <nav class="nav-links" aria-label="Main navigation" data-i18n-aria-label="nav.label">
+        <a href="blog.html" data-i18n="nav.blog">Blog</a>
+        <a href="projects.html" aria-current="page" data-i18n="nav.projects">Projects</a>
+        <a href="about.html" data-i18n="nav.about">About</a>
+      </nav>
+      <div class="utility-switches">
+        <button id="languageSwitch" class="cute-switch language-switch" type="button" data-language-toggle aria-label="Chinese interface" data-i18n-aria-label="controls.language.label" title="Switch to Chinese" data-i18n-title="controls.language.action">EN / 中</button>
+        <button id="themeSwitch" class="cute-switch theme-switch" type="button" data-theme-toggle aria-label="Dark mode" data-i18n-aria-label="controls.theme.label" title="Switch to light theme" data-i18n-title="controls.theme.toLight">☀️ / 🌙</button>
+      </div>
+    </div>
   </header>
 
   <main>
-    <a class="back" href="projects.html">← 返回 Projects</a>
+    <a class="back" href="projects.html" data-i18n="project.back">← Back to Projects</a>
 
     <article class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">SUSTech · CS202 · 2026 Spring</p>
-        <h1>Single-Cycle<br>RISC-V CPU</h1>
-        <p class="lede">基于 Verilog 与 Vivado 构建的 32 位单周期 RV32I CPU。从取指、译码、执行、访存到写回，配套 UART 调试通路和四个计算机组成原理可视化教学工具。</p>
-        <div class="tags" aria-label="技术标签">
-          <span class="tag">Verilog</span>
-          <span class="tag">RISC-V RV32I</span>
-          <span class="tag">Vivado</span>
-          <span class="tag">UART Debug</span>
+        <p class="eyebrow" data-i18n="project.eyebrow">SUSTech · CS202 · Spring 2026</p>
+        <h1 data-i18n-html="project.title">Single-Cycle<br>RISC-V CPU</h1>
+        <p class="lede" data-i18n="project.lede">A 32-bit, single-cycle RV32I CPU built with Verilog and Vivado. It implements the complete fetch–decode–execute–memory–write-back path, along with UART-based debugging and four interactive teaching tools for computer organization.</p>
+        <div class="tags" aria-label="Technology stack" data-i18n-aria-label="project.tagsLabel">
+          <span class="tag" data-i18n="project.tag.verilog">Verilog</span>
+          <span class="tag" data-i18n="project.tag.riscv">RISC-V RV32I</span>
+          <span class="tag" data-i18n="project.tag.vivado">Vivado</span>
+          <span class="tag" data-i18n="project.tag.uart">UART Debugging</span>
         </div>
         <div class="actions">
-          <a class="button primary" href="#architecture">查看架构</a>
-          <a class="button" href="https://github.com/login?return_to=%2FCS202ComputerOrganization%2Fcpu-project-ourcpu" target="_blank" rel="noopener">Private repository ↗</a>
+          <a class="button primary" href="#architecture" data-i18n="project.viewArchitecture">View Architecture</a>
+          <a class="button" href="https://github.com/login?return_to=%2FCS202ComputerOrganization%2Fcpu-project-ourcpu" target="_blank" rel="noopener" data-i18n="project.privateRepository">Private Repository ↗</a>
         </div>
       </div>
       <div class="hero-media">
-        <img src="source/cs202_cpu_project.svg" alt="单周期 RV32I CPU 数据通路与 UART 调试架构封面" decoding="async">
+        <img src="source/cs202_cpu_project.svg" alt="Single-cycle RV32I CPU datapath and UART debugging architecture" data-i18n-alt="project.coverAlt" decoding="async">
       </div>
     </article>
 
     <section aria-labelledby="highlights-title">
       <div class="section-head">
-        <h2 id="highlights-title">Project highlights</h2>
-        <p>从硬件数据通路到交互式教学工具</p>
+        <h2 id="highlights-title" data-i18n="project.highlights.title">Project Highlights</h2>
+        <p data-i18n="project.highlights.subtitle">From the hardware datapath to interactive teaching tools</p>
       </div>
       <div class="feature-grid">
         <article class="feature">
-          <span class="feature-index">01 / CORE</span>
-          <h3>单周期数据通路</h3>
-          <p>实现 PC、控制器、寄存器堆、立即数生成、ALU、IMEM、DMEM 与写回选择。</p>
+          <span class="feature-index" data-i18n="project.feature1.index">01 / CORE</span>
+          <h3 data-i18n="project.feature1.title">Single-Cycle Datapath</h3>
+          <p data-i18n="project.feature1.description">Implements the program counter, control unit, register file, immediate generator, ALU, instruction memory, data memory, and write-back selection.</p>
         </article>
         <article class="feature">
-          <span class="feature-index">02 / ISA</span>
-          <h3>RV32I 指令支持</h3>
-          <p>覆盖算术逻辑、立即数、加载、存储、条件分支以及 JAL/JALR 跳转路径。</p>
+          <span class="feature-index" data-i18n="project.feature2.index">02 / ISA</span>
+          <h3 data-i18n="project.feature2.title">RV32I Instruction Support</h3>
+          <p data-i18n="project.feature2.description">Supports arithmetic and logical operations, immediate instructions, loads, stores, conditional branches, and the JAL/JALR jump paths.</p>
         </article>
         <article class="feature">
-          <span class="feature-index">03 / DEBUG</span>
-          <h3>UART 硬件调试</h3>
-          <p>支持 CPU halt、step、reset，以及寄存器、指令存储器和数据存储器的调试访问。</p>
+          <span class="feature-index" data-i18n="project.feature3.index">03 / DEBUG</span>
+          <h3 data-i18n="project.feature3.title">UART Hardware Debugging</h3>
+          <p data-i18n="project.feature3.description">Supports CPU halt, single-step, and reset, plus debug access to registers, instruction memory, and data memory.</p>
         </article>
         <article class="feature">
-          <span class="feature-index">04 / BONUS</span>
-          <h3>可视化教学工具</h3>
-          <p>包含算术单元、Cache、RISC-V 指令编解码与 Hamming SEC/DED 四套交互工具。</p>
+          <span class="feature-index" data-i18n="project.feature4.index">04 / BONUS</span>
+          <h3 data-i18n="project.feature4.title">Interactive Learning Tools</h3>
+          <p data-i18n="project.feature4.description">Includes four interactive tools covering arithmetic units, cache, RISC-V instruction encoding and decoding, and Hamming SEC/DED.</p>
         </article>
       </div>
     </section>
 
     <section id="architecture" aria-labelledby="architecture-title">
       <div class="section-head">
-        <h2 id="architecture-title">CPU architecture</h2>
-        <p>Harvard memory · single-cycle execution · observable state</p>
+        <h2 id="architecture-title" data-i18n="project.architecture.title">CPU Architecture</h2>
+        <p data-i18n="project.architecture.subtitle">Harvard architecture · single-cycle execution · observable state</p>
       </div>
       <div class="architecture">
-        <img src="source/cs202_cpu_architecture.png" alt="单周期 RISC-V CPU 完整数据通路与调试结构图" loading="lazy" decoding="async">
+        <img src="source/cs202_cpu_architecture.png" alt="Complete datapath and debugging architecture of the single-cycle RISC-V CPU" data-i18n-alt="project.architecture.alt" width="2348" height="1376" loading="lazy" decoding="async">
       </div>
     </section>
 
-    <section class="note" aria-label="仓库访问说明">
-      <span class="note-mark">PRIVATE</span>
+    <section class="note" aria-label="Repository access information" data-i18n-aria-label="project.note.label">
+      <span class="note-mark" data-i18n="project.note.mark">PRIVATE</span>
       <div>
-        <strong>为什么代码仓库不是公开链接？</strong>
-        <p>源代码位于 GitHub Classroom 私有仓库。详情页公开展示经过整理的项目介绍；只有已登录且获得课程组织授权的 GitHub 账号才能访问原始仓库。</p>
+        <strong data-i18n="project.note.title">Why isn’t the source repository publicly accessible?</strong>
+        <p data-i18n="project.note.body">The source code lives in a private GitHub Classroom repository. This page shares a curated overview of the project; the original repository is available only to signed-in GitHub accounts authorized by the course organization.</p>
       </div>
     </section>
   </main>
 
-  <footer>© 云离 · CS202 Computer Organization</footer>
-
-  <script>
-    const themeSwitch = document.getElementById('themeSwitch');
-    function applyTheme(theme){
-      const light = theme === 'light';
-      document.body.classList.toggle('light', light);
-      themeSwitch.textContent = light ? '☀️' : '🌙';
-      themeSwitch.setAttribute('aria-label', light ? '切换到深色主题' : '切换到浅色主题');
-      try{localStorage.setItem('site-theme',theme)}catch(e){}
-    }
-    (function(){
-      let theme = 'dark';
-      try{theme = localStorage.getItem('site-theme') || 'dark'}catch(e){}
-      applyTheme(theme);
-      themeSwitch.addEventListener('click',()=>{
-        applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
-      });
-    })();
-  </script>
+  <footer data-i18n="project.footer">© Yunli · CS202 Computer Organization</footer>
 </body>
 </html>
