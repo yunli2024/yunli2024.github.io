@@ -11,6 +11,12 @@
       'brand.name': 'Yunli',
       'nav.label': 'Main navigation',
       'nav.blog': 'Blog',
+      'nav.blogMenu.label': 'Browse blog categories',
+      'nav.blogMenu.all': 'All Posts',
+      'nav.blogMenu.course': 'Courses',
+      'nav.blogMenu.academic': 'Academic',
+      'nav.blogMenu.reflection': 'Reflections',
+      'nav.blogMenu.dailyLife': 'Daily Life',
       'nav.projects': 'Projects',
       'nav.about': 'About',
       'controls.language.label': 'Chinese interface',
@@ -23,6 +29,12 @@
       'brand.name': '云离',
       'nav.label': '主导航',
       'nav.blog': '博客',
+      'nav.blogMenu.label': '浏览博客分类',
+      'nav.blogMenu.all': '全部文章',
+      'nav.blogMenu.course': '课程',
+      'nav.blogMenu.academic': '学术',
+      'nav.blogMenu.reflection': '思考',
+      'nav.blogMenu.dailyLife': '日常',
       'nav.projects': '项目',
       'nav.about': '关于',
       'controls.language.label': '中文界面',
@@ -165,6 +177,175 @@
     });
   }
 
+  function initBlogDropdown(){
+    document.querySelectorAll('.nav-links').forEach((nav,index) => {
+      const blogLink = Array.from(nav.children).find(element => (
+        element.matches?.('a[href="blog.html"]')
+      ));
+      if(!blogLink || blogLink.closest('.nav-blog-group')) return;
+
+      const group = document.createElement('div');
+      group.className = 'nav-blog-group';
+      const menuId = `navBlogMenu${index + 1}`;
+      nav.insertBefore(group,blogLink);
+      group.appendChild(blogLink);
+      blogLink.classList.add('nav-blog-link');
+      blogLink.setAttribute('aria-haspopup','true');
+
+      const toggle = document.createElement('button');
+      toggle.className = 'nav-blog-toggle';
+      toggle.type = 'button';
+      toggle.setAttribute('aria-expanded','false');
+      toggle.setAttribute('aria-controls',menuId);
+      toggle.dataset.i18nAriaLabel = 'nav.blogMenu.label';
+      toggle.innerHTML = '<span aria-hidden="true">▾</span>';
+
+      const menu = document.createElement('div');
+      menu.id = menuId;
+      menu.className = 'nav-blog-menu';
+      menu.setAttribute('aria-label','Browse blog categories');
+      menu.dataset.i18nAriaLabel = 'nav.blogMenu.label';
+      [
+        ['all','nav.blogMenu.all'],
+        ['course','nav.blogMenu.course'],
+        ['academic','nav.blogMenu.academic'],
+        ['reflection','nav.blogMenu.reflection'],
+        ['daily-life','nav.blogMenu.dailyLife']
+      ].forEach(([category,key]) => {
+        const link = document.createElement('a');
+        link.href = category === 'all' ? 'blog.html' : `blog.html?category=${category}`;
+        link.dataset.i18n = key;
+        link.dataset.blogCategory = category;
+        link.textContent = key;
+        const currentPage = location.pathname.split('/').pop() || 'index.html';
+        const currentCategory = new URLSearchParams(location.search).get('category') || 'all';
+        if(currentPage === 'blog.html' && currentCategory === category) link.setAttribute('aria-current','page');
+        menu.appendChild(link);
+      });
+
+      group.append(toggle,menu);
+      const setOpen = open => {
+        group.classList.toggle('is-open',open);
+        toggle.setAttribute('aria-expanded',String(open));
+      };
+      toggle.addEventListener('click',event => {
+        event.stopPropagation();
+        setOpen(!group.classList.contains('is-open'));
+      });
+      group.addEventListener('keydown',event => {
+        if(event.key !== 'Escape') return;
+        setOpen(false);
+        blogLink.focus();
+      });
+    });
+
+    document.addEventListener('click',event => {
+      document.querySelectorAll('.nav-blog-group.is-open').forEach(group => {
+        if(group.contains(event.target)) return;
+        group.classList.remove('is-open');
+        group.querySelector('.nav-blog-toggle')?.setAttribute('aria-expanded','false');
+      });
+    });
+  }
+
+  function initClickFireworks(){
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let canvas;
+    let context;
+    let frame = 0;
+    let lastBurst = 0;
+    let particles = [];
+
+    function resize(){
+      if(!canvas || !context) return;
+      const ratio = Math.min(window.devicePixelRatio || 1,2);
+      canvas.width = Math.round(window.innerWidth * ratio);
+      canvas.height = Math.round(window.innerHeight * ratio);
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      context.setTransform(ratio,0,0,ratio,0,0);
+    }
+
+    function ensureCanvas(){
+      if(canvas) return;
+      canvas = document.createElement('canvas');
+      canvas.className = 'click-fireworks';
+      canvas.setAttribute('aria-hidden','true');
+      document.body.appendChild(canvas);
+      context = canvas.getContext('2d',{alpha:true,desynchronized:true});
+      resize();
+      window.addEventListener('resize',resize,{passive:true});
+    }
+
+    function draw(){
+      frame = 0;
+      if(!context) return;
+      context.clearRect(0,0,window.innerWidth,window.innerHeight);
+      context.lineCap = 'round';
+      context.globalCompositeOperation = document.documentElement.dataset.theme === 'dark' ? 'lighter' : 'source-over';
+      particles = particles.filter(particle => particle.life > 0);
+      particles.forEach(particle => {
+        particle.previousX = particle.x;
+        particle.previousY = particle.y;
+        particle.vx *= .982;
+        particle.vy = particle.vy * .982 + .045;
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.life -= 1;
+        const alpha = Math.max(0,particle.life / particle.maxLife);
+        context.globalAlpha = alpha;
+        context.strokeStyle = particle.color;
+        context.lineWidth = particle.size * (.55 + alpha * .45);
+        context.beginPath();
+        context.moveTo(particle.previousX,particle.previousY);
+        context.lineTo(particle.x,particle.y);
+        context.stroke();
+        context.fillStyle = particle.color;
+        context.beginPath();
+        context.arc(particle.x,particle.y,Math.max(.7,particle.size * alpha),0,Math.PI * 2);
+        context.fill();
+      });
+      context.globalAlpha = 1;
+      context.globalCompositeOperation = 'source-over';
+      if(particles.length) frame = requestAnimationFrame(draw);
+      else context.clearRect(0,0,window.innerWidth,window.innerHeight);
+    }
+
+    function burst(x,y){
+      if(reducedMotion.matches) return;
+      ensureCanvas();
+      if(!context) return;
+      const accent = getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#7cff8b';
+      const colors = [accent,'#ffd166','#8ab9ff','#ff8fab','#f8fff4'];
+      const count = window.innerWidth < 700 ? 20 : 28;
+      for(let index = 0; index < count; index += 1){
+        const angle = (Math.PI * 2 * index / count) + (Math.random() - .5) * .16;
+        const speed = 1.8 + Math.random() * 3.5;
+        const maxLife = 34 + Math.random() * 24;
+        particles.push({
+          x,y,previousX:x,previousY:y,
+          vx:Math.cos(angle) * speed,
+          vy:Math.sin(angle) * speed,
+          life:maxLife,
+          maxLife,
+          size:.9 + Math.random() * 1.5,
+          color:colors[index % colors.length]
+        });
+      }
+      if(particles.length > 160) particles.splice(0,particles.length - 160);
+      if(!frame) frame = requestAnimationFrame(draw);
+    }
+
+    document.addEventListener('click',event => {
+      if(event.target.closest?.('[data-no-fireworks],input,textarea,select')) return;
+      if(!event.clientX && !event.clientY) return;
+      const now = performance.now();
+      if(now - lastBurst < 45) return;
+      lastBurst = now;
+      burst(event.clientX,event.clientY);
+    },{passive:true});
+  }
+
   function applyLanguage(language, persist = true){
     currentLanguage = language === 'zh' ? 'zh' : 'en';
     document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : 'en';
@@ -198,6 +379,8 @@
   }
 
   function init(){
+    initBlogDropdown();
+    initClickFireworks();
     document.querySelectorAll('[data-language-toggle]').forEach(button => {
       button.addEventListener('click', () => {
         applyLanguage(currentLanguage === 'en' ? 'zh' : 'en');

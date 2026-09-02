@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="source/favicon.svg" type="image/svg+xml">
   <meta name="description" content="Read a post from Yunli’s personal archive.">
   <title>Post — Yunli</title>
   <style>
@@ -144,13 +145,13 @@
     }
   </style>
   <script src="source/site-preferences.js?v=20260902"></script>
-  <link rel="stylesheet" href="source/ui-polish.css?v=20260902">
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-5">
   <script>
     window.PAGE_I18N = {
       en: {
         'meta.title':'Post — Yunli',
         'meta.description':'Read a post from Yunli’s personal archive.',
-        'post.back':'BLOG / ← Back to all posts',
+        'post.back':'← Back to Blog',
         'post.content.label':'Article content',
         'post.loading':'Loading this post…',
         'post.error.noFile':'No post file was specified.',
@@ -161,11 +162,15 @@
         'post.fallbackTitle':'Post',
         'post.rendererNotice':'The Markdown renderer is temporarily unavailable, so the original source is shown below.',
         'post.titleSuffix':'Yunli',
+        'post.toc.title':'On this page',
+        'post.toc.label':'Article outline',
+        'post.progress.label':'Reading progress {progress}%. Return to top.',
+        'post.progress.action':'Return to top',
         'like.button':'Like this post',
         'like.sending':'Sending…',
-        'like.loading':'LIKES / …',
-        'like.count':'LIKES / {count}',
-        'like.unavailable':'LIKES / —',
+        'like.loading':'♥ …',
+        'like.count':'♥ {count}',
+        'like.unavailable':'♥ —',
         'like.throttled':'That was a little quick—please try again in a moment.',
         'like.failed':'Could not connect. Please try again shortly.',
         'footer.post':'© Yunli · Post'
@@ -173,7 +178,7 @@
       zh: {
         'meta.title':'文章 — 云离',
         'meta.description':'阅读云离个人档案中的一篇文章。',
-        'post.back':'博客 / ← 返回文章列表',
+        'post.back':'← 返回博客',
         'post.content.label':'文章正文',
         'post.loading':'加载中…',
         'post.error.noFile':'未指定文章文件',
@@ -184,18 +189,22 @@
         'post.fallbackTitle':'文章',
         'post.rendererNotice':'Markdown 渲染器暂时未连接，以下显示文章原文。',
         'post.titleSuffix':'云离',
+        'post.toc.title':'文章大纲',
+        'post.toc.label':'文章大纲',
+        'post.progress.label':'阅读进度 {progress}%，点击返回顶部',
+        'post.progress.action':'返回顶部',
         'like.button':'给这篇文章点赞',
         'like.sending':'正在点赞…',
-        'like.loading':'点赞 / …',
-        'like.count':'点赞 / {count}',
-        'like.unavailable':'点赞 / —',
+        'like.loading':'♥ …',
+        'like.count':'♥ {count}',
+        'like.unavailable':'♥ —',
         'like.throttled':'请求过于频繁，请稍后再试',
         'like.failed':'连接失败，请稍后重试',
         'footer.post':'© 云离 · 文章'
       }
     };
   </script>
-  <script src="source/site-ui.js?v=20260902" defer></script>
+  <script src="source/site-ui.js?v=20260902-2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     window.MathJax = {
@@ -239,24 +248,39 @@
     </div>
   </header>
   <main class="wrap">
-    <a class="post-back" href="blog.html" data-i18n="post.back">BLOG / ← Back to all posts</a>
-    <article id="content" class="glass-card" aria-busy="true" aria-label="Article content" data-i18n-aria-label="post.content.label"><span data-i18n="post.loading">Loading this post…</span></article>
-    <div id="likePanel" class="glass-card" style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-      <button id="likeBtn" type="button" data-i18n="like.button" style="padding:8px 14px;border-radius:999px;border:1px solid rgba(11,18,32,0.08);background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));cursor:pointer">Like this post</button>
-      <span id="likeCount" style="color:var(--muted)" aria-live="polite" data-i18n="like.count">LIKES / 0</span>
-      <span id="likeMsg" style="color:var(--muted)" role="status"></span>
+    <div class="post-layout">
+      <div class="post-main">
+        <a class="post-back" href="blog.html" data-i18n="post.back">BLOG / ← Back to all posts</a>
+        <article id="content" class="glass-card" aria-busy="true" aria-label="Article content" data-i18n-aria-label="post.content.label"><span data-i18n="post.loading">Loading this post…</span></article>
+        <div id="likePanel" class="glass-card" style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <button id="likeBtn" type="button" data-i18n="like.button" style="padding:8px 14px;border-radius:999px;border:1px solid rgba(11,18,32,0.08);background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));cursor:pointer">Like this post</button>
+          <span id="likeCount" style="color:var(--muted)" aria-live="polite" data-i18n="like.count">LIKES / 0</span>
+          <span id="likeMsg" style="color:var(--muted)" role="status"></span>
+        </div>
+        <noscript>
+          <style>#content,#likePanel{display:none!important}</style>
+          <p class="glass-card">JavaScript is required to load this Markdown post.</p>
+        </noscript>
+      </div>
+      <aside id="postToc" class="post-toc" aria-label="Article outline" data-i18n-aria-label="post.toc.label" hidden>
+        <h2 data-i18n="post.toc.title">On this page</h2>
+        <nav id="postTocLinks" aria-label="Article outline" data-i18n-aria-label="post.toc.label"></nav>
+      </aside>
     </div>
-    <noscript>
-      <style>#content,#likePanel{display:none!important}</style>
-      <p class="glass-card">JavaScript is required to load this Markdown post.</p>
-    </noscript>
   </main>
+
+  <button id="readingBuddy" class="reading-buddy" type="button" aria-label="Reading progress 0%. Return to top." title="Return to top" data-no-fireworks>
+    <span class="reading-buddy-face" aria-hidden="true">•ᴗ•</span>
+    <span id="readingPercent" class="reading-buddy-percent" aria-hidden="true">0%</span>
+  </button>
 
   <footer data-i18n="footer.post">© Yunli · Post</footer>
 
   <script>
     let renderedPostTitle = '';
     let contentStatus = {key:'post.loading',replacements:{}};
+    let tocHeadings = [];
+    let tocLinks = [];
 
     function currentPageLanguage(){
       if(window.SiteUI?.language) return window.SiteUI.language;
@@ -341,6 +365,43 @@
         previousLevel = targetLevel;
       });
     }
+    function buildPostToc(container){
+      const aside = document.getElementById('postToc');
+      const nav = document.getElementById('postTocLinks');
+      if(!aside || !nav) return;
+      tocHeadings = Array.from(container.querySelectorAll(':scope > h2,:scope > h3'));
+      tocLinks = [];
+      if(!tocHeadings.length){
+        aside.hidden = true;
+        nav.replaceChildren();
+        return;
+      }
+      const usedIds = new Set();
+      const fragment = document.createDocumentFragment();
+      tocHeadings.forEach((heading,index) => {
+        let slug = heading.textContent.trim().normalize('NFKC').toLowerCase()
+          .replace(/[^\p{L}\p{N}]+/gu,'-')
+          .replace(/^-+|-+$/g,'') || `section-${index + 1}`;
+        let id = slug;
+        let suffix = 2;
+        while(usedIds.has(id) || document.getElementById(id)) id = `${slug}-${suffix++}`;
+        usedIds.add(id);
+        heading.id = id;
+        const link = document.createElement('a');
+        link.href = `#${encodeURIComponent(id)}`;
+        link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
+        link.textContent = heading.textContent.trim();
+        link.addEventListener('click',event => {
+          event.preventDefault();
+          heading.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',block:'start'});
+          history.replaceState({},'',`#${encodeURIComponent(id)}`);
+        });
+        tocLinks.push(link);
+        fragment.appendChild(link);
+      });
+      nav.replaceChildren(fragment);
+      aside.hidden = false;
+    }
     function escapeHtml(value){
       return value.replace(/[&<>]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]));
     }
@@ -420,6 +481,7 @@
           source.textContent = md;
           contentStatus = null;
           content.replaceChildren(heading, notice, source);
+          buildPostToc(content);
           updatePostDocumentTitle();
           content.setAttribute('aria-busy','false');
           return;
@@ -436,6 +498,7 @@
           content.prepend(title);
         }
         normalizeHeadingLevels(content);
+        buildPostToc(content);
         renderedPostTitle = title.textContent.trim() || postTitle;
         updatePostDocumentTitle();
         await typesetMath(content);
@@ -553,14 +616,43 @@
   </script>
   <script>
     const readingProgressBar = document.getElementById('readingProgressBar');
+    const readingBuddy = document.getElementById('readingBuddy');
+    const readingPercent = document.getElementById('readingPercent');
+    let progressFrame = 0;
     function updateReadingProgress(){
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
       readingProgressBar.style.width = `${progress * 100}%`;
+      const percent = Math.round(progress * 100);
+      readingBuddy?.style.setProperty('--reading-progress',`${percent}%`);
+      if(readingPercent) readingPercent.textContent = `${percent}%`;
+      if(readingBuddy){
+        readingBuddy.classList.toggle('is-visible',window.scrollY > 140 || progress > .02);
+        readingBuddy.setAttribute('aria-label',pageTranslate('post.progress.label',{progress:percent}));
+        readingBuddy.setAttribute('title',pageTranslate('post.progress.action'));
+      }
+      let activeIndex = 0;
+      tocHeadings.forEach((heading,index) => {
+        if(heading.getBoundingClientRect().top <= 170) activeIndex = index;
+      });
+      tocLinks.forEach((link,index) => {
+        const active = index === activeIndex;
+        link.classList.toggle('is-active',active);
+        if(active) link.setAttribute('aria-current','location');
+        else link.removeAttribute('aria-current');
+      });
+      progressFrame = 0;
     }
+    function queueReadingProgress(){
+      if(!progressFrame) progressFrame = requestAnimationFrame(updateReadingProgress);
+    }
+    readingBuddy?.addEventListener('click',() => {
+      window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+    });
     updateReadingProgress();
-    window.addEventListener('scroll', updateReadingProgress, {passive:true});
-    window.addEventListener('resize', updateReadingProgress);
+    window.addEventListener('scroll', queueReadingProgress, {passive:true});
+    window.addEventListener('resize', queueReadingProgress);
+    window.addEventListener('site-language-change',queueReadingProgress);
   </script>
 </body>
 </html>

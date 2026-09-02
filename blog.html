@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="source/favicon.svg" type="image/svg+xml">
   <title>Blog — Yunli</title>
   <meta name="description" content="Notes on learning, research, and everyday life from Yunli.">
   <script src="source/site-preferences.js?v=20260902"></script>
-  <link rel="stylesheet" href="source/ui-polish.css?v=20260902">
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-5">
   <script>
     window.PAGE_I18N = {
       en: {
         'meta.title': 'Blog — Yunli',
         'meta.description': 'Notes on learning, research, and everyday life from Yunli.',
-        'blog.eyebrow': 'YL / FIELD NOTES / 2026',
         'blog.title': 'Blog',
         'blog.note': 'A small collection of things that make me smile.',
         'blog.search.label': 'Search blog posts',
@@ -32,13 +32,23 @@
         'blog.status.failureMessage': 'Couldn’t load the post index. Please try again later.',
         'blog.untitled': 'Untitled post',
         'blog.dateFallback': 'DATE —',
-        'blog.meta.category': 'CATEGORY / {category}',
-        'blog.meta.likes': 'LIKES / {likes}',
+        'blog.meta.category': '{category}',
+        'blog.meta.likes': '♥ {likes}',
         'blog.tags.label': 'Post tags',
+        'blog.sidebar.label': 'Blog discovery',
+        'blog.collections.title': 'Collections',
+        'blog.collections.course.title': 'Course Notes',
+        'blog.collections.course.copy': 'Reviews, guides, and study notes.',
+        'blog.collections.academic.title': 'Academic Notes',
+        'blog.collections.academic.copy': 'Research and technical reading.',
+        'blog.collections.reflection.title': 'Reflections',
+        'blog.collections.reflection.copy': 'Learning, plans, and monthly thoughts.',
+        'blog.collections.daily.title': 'Daily Moments',
+        'blog.collections.daily.copy': 'Small things worth remembering.',
+        'blog.sidebar.tags': 'Tags',
+        'blog.sidebar.tagsEmpty': 'Tags will appear after the archive loads.',
         'blog.results.one': '{count} POST',
         'blog.results.many': '{count} POSTS',
-        'blog.results.loadingLikes': 'LOADING LIKES',
-        'blog.results.likesUnavailable': 'LIKES UNAVAILABLE',
         'blog.empty.search': 'No posts match your search.',
         'blog.empty.category': 'No posts in this category yet.',
         'blog.footer': '© Yunli · Notes Archive'
@@ -46,7 +56,6 @@
       zh: {
         'meta.title': '博客 — 云离',
         'meta.description': '云离的个人博客与学习记录',
-        'blog.eyebrow': '云离 / 随笔 / 2026',
         'blog.title': '博客',
         'blog.note': '写点傻开心的东西',
         'blog.search.label': '检索博客文章',
@@ -66,20 +75,30 @@
         'blog.status.failureMessage': '文章索引读取失败，请稍后重试',
         'blog.untitled': '未命名文章',
         'blog.dateFallback': '日期 —',
-        'blog.meta.category': '分类 / {category}',
-        'blog.meta.likes': '点赞 / {likes}',
+        'blog.meta.category': '{category}',
+        'blog.meta.likes': '♥ {likes}',
         'blog.tags.label': '文章标签',
+        'blog.sidebar.label': '博客内容导航',
+        'blog.collections.title': '文章合集',
+        'blog.collections.course.title': '课程笔记',
+        'blog.collections.course.copy': '课程评价、经验与复习记录',
+        'blog.collections.academic.title': '学术记录',
+        'blog.collections.academic.copy': '科研、技术与阅读笔记',
+        'blog.collections.reflection.title': '思考随笔',
+        'blog.collections.reflection.copy': '学习、计划与阶段总结',
+        'blog.collections.daily.title': '生活片段',
+        'blog.collections.daily.copy': '值得记住的小事',
+        'blog.sidebar.tags': '常用标签',
+        'blog.sidebar.tagsEmpty': '文章索引加载后会显示标签',
         'blog.results.one': '{count} 篇文章',
         'blog.results.many': '{count} 篇文章',
-        'blog.results.loadingLikes': '正在加载点赞数据',
-        'blog.results.likesUnavailable': '点赞数据暂不可用',
         'blog.empty.search': '没有匹配当前关键词的文章',
         'blog.empty.category': '当前分类暂时没有文章',
         'blog.footer': '© 云离 · 随笔档案'
       }
     };
   </script>
-  <script src="source/site-ui.js?v=20260902" defer></script>
+  <script src="source/site-ui.js?v=20260902-2" defer></script>
   <script src="source/typewriter.js?v=20260902" defer></script>
 </head>
 <body class="preload page-blog">
@@ -113,15 +132,14 @@
   <main class="wrap blog-wrap">
     <section class="blog-intro" aria-labelledby="blog-title">
       <div>
-        <p class="eyebrow" data-i18n="blog.eyebrow">YL / FIELD NOTES / 2026</p>
         <h1 id="blog-title" data-i18n="blog.title">Blog</h1>
       </div>
-      <p class="blog-type-note typewriter-line" data-typewriter data-typewriter-speed="120" data-typewriter-start="460" data-i18n="blog.note">A small collection of things that make me smile.</p>
+      <p class="blog-type-note" data-i18n="blog.note">A small collection of things that make me smile.</p>
     </section>
 
     <form class="query-panel" role="search" aria-label="Search blog posts" data-i18n-aria-label="blog.search.label">
       <div class="query-row">
-        <label class="query-label" for="searchInput" data-i18n="blog.search.heading">SEARCH</label>
+        <label class="visually-hidden" for="searchInput" data-i18n="blog.search.heading">Search</label>
         <div class="search-control">
           <span class="search-mark" aria-hidden="true">⌕</span>
           <input id="searchInput" class="search-input" type="search" autocomplete="off" placeholder="Search titles, tags, or keywords" data-i18n-placeholder="blog.search.placeholder">
@@ -130,7 +148,7 @@
       </div>
 
       <div class="query-row">
-        <span class="query-label" id="categoryLabel" data-i18n="blog.category.heading">CATEGORY</span>
+        <span class="visually-hidden" id="categoryLabel" data-i18n="blog.category.heading">Category</span>
         <div class="filter-list" role="group" aria-labelledby="categoryLabel">
           <button class="filter-button is-active" type="button" data-category="all" aria-pressed="true" data-i18n="blog.category.all">All</button>
           <button class="filter-button" type="button" data-category="course" aria-pressed="false" data-i18n="blog.category.course">Courses</button>
@@ -148,9 +166,40 @@
       </div>
     </form>
 
-    <div id="resultMeta" class="result-line" aria-live="polite" data-i18n="blog.status.sync">SYNC / INDEX</div>
-    <div id="list" aria-busy="true">
-      <p class="list-status" data-i18n="blog.status.loading">Loading post index…</p>
+    <div id="resultMeta" class="visually-hidden" aria-live="polite" data-i18n="blog.status.sync">Syncing post index</div>
+    <div class="blog-archive-layout">
+      <div id="list" aria-busy="true">
+        <p class="list-status" data-i18n="blog.status.loading">Loading post index…</p>
+      </div>
+      <aside class="blog-sidebar" aria-label="Blog discovery" data-i18n-aria-label="blog.sidebar.label">
+        <section class="blog-side-section" aria-labelledby="collections-title">
+          <h2 id="collections-title"><span aria-hidden="true">◇</span><span data-i18n="blog.collections.title">Collections</span></h2>
+          <div class="collection-list">
+            <a href="blog.html?category=course" data-collection-category="course">
+              <span><strong data-i18n="blog.collections.course.title">Course Notes</strong><small data-i18n="blog.collections.course.copy">Reviews, guides, and study notes.</small></span>
+              <b data-collection-count="course">0</b>
+            </a>
+            <a href="blog.html?category=academic" data-collection-category="academic">
+              <span><strong data-i18n="blog.collections.academic.title">Academic Notes</strong><small data-i18n="blog.collections.academic.copy">Research and technical reading.</small></span>
+              <b data-collection-count="academic">0</b>
+            </a>
+            <a href="blog.html?category=reflection" data-collection-category="reflection">
+              <span><strong data-i18n="blog.collections.reflection.title">Reflections</strong><small data-i18n="blog.collections.reflection.copy">Learning, plans, and monthly thoughts.</small></span>
+              <b data-collection-count="reflection">0</b>
+            </a>
+            <a href="blog.html?category=daily-life" data-collection-category="daily-life">
+              <span><strong data-i18n="blog.collections.daily.title">Daily Moments</strong><small data-i18n="blog.collections.daily.copy">Small things worth remembering.</small></span>
+              <b data-collection-count="daily-life">0</b>
+            </a>
+          </div>
+        </section>
+        <section class="blog-side-section" aria-labelledby="sidebar-tags-title">
+          <h2 id="sidebar-tags-title"><span aria-hidden="true">#</span><span data-i18n="blog.sidebar.tags">Tags</span></h2>
+          <div id="sidebarTags" class="sidebar-tags">
+            <p data-i18n="blog.sidebar.tagsEmpty">Tags will appear after the archive loads.</p>
+          </div>
+        </section>
+      </aside>
     </div>
     <noscript>
       <style>#resultMeta,#list{display:none}</style>
@@ -164,12 +213,14 @@
     const LIKE_API = 'https://homepagelike.12410922.workers.dev/like';
     const state = {
       items: [],
-      activeCategory: 'all',
+      activeCategory: (() => {
+        const requested = new URLSearchParams(location.search).get('category');
+        return ['course','academic','reflection','daily-life'].includes(requested) ? requested : 'all';
+      })(),
       query: '',
       likes: new Map(),
       availableCovers: new Set(),
       likesReady: false,
-      likesStatus: 'loading',
       loadState: 'loading'
     };
 
@@ -296,7 +347,7 @@
       meta.className = 'post-meta';
       appendMeta(meta, item.date || t('blog.dateFallback'));
       appendMeta(meta, t('blog.meta.category', {category: categoryLabel(category)}));
-      appendMeta(meta, t('blog.meta.likes', {likes: typeof likes === 'number' ? likes : '—'}));
+      if(typeof likes === 'number') appendMeta(meta, t('blog.meta.likes', {likes}));
       content.appendChild(meta);
 
       if(item.excerpt){
@@ -385,14 +436,7 @@
       list.replaceChildren();
       list.setAttribute('aria-busy', 'false');
 
-      resultMeta.classList.toggle('likes-ready', state.likesStatus === 'ready');
-      const likesNote = state.likesStatus === 'loading'
-        ? t('blog.results.loadingLikes')
-        : state.likesStatus === 'unavailable'
-          ? t('blog.results.likesUnavailable')
-          : '';
-      resultMeta.textContent = t(items.length === 1 ? 'blog.results.one' : 'blog.results.many', {count: items.length})
-        + (likesNote ? ` / ${likesNote}` : '');
+      resultMeta.textContent = t(items.length === 1 ? 'blog.results.one' : 'blog.results.many', {count: items.length});
 
       if(items.length === 0){
         const empty = document.createElement('p');
@@ -407,6 +451,59 @@
       list.appendChild(fragment);
     }
 
+    function updateCollectionCounts(){
+      document.querySelectorAll('[data-collection-count]').forEach(element => {
+        const category = element.dataset.collectionCount;
+        element.textContent = state.items.filter(item => getCategory(item) === category).length;
+      });
+      document.querySelectorAll('[data-collection-category]').forEach(link => {
+        link.classList.toggle('is-active',link.dataset.collectionCategory === state.activeCategory);
+      });
+    }
+
+    function renderSidebarTags(){
+      const container = document.getElementById('sidebarTags');
+      if(!container) return;
+      const tags = new Map();
+      state.items.forEach(item => {
+        displayTags(item.tags).forEach(tag => {
+          const key = tag.toLowerCase();
+          const current = tags.get(key) || {label:tag,count:0};
+          current.count += 1;
+          tags.set(key,current);
+        });
+      });
+      const popular = Array.from(tags.values()).sort((a,b) => b.count - a.count || a.label.localeCompare(b.label)).slice(0,12);
+      if(!popular.length){
+        const empty = document.createElement('p');
+        empty.dataset.i18n = 'blog.sidebar.tagsEmpty';
+        empty.textContent = t('blog.sidebar.tagsEmpty');
+        container.replaceChildren(empty);
+        return;
+      }
+      const fragment = document.createDocumentFragment();
+      popular.forEach(tag => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'sidebar-tag';
+        const label = document.createElement('span');
+        label.textContent = tag.label;
+        const count = document.createElement('small');
+        count.textContent = tag.count;
+        button.append(label,count);
+        button.addEventListener('click',() => {
+          setActiveCategory('all');
+          searchInput.value = tag.label;
+          state.query = tag.label;
+          clearSearch.hidden = false;
+          renderList();
+          document.getElementById('list')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+        });
+        fragment.appendChild(button);
+      });
+      container.replaceChildren(fragment);
+    }
+
     async function loadLikes(){
       await Promise.all(state.items.map(async item => {
         const filePath = normalizeFilePath(item.file);
@@ -414,7 +511,6 @@
         if(typeof likes === 'number') state.likes.set(filePath, likes);
       }));
       state.likesReady = state.likes.size > 0;
-      state.likesStatus = state.likesReady ? 'ready' : 'unavailable';
       renderList();
     }
 
@@ -441,6 +537,8 @@
       state.items = index;
       await loadCoverManifest();
       state.loadState = 'ready';
+      updateCollectionCounts();
+      renderSidebarTags();
       renderList();
       loadLikes();
     }
@@ -449,6 +547,28 @@
     const clearSearch = document.getElementById('clearSearch');
     const categorySelect = document.getElementById('categorySelect');
     const filterButtons = Array.from(document.querySelectorAll('.filter-button'));
+
+    function setActiveCategory(category,{updateUrl = true} = {}){
+      state.activeCategory = ['course','academic','reflection','daily-life'].includes(category) ? category : 'all';
+      categorySelect.value = state.activeCategory;
+      filterButtons.forEach(button => {
+        const active = button.dataset.category === state.activeCategory;
+        button.classList.toggle('is-active',active);
+        button.setAttribute('aria-pressed',String(active));
+      });
+      document.querySelectorAll('[data-blog-category]').forEach(link => {
+        if(link.dataset.blogCategory === state.activeCategory) link.setAttribute('aria-current','page');
+        else link.removeAttribute('aria-current');
+      });
+      updateCollectionCounts();
+      if(updateUrl){
+        const url = new URL(location.href);
+        if(state.activeCategory === 'all') url.searchParams.delete('category');
+        else url.searchParams.set('category',state.activeCategory);
+        history.replaceState({},'',url);
+      }
+      renderList();
+    }
 
     searchInput.addEventListener('input', () => {
       state.query = searchInput.value;
@@ -466,19 +586,21 @@
 
     filterButtons.forEach(button => {
       button.addEventListener('click', () => {
-        state.activeCategory = button.dataset.category || 'all';
-        categorySelect.value = state.activeCategory;
-        filterButtons.forEach(item => {
-          const active = item === button;
-          item.classList.toggle('is-active', active);
-          item.setAttribute('aria-pressed', String(active));
-        });
-        renderList();
+        setActiveCategory(button.dataset.category || 'all');
+      });
+    });
+
+    document.querySelectorAll('[data-collection-category]').forEach(link => {
+      link.addEventListener('click',event => {
+        event.preventDefault();
+        setActiveCategory(link.dataset.collectionCategory || 'all');
+        document.getElementById('list')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
       });
     });
 
     document.querySelector('.query-panel').addEventListener('submit', event => event.preventDefault());
     window.addEventListener('site-language-change', renderList);
+    setActiveCategory(state.activeCategory,{updateUrl:false});
     loadIndex();
   </script>
 
