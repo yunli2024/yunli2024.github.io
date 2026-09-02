@@ -145,7 +145,7 @@
     }
   </style>
   <script src="source/site-preferences.js?v=20260902"></script>
-  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-5">
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-6">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -164,8 +164,8 @@
         'post.titleSuffix':'Yunli',
         'post.toc.title':'On this page',
         'post.toc.label':'Article outline',
-        'post.progress.label':'Reading progress {progress}%. Return to top.',
-        'post.progress.action':'Return to top',
+        'post.progress.label':'Reading progress {progress}%. Back to top.',
+        'post.progress.action':'Back to top',
         'like.button':'Like this post',
         'like.sending':'Sending…',
         'like.loading':'♥ …',
@@ -204,7 +204,7 @@
       }
     };
   </script>
-  <script src="source/site-ui.js?v=20260902-2" defer></script>
+  <script src="source/site-ui.js?v=20260902-3" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     window.MathJax = {
@@ -269,9 +269,10 @@
     </div>
   </main>
 
-  <button id="readingBuddy" class="reading-buddy" type="button" aria-label="Reading progress 0%. Return to top." title="Return to top" data-no-fireworks>
+  <button id="readingBuddy" class="reading-buddy" type="button" aria-label="Reading progress 0%. Back to top." title="Back to top" data-no-fireworks>
     <span class="reading-buddy-face" aria-hidden="true">•ᴗ•</span>
     <span id="readingPercent" class="reading-buddy-percent" aria-hidden="true">0%</span>
+    <span class="reading-buddy-tooltip" data-i18n="post.progress.action">Back to top</span>
   </button>
 
   <footer data-i18n="footer.post">© Yunli · Post</footer>
@@ -618,11 +619,140 @@
     const readingProgressBar = document.getElementById('readingProgressBar');
     const readingBuddy = document.getElementById('readingBuddy');
     const readingPercent = document.getElementById('readingPercent');
+    const BUDDY_POSITION_KEY = 'reading-buddy-position-v1';
     let progressFrame = 0;
+    let buddyResizeFrame = 0;
+    let buddyDragFrame = 0;
+    let buddyDrag = null;
+    let suppressBuddyClickUntil = 0;
+
+    function clampBuddy(value,min,max){
+      return Math.min(Math.max(value,min),Math.max(min,max));
+    }
+
+    function readBuddyPosition(){
+      try{
+        const value = JSON.parse(localStorage.getItem(BUDDY_POSITION_KEY) || 'null');
+        return value && Number.isFinite(value.x) && Number.isFinite(value.y) ? value : null;
+      }catch(error){
+        return null;
+      }
+    }
+
+    function saveBuddyPosition(left,top,width,height){
+      const padding = 8;
+      const availableX = Math.max(1,window.innerWidth - width - padding * 2);
+      const availableY = Math.max(1,window.innerHeight - height - padding * 2);
+      const value = {
+        x:clampBuddy((left - padding) / availableX,0,1),
+        y:clampBuddy((top - padding) / availableY,0,1)
+      };
+      try{localStorage.setItem(BUDDY_POSITION_KEY,JSON.stringify(value))}catch(error){}
+    }
+
+    function setBuddyPosition(left,top,{persist = false} = {}){
+      if(!readingBuddy) return;
+      const rect = readingBuddy.getBoundingClientRect();
+      const width = readingBuddy.offsetWidth || rect.width || 58;
+      const height = readingBuddy.offsetHeight || rect.height || 58;
+      const padding = 8;
+      const nextLeft = clampBuddy(left,padding,window.innerWidth - width - padding);
+      const nextTop = clampBuddy(top,padding,window.innerHeight - height - padding);
+      readingBuddy.style.left = `${nextLeft}px`;
+      readingBuddy.style.top = `${nextTop}px`;
+      readingBuddy.style.right = 'auto';
+      readingBuddy.style.bottom = 'auto';
+      readingBuddy.style.transform = '';
+      readingBuddy.classList.toggle('tooltip-right',nextLeft + width / 2 < window.innerWidth / 2);
+      if(persist) saveBuddyPosition(nextLeft,nextTop,width,height);
+    }
+
+    function placeBuddy(){
+      if(!readingBuddy || buddyDrag) return;
+      const rect = readingBuddy.getBoundingClientRect();
+      const width = readingBuddy.offsetWidth || rect.width || 58;
+      const height = readingBuddy.offsetHeight || rect.height || 58;
+      const saved = readBuddyPosition();
+      if(saved){
+        const padding = 8;
+        setBuddyPosition(
+          padding + saved.x * Math.max(1,window.innerWidth - width - padding * 2),
+          padding + saved.y * Math.max(1,window.innerHeight - height - padding * 2)
+        );
+        return;
+      }
+      const rightInset = window.innerWidth <= 700
+        ? 74
+        : clampBuddy(window.innerWidth * .115,144,190);
+      const bottomInset = window.innerWidth <= 700 ? 18 : 30;
+      setBuddyPosition(window.innerWidth - width - rightInset,window.innerHeight - height - bottomInset);
+    }
+
+    function applyBuddyDrag(){
+      buddyDragFrame = 0;
+      if(!readingBuddy || !buddyDrag) return;
+      readingBuddy.style.transform = `translate3d(${buddyDrag.left - buddyDrag.startLeft}px,${buddyDrag.top - buddyDrag.startTop}px,0)`;
+    }
+
+    function finishBuddyDrag(event){
+      if(!readingBuddy || !buddyDrag || event.pointerId !== buddyDrag.pointerId) return;
+      if(buddyDragFrame){
+        cancelAnimationFrame(buddyDragFrame);
+        buddyDragFrame = 0;
+      }
+      const {left,top,moved,pointerId} = buddyDrag;
+      buddyDrag = null;
+      readingBuddy.classList.remove('is-dragging');
+      if(readingBuddy.hasPointerCapture(pointerId)) readingBuddy.releasePointerCapture(pointerId);
+      setBuddyPosition(left,top,{persist:moved});
+      if(moved) suppressBuddyClickUntil = performance.now() + 160;
+    }
+
+    readingBuddy?.addEventListener('pointerdown',event => {
+      if(buddyDrag || (event.pointerType === 'mouse' && event.button !== 0)) return;
+      const rect = readingBuddy.getBoundingClientRect();
+      const width = readingBuddy.offsetWidth || rect.width;
+      const height = readingBuddy.offsetHeight || rect.height;
+      buddyDrag = {
+        pointerId:event.pointerId,
+        startX:event.clientX,
+        startY:event.clientY,
+        startLeft:rect.left,
+        startTop:rect.top,
+        left:rect.left,
+        top:rect.top,
+        moved:false
+      };
+      readingBuddy.style.left = `${rect.left}px`;
+      readingBuddy.style.top = `${rect.top}px`;
+      readingBuddy.style.right = 'auto';
+      readingBuddy.style.bottom = 'auto';
+      readingBuddy.style.transform = 'translate3d(0,0,0)';
+      readingBuddy.classList.add('is-dragging');
+      readingBuddy.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    });
+
+    readingBuddy?.addEventListener('pointermove',event => {
+      if(!buddyDrag || event.pointerId !== buddyDrag.pointerId) return;
+      const rect = readingBuddy.getBoundingClientRect();
+      const width = readingBuddy.offsetWidth || rect.width;
+      const height = readingBuddy.offsetHeight || rect.height;
+      const padding = 8;
+      const deltaX = event.clientX - buddyDrag.startX;
+      const deltaY = event.clientY - buddyDrag.startY;
+      buddyDrag.left = clampBuddy(buddyDrag.startLeft + deltaX,padding,window.innerWidth - width - padding);
+      buddyDrag.top = clampBuddy(buddyDrag.startTop + deltaY,padding,window.innerHeight - height - padding);
+      if(Math.hypot(deltaX,deltaY) > 4) buddyDrag.moved = true;
+      if(!buddyDragFrame) buddyDragFrame = requestAnimationFrame(applyBuddyDrag);
+    });
+
+    readingBuddy?.addEventListener('pointerup',finishBuddyDrag);
+    readingBuddy?.addEventListener('pointercancel',finishBuddyDrag);
     function updateReadingProgress(){
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
-      readingProgressBar.style.width = `${progress * 100}%`;
+      readingProgressBar.style.transform = `scaleX(${progress})`;
       const percent = Math.round(progress * 100);
       readingBuddy?.style.setProperty('--reading-progress',`${percent}%`);
       if(readingPercent) readingPercent.textContent = `${percent}%`;
@@ -646,12 +776,26 @@
     function queueReadingProgress(){
       if(!progressFrame) progressFrame = requestAnimationFrame(updateReadingProgress);
     }
-    readingBuddy?.addEventListener('click',() => {
+    readingBuddy?.addEventListener('click',event => {
+      if(performance.now() < suppressBuddyClickUntil){
+        event.preventDefault();
+        return;
+      }
       window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
     });
+    readingBuddy?.addEventListener('dragstart',event => event.preventDefault());
     updateReadingProgress();
+    requestAnimationFrame(placeBuddy);
     window.addEventListener('scroll', queueReadingProgress, {passive:true});
-    window.addEventListener('resize', queueReadingProgress);
+    window.addEventListener('resize',() => {
+      queueReadingProgress();
+      if(!buddyResizeFrame){
+        buddyResizeFrame = requestAnimationFrame(() => {
+          buddyResizeFrame = 0;
+          placeBuddy();
+        });
+      }
+    });
     window.addEventListener('site-language-change',queueReadingProgress);
   </script>
 </body>

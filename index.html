@@ -70,7 +70,7 @@
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%)}}
   </style>
   <script src="source/site-preferences.js?v=20260902"></script>
-  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-5">
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-6">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -91,15 +91,23 @@
         'home.stats.updated': 'Last Updated',
         'home.stats.characters': 'Total Characters',
         'home.github.title': 'GitHub Activity',
-        'home.github.subtitle': 'A small window into recent public work.',
+        'home.github.kicker': 'Public profile',
         'home.github.repositories': 'Public Repositories',
         'home.github.followers': 'Followers',
-        'home.github.events': 'Recent Events',
-        'home.github.activity': 'Recent public activity',
+        'home.github.contributions': 'Contributions · last year',
+        'home.github.stars': 'Stars on public repositories',
+        'home.github.activity': 'Contribution calendar',
+        'home.github.source': 'GitHub public data',
+        'home.github.recentRepos': 'Recently updated',
         'home.github.loading': 'Connecting to GitHub…',
         'home.github.unavailable': 'GitHub data is temporarily unavailable.',
-        'home.github.profile': 'View @yunli2024',
-        'home.github.heatmapLabel': 'Recent GitHub public activity heatmap',
+        'home.github.partial': 'Some live GitHub details are temporarily unavailable.',
+        'home.github.cached': 'Showing the most recently saved public data.',
+        'home.github.profile': 'Open GitHub',
+        'home.github.avatarAlt': 'GitHub avatar for yunli2024',
+        'home.github.heatmapLabel': 'GitHub contribution activity for the last year',
+        'home.github.heatmapWithTotal': '{count} GitHub contributions in the last year',
+        'home.github.day': '{date} · {count} contributions',
         'home.footer': '© Yunli · Home'
       },
       zh: {
@@ -120,21 +128,29 @@
         'home.stats.updated': '上次更新时间',
         'home.stats.characters': '总字数',
         'home.github.title': 'GitHub 动态',
-        'home.github.subtitle': '看看最近公开项目里发生了什么。',
+        'home.github.kicker': '公开资料',
         'home.github.repositories': '公开仓库',
         'home.github.followers': '关注者',
-        'home.github.events': '近期动态',
-        'home.github.activity': '近期公开活跃度',
+        'home.github.contributions': '近一年贡献',
+        'home.github.stars': '公开仓库获赞',
+        'home.github.activity': '贡献日历',
+        'home.github.source': 'GitHub 公开数据',
+        'home.github.recentRepos': '最近更新',
         'home.github.loading': '正在连接 GitHub…',
         'home.github.unavailable': 'GitHub 数据暂时不可用',
-        'home.github.profile': '查看 @yunli2024',
-        'home.github.heatmapLabel': '近期 GitHub 公开活跃度图',
+        'home.github.partial': '部分 GitHub 实时数据暂时无法读取',
+        'home.github.cached': '当前显示最近保存的公开数据',
+        'home.github.profile': '打开 GitHub',
+        'home.github.avatarAlt': 'yunli2024 的 GitHub 头像',
+        'home.github.heatmapLabel': '近一年的 GitHub 贡献日历',
+        'home.github.heatmapWithTotal': '近一年共有 {count} 次 GitHub 贡献',
+        'home.github.day': '{date} · {count} 次贡献',
         'home.footer': '© 云离 · 首页'
       }
     };
   </script>
-  <script src="source/site-ui.js?v=20260902-2" defer></script>
-  <script src="source/typewriter.js?v=20260902" defer></script>
+  <script src="source/site-ui.js?v=20260902-3" defer></script>
+  <script src="source/typewriter.js?v=20260902-2" defer></script>
 </head>
 <body class="preload page-home">
   <div class="bg"></div>
@@ -181,8 +197,8 @@
       <div class="cards-grid">
         <article class="hero profile-hero">
           <div class="profile-copy">
-            <h1 data-i18n="home.greeting">Hi, I’m Yunli</h1>
-            <p data-i18n="home.subtitle">Computer Science undergraduate at SUSTech · 2024 cohort</p>
+            <h1 class="typewriter-line" data-typewriter data-typewriter-speed="88" data-typewriter-start="360" data-i18n="home.greeting">Hi, I’m Yunli</h1>
+            <p class="typewriter-line" data-typewriter data-typewriter-speed="54" data-i18n="home.subtitle">Computer Science undergraduate at SUSTech · 2024 cohort</p>
           </div>
         </article>
 
@@ -218,23 +234,37 @@
           </div>
 
           <section class="github-panel" aria-labelledby="github-panel-title">
-            <div class="github-panel-head">
-              <div>
-                <h3 id="github-panel-title" data-i18n="home.github.title">GitHub Activity</h3>
-                <p data-i18n="home.github.subtitle">A small window into recent public work.</p>
-              </div>
-              <a href="https://github.com/yunli2024" target="_blank" rel="noopener" data-i18n="home.github.profile">View @yunli2024</a>
+            <div class="github-profile-head">
+              <a class="github-identity" href="https://github.com/yunli2024" target="_blank" rel="noopener">
+                <img id="githubAvatar" class="github-avatar" src="https://avatars.githubusercontent.com/u/189206900?v=4" width="52" height="52" alt="GitHub avatar for yunli2024" data-i18n-alt="home.github.avatarAlt" decoding="async">
+                <span class="github-identity-copy">
+                  <small data-i18n="home.github.kicker">Public profile</small>
+                  <strong id="github-panel-title">@yunli2024</strong>
+                  <span id="githubLocation">Shenzhen, China</span>
+                </span>
+              </a>
+              <a class="github-profile-link" href="https://github.com/yunli2024" target="_blank" rel="noopener" data-i18n="home.github.profile">Open GitHub</a>
             </div>
             <div class="github-metrics">
-              <div><span data-i18n="home.github.repositories">Public Repositories</span><strong id="githubRepos">—</strong></div>
-              <div><span data-i18n="home.github.followers">Followers</span><strong id="githubFollowers">—</strong></div>
-              <div><span data-i18n="home.github.events">Recent Events</span><strong id="githubEvents">—</strong></div>
+              <div><strong id="githubContributions">—</strong><span data-i18n="home.github.contributions">Contributions · last year</span></div>
+              <div><strong id="githubRepos">—</strong><span data-i18n="home.github.repositories">Public Repositories</span></div>
+              <div><strong id="githubFollowers">—</strong><span data-i18n="home.github.followers">Followers</span></div>
+              <div><strong id="githubStars">—</strong><span data-i18n="home.github.stars">Stars on public repositories</span></div>
             </div>
             <div class="github-activity-head">
-              <span data-i18n="home.github.activity">Recent public activity</span>
-              <span id="githubStatus" aria-live="polite" data-i18n="home.github.loading">Connecting to GitHub…</span>
+              <div>
+                <strong data-i18n="home.github.activity">Contribution calendar</strong>
+                <span id="githubStatus" aria-live="polite" data-i18n="home.github.loading">Connecting to GitHub…</span>
+              </div>
+              <span class="github-source-badge" data-i18n="home.github.source">GitHub public data</span>
             </div>
-            <div id="githubHeatmap" class="github-heatmap" role="img" aria-label="Recent GitHub public activity heatmap" data-i18n-aria-label="home.github.heatmapLabel"></div>
+            <div class="github-calendar-shell">
+              <div id="githubHeatmap" class="github-heatmap" role="img" aria-label="GitHub contribution activity for the last year" data-i18n-aria-label="home.github.heatmapLabel"></div>
+            </div>
+            <div class="github-repositories">
+              <span data-i18n="home.github.recentRepos">Recently updated</span>
+              <div id="githubRepoList"><span data-i18n="home.github.loading">Connecting to GitHub…</span></div>
+            </div>
           </section>
         </article>
       </div>
@@ -296,11 +326,18 @@
     loadBlogStats();
 
     const GITHUB_USER = 'yunli2024';
-    const GITHUB_CACHE_KEY = 'yunli-github-public-stats-v1';
-    const githubState = {statusKey:'home.github.loading'};
+    const GITHUB_CACHE_KEY = 'yunli-github-public-stats-v2';
+    const GITHUB_CONTRIBUTIONS_API = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USER}?y=last`;
+    const githubState = {statusKey:'home.github.loading',data:null};
 
-    function githubTranslate(key){
-      return window.SiteUI?.t ? window.SiteUI.t(key) : key;
+    function githubTranslate(key,replacements = {}){
+      if(window.SiteUI?.t) return window.SiteUI.t(key,replacements);
+      const language = document.documentElement.dataset.language === 'zh' ? 'zh' : 'en';
+      let value = window.PAGE_I18N?.[language]?.[key] ?? window.PAGE_I18N?.en?.[key] ?? key;
+      Object.entries(replacements).forEach(([name,replacement]) => {
+        value = String(value).replaceAll(`{${name}}`,String(replacement));
+      });
+      return value;
     }
 
     function renderGithubStatus(){
@@ -321,66 +358,129 @@
       try{localStorage.setItem(GITHUB_CACHE_KEY,JSON.stringify({savedAt:Date.now(),data}))}catch(error){}
     }
 
-    function renderGithubHeatmap(events = []){
+    function renderGithubHeatmap(contributions = [],total = 0){
       const heatmap = document.getElementById('githubHeatmap');
       if(!heatmap) return;
-      const counts = new Map();
-      events.forEach(event => {
-        const day = String(event.created_at || '').slice(0,10);
-        if(day) counts.set(day,(counts.get(day) || 0) + 1);
-      });
-      const today = new Date();
-      today.setHours(0,0,0,0);
-      const start = new Date(today);
-      start.setDate(start.getDate() - 90);
-      start.setDate(start.getDate() - start.getDay());
+      const days = Array.isArray(contributions) && contributions.length
+        ? contributions
+        : Array.from({length:371},(_,index) => ({date:'',count:0,level:0,placeholder:true,index}));
       const fragment = document.createDocumentFragment();
-      for(const date = new Date(start); date <= today; date.setDate(date.getDate() + 1)){
-        const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
-        const count = counts.get(iso) || 0;
+      days.forEach(day => {
         const cell = document.createElement('span');
-        cell.className = 'github-day';
-        cell.dataset.level = String(count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : count <= 6 ? 3 : 4);
-        cell.title = `${iso} · ${count}`;
+        cell.className = `github-day${day.placeholder ? ' is-placeholder' : ''}`;
+        cell.dataset.level = String(Math.max(0,Math.min(4,Number(day.level) || 0)));
+        if(!day.placeholder) cell.title = githubTranslate('home.github.day',{date:day.date,count:Number(day.count) || 0});
         fragment.appendChild(cell);
-      }
+      });
       heatmap.replaceChildren(fragment);
+      heatmap.setAttribute('aria-label',githubTranslate('home.github.heatmapWithTotal',{count:Number(total) || 0}));
     }
 
     function renderGithubData(data){
-      document.getElementById('githubRepos').textContent = Number.isFinite(data.publicRepos) ? data.publicRepos : '—';
-      document.getElementById('githubFollowers').textContent = Number.isFinite(data.followers) ? data.followers : '—';
-      document.getElementById('githubEvents').textContent = Array.isArray(data.events) ? data.events.length : '—';
-      renderGithubHeatmap(data.events || []);
-      githubState.statusKey = '';
+      githubState.data = data;
+      const profile = data.profile || {};
+      const avatar = document.getElementById('githubAvatar');
+      if(avatar && profile.avatarUrl) avatar.src = profile.avatarUrl;
+      const login = document.getElementById('github-panel-title');
+      if(login) login.textContent = `@${profile.login || GITHUB_USER}`;
+      const location = document.getElementById('githubLocation');
+      if(location) location.textContent = profile.location || 'GitHub';
+      document.getElementById('githubContributions').textContent = Number.isFinite(data.totalContributions) ? data.totalContributions : '—';
+      document.getElementById('githubRepos').textContent = Number.isFinite(profile.publicRepos) ? profile.publicRepos : '—';
+      document.getElementById('githubFollowers').textContent = Number.isFinite(profile.followers) ? profile.followers : '—';
+      document.getElementById('githubStars').textContent = Number.isFinite(data.totalStars) ? data.totalStars : '—';
+      renderGithubHeatmap(data.contributions || [],data.totalContributions);
+      renderGithubRepositories(data.repositories || []);
       renderGithubStatus();
+    }
+
+    function renderGithubRepositories(repositories = []){
+      const container = document.getElementById('githubRepoList');
+      if(!container) return;
+      const fragment = document.createDocumentFragment();
+      repositories.slice(0,3).forEach(repository => {
+        const link = document.createElement('a');
+        link.href = repository.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        const name = document.createElement('strong');
+        name.textContent = repository.name;
+        const meta = document.createElement('small');
+        meta.textContent = [repository.language,`★ ${repository.stars}`].filter(Boolean).join(' · ');
+        link.append(name,meta);
+        fragment.appendChild(link);
+      });
+      container.replaceChildren(fragment);
+    }
+
+    async function fetchGithubJson(url,headers = {}){
+      const response = await fetch(url,{headers});
+      if(!response.ok) throw new Error(`GitHub request failed: ${response.status}`);
+      return response.json();
     }
 
     async function loadGithubStats(){
       const cached = readGithubCache();
-      if(cached && Date.now() - cached.savedAt < 6 * 60 * 60 * 1000){
+      if(cached && Date.now() - cached.savedAt < 3 * 60 * 60 * 1000){
+        githubState.statusKey = '';
         renderGithubData(cached.data);
         return;
       }
-      renderGithubHeatmap();
+      if(cached) renderGithubData(cached.data);
+      else renderGithubHeatmap();
       renderGithubStatus();
       try{
         const headers = {Accept:'application/vnd.github+json'};
-        const [profileResponse,eventsResponse] = await Promise.all([
-          fetch(`https://api.github.com/users/${GITHUB_USER}`,{headers}),
-          fetch(`https://api.github.com/users/${GITHUB_USER}/events/public?per_page=100`,{headers})
+        const [profileResult,repositoriesResult,contributionsResult] = await Promise.allSettled([
+          fetchGithubJson(`https://api.github.com/users/${GITHUB_USER}`,headers),
+          fetchGithubJson(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated`,headers),
+          fetchGithubJson(GITHUB_CONTRIBUTIONS_API)
         ]);
-        if(!profileResponse.ok || !eventsResponse.ok) throw new Error('GitHub request failed');
-        const [profile,events] = await Promise.all([profileResponse.json(),eventsResponse.json()]);
+        const cachedData = cached?.data || {};
+        const profileSource = profileResult.status === 'fulfilled' ? profileResult.value : null;
+        const repositorySource = repositoriesResult.status === 'fulfilled' && Array.isArray(repositoriesResult.value)
+          ? repositoriesResult.value
+          : null;
+        const contributionSource = contributionsResult.status === 'fulfilled'
+          && Array.isArray(contributionsResult.value?.contributions)
+          ? contributionsResult.value
+          : null;
+        if(!profileSource && !repositorySource && !contributionSource && !cached) throw new Error('GitHub data unavailable');
+        const selectedRepositories = repositorySource
+          ? repositorySource
+            .filter(repository => !repository.fork)
+            .sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at))
+            .slice(0,3)
+            .map(repository => ({
+              name:String(repository.name || ''),
+              url:String(repository.html_url || ''),
+              language:repository.language ? String(repository.language) : '',
+              stars:Number(repository.stargazers_count) || 0
+            }))
+          : cachedData.repositories || [];
         const data = {
-          publicRepos:Number(profile.public_repos),
-          followers:Number(profile.followers),
-          events:Array.isArray(events) ? events : []
+          profile:profileSource ? {
+            login:String(profileSource.login || GITHUB_USER),
+            avatarUrl:String(profileSource.avatar_url || ''),
+            location:String(profileSource.location || ''),
+            publicRepos:Number(profileSource.public_repos),
+            followers:Number(profileSource.followers)
+          } : cachedData.profile || {},
+          totalStars:repositorySource
+            ? repositorySource.reduce((total,repository) => total + (Number(repository.stargazers_count) || 0),0)
+            : cachedData.totalStars,
+          repositories:selectedRepositories,
+          totalContributions:Number(contributionSource?.total?.lastYear ?? cachedData.totalContributions),
+          contributions:Array.isArray(contributionSource?.contributions)
+            ? contributionSource.contributions.map(day => ({date:String(day.date || ''),count:Number(day.count) || 0,level:Number(day.level) || 0}))
+            : cachedData.contributions || []
         };
+        githubState.statusKey = profileSource && repositorySource && contributionSource ? '' : 'home.github.partial';
         writeGithubCache(data);
         renderGithubData(data);
       }catch(error){
         if(cached){
+          githubState.statusKey = 'home.github.cached';
           renderGithubData(cached.data);
           return;
         }
@@ -389,7 +489,10 @@
       }
     }
 
-    window.addEventListener('site-language-change',renderGithubStatus);
+    window.addEventListener('site-language-change',() => {
+      if(githubState.data) renderGithubData(githubState.data);
+      else renderGithubStatus();
+    });
     loadGithubStats();
   </script>
   <script>

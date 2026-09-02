@@ -249,98 +249,55 @@
   }
 
   function initClickFireworks(){
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let canvas;
-    let context;
-    let frame = 0;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    const capableDevice = (navigator.hardwareConcurrency || 4) > 4;
+    if(reducedMotion || coarsePointer || !capableDevice) return;
+
+    const activeParticles = new Set();
     let lastBurst = 0;
-    let particles = [];
 
-    function resize(){
-      if(!canvas || !context) return;
-      const ratio = Math.min(window.devicePixelRatio || 1,2);
-      canvas.width = Math.round(window.innerWidth * ratio);
-      canvas.height = Math.round(window.innerHeight * ratio);
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
-      context.setTransform(ratio,0,0,ratio,0,0);
-    }
-
-    function ensureCanvas(){
-      if(canvas) return;
-      canvas = document.createElement('canvas');
-      canvas.className = 'click-fireworks';
-      canvas.setAttribute('aria-hidden','true');
-      document.body.appendChild(canvas);
-      context = canvas.getContext('2d',{alpha:true,desynchronized:true});
-      resize();
-      window.addEventListener('resize',resize,{passive:true});
-    }
-
-    function draw(){
-      frame = 0;
-      if(!context) return;
-      context.clearRect(0,0,window.innerWidth,window.innerHeight);
-      context.lineCap = 'round';
-      context.globalCompositeOperation = document.documentElement.dataset.theme === 'dark' ? 'lighter' : 'source-over';
-      particles = particles.filter(particle => particle.life > 0);
-      particles.forEach(particle => {
-        particle.previousX = particle.x;
-        particle.previousY = particle.y;
-        particle.vx *= .982;
-        particle.vy = particle.vy * .982 + .045;
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-        particle.life -= 1;
-        const alpha = Math.max(0,particle.life / particle.maxLife);
-        context.globalAlpha = alpha;
-        context.strokeStyle = particle.color;
-        context.lineWidth = particle.size * (.55 + alpha * .45);
-        context.beginPath();
-        context.moveTo(particle.previousX,particle.previousY);
-        context.lineTo(particle.x,particle.y);
-        context.stroke();
-        context.fillStyle = particle.color;
-        context.beginPath();
-        context.arc(particle.x,particle.y,Math.max(.7,particle.size * alpha),0,Math.PI * 2);
-        context.fill();
-      });
-      context.globalAlpha = 1;
-      context.globalCompositeOperation = 'source-over';
-      if(particles.length) frame = requestAnimationFrame(draw);
-      else context.clearRect(0,0,window.innerWidth,window.innerHeight);
+    function createParticle(x,y,angle,distance,color){
+      if(activeParticles.size >= 50) return;
+      const particle = document.createElement('span');
+      const size = Math.random() * 6 + 8;
+      particle.className = `click-particle color-${color}`;
+      particle.setAttribute('aria-hidden','true');
+      particle.style.setProperty('--dx',`${Math.cos(angle) * distance}px`);
+      particle.style.setProperty('--dy',`${Math.sin(angle) * distance}px`);
+      particle.style.left = `${x}px`;
+      particle.style.top = `${y}px`;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      activeParticles.add(particle);
+      document.body.appendChild(particle);
+      const remove = () => {
+        activeParticles.delete(particle);
+        particle.remove();
+      };
+      particle.addEventListener('animationend',remove,{once:true});
+      window.setTimeout(remove,1200);
     }
 
     function burst(x,y){
-      if(reducedMotion.matches) return;
-      ensureCanvas();
-      if(!context) return;
-      const accent = getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#7cff8b';
-      const colors = [accent,'#ffd166','#8ab9ff','#ff8fab','#f8fff4'];
-      const count = window.innerWidth < 700 ? 20 : 28;
-      for(let index = 0; index < count; index += 1){
-        const angle = (Math.PI * 2 * index / count) + (Math.random() - .5) * .16;
-        const speed = 1.8 + Math.random() * 3.5;
-        const maxLife = 34 + Math.random() * 24;
-        particles.push({
-          x,y,previousX:x,previousY:y,
-          vx:Math.cos(angle) * speed,
-          vy:Math.sin(angle) * speed,
-          life:maxLife,
-          maxLife,
-          size:.9 + Math.random() * 1.5,
-          color:colors[index % colors.length]
-        });
+      for(let index = 0; index < 8; index += 1){
+        const angle = Math.PI * 2 / 8 * index;
+        const distance = 16 + Math.random() * 8;
+        window.setTimeout(() => createParticle(x,y,angle,distance,index % 10 + 1),index * 12);
       }
-      if(particles.length > 160) particles.splice(0,particles.length - 160);
-      if(!frame) frame = requestAnimationFrame(draw);
+      for(let index = 0; index < 2; index += 1){
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 16 + Math.random() * 10;
+        const color = Math.floor(Math.random() * 10) + 1;
+        window.setTimeout(() => createParticle(x,y,angle,distance,color),(8 + index) * 12);
+      }
     }
 
     document.addEventListener('click',event => {
       if(event.target.closest?.('[data-no-fireworks],input,textarea,select')) return;
       if(!event.clientX && !event.clientY) return;
       const now = performance.now();
-      if(now - lastBurst < 45) return;
+      if(now - lastBurst < 60) return;
       lastBurst = now;
       burst(event.clientX,event.clientY);
     },{passive:true});

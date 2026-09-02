@@ -81,10 +81,8 @@
     });
     groups.forEach(groupEntries => { playGroup(groupEntries, runGeneration); });
   };
-  if(document.readyState === 'complete'){
-    play();
-  }else{
-    window.addEventListener('load', play, {once:true});
-  }
+  // The script is loaded with `defer`, so the DOM is ready here. Starting on
+  // `window.load` made the greeting wait for every image and remote request.
+  play();
   window.addEventListener('site-language-change', play);
 })();
