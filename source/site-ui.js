@@ -254,42 +254,82 @@
     const capableDevice = (navigator.hardwareConcurrency || 4) > 4;
     if(reducedMotion || coarsePointer || !capableDevice) return;
 
-    const activeParticles = new Set();
-    let lastBurst = 0;
-
-    function createParticle(x,y,angle,distance,color){
-      if(activeParticles.size >= 50) return;
+    const particleLayer = document.createElement('div');
+    particleLayer.className = 'click-particle-layer';
+    particleLayer.setAttribute('aria-hidden','true');
+    particleLayer.dataset.noFireworks = '';
+    const particlePool = [];
+    const particleFragment = document.createDocumentFragment();
+    const particleSizes = [8,10,12,9,13,11,14,9,12,10];
+    for(let index = 0; index < 50; index += 1){
       const particle = document.createElement('span');
-      const size = Math.random() * 6 + 8;
-      particle.className = `click-particle color-${color}`;
-      particle.setAttribute('aria-hidden','true');
-      particle.style.setProperty('--dx',`${Math.cos(angle) * distance}px`);
-      particle.style.setProperty('--dy',`${Math.sin(angle) * distance}px`);
-      particle.style.left = `${x}px`;
-      particle.style.top = `${y}px`;
+      const size = particleSizes[index % particleSizes.length];
+      particle.className = `click-particle color-${index % 10 + 1}`;
+      particle.dataset.size = String(size);
       particle.style.width = `${size}px`;
       particle.style.height = `${size}px`;
-      activeParticles.add(particle);
-      document.body.appendChild(particle);
-      const remove = () => {
-        activeParticles.delete(particle);
-        particle.remove();
+      particlePool.push(particle);
+      particleFragment.appendChild(particle);
+    }
+    particleLayer.appendChild(particleFragment);
+    document.body.appendChild(particleLayer);
+
+    let poolCursor = 0;
+    let lastBurst = 0;
+
+    function acquireParticle(){
+      for(let offset = 0; offset < particlePool.length; offset += 1){
+        const index = (poolCursor + offset) % particlePool.length;
+        const particle = particlePool[index];
+        if(!particle._fireworkAnimation){
+          poolCursor = (index + 1) % particlePool.length;
+          return particle;
+        }
+      }
+      return null;
+    }
+
+    function animateParticle(x,y,angle,distance,delay){
+      const particle = acquireParticle();
+      if(!particle) return;
+      const size = Number(particle.dataset.size) || 10;
+      const originX = x - size / 2;
+      const originY = y - size / 2;
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance;
+      const transformAt = (multiplier,scale) => `translate3d(${originX + dx * multiplier}px,${originY + dy * multiplier}px,0) scale(${scale})`;
+      particle.style.willChange = 'transform,opacity';
+      const animation = particle.animate([
+        {offset:0,opacity:1,transform:transformAt(0,.4)},
+        {offset:.15,opacity:1,transform:transformAt(1,1.3)},
+        {offset:.6,opacity:.8,transform:transformAt(2.5,1)},
+        {offset:1,opacity:0,transform:transformAt(3.5,.3)}
+      ],{
+        duration:1100,
+        delay,
+        easing:'cubic-bezier(.23,1,.32,1)',
+        fill:'none'
+      });
+      particle._fireworkAnimation = animation;
+      const release = () => {
+        if(particle._fireworkAnimation !== animation) return;
+        particle._fireworkAnimation = null;
+        particle.style.willChange = '';
       };
-      particle.addEventListener('animationend',remove,{once:true});
-      window.setTimeout(remove,1200);
+      animation.addEventListener('finish',release,{once:true});
+      animation.addEventListener('cancel',release,{once:true});
     }
 
     function burst(x,y){
       for(let index = 0; index < 8; index += 1){
         const angle = Math.PI * 2 / 8 * index;
         const distance = 16 + Math.random() * 8;
-        window.setTimeout(() => createParticle(x,y,angle,distance,index % 10 + 1),index * 12);
+        animateParticle(x,y,angle,distance,index * 12);
       }
       for(let index = 0; index < 2; index += 1){
         const angle = Math.random() * Math.PI * 2;
         const distance = 16 + Math.random() * 10;
-        const color = Math.floor(Math.random() * 10) + 1;
-        window.setTimeout(() => createParticle(x,y,angle,distance,color),(8 + index) * 12);
+        animateParticle(x,y,angle,distance,(8 + index) * 12);
       }
     }
 

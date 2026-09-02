@@ -124,22 +124,24 @@ button,a,input,select{outline:none}
   outline-offset:3px;
 }
 
-.click-particle{
+.click-particle-layer{
   position:fixed;
+  inset:0;
   z-index:80;
-  border-radius:50%;
+  overflow:hidden;
+  contain:strict;
   pointer-events:none;
-  will-change:transform,opacity;
-  background:radial-gradient(circle,#ffb3ba 0%,#ffc1cc 100%);
-  box-shadow:0 0 6px rgba(255,255,255,.8);
-  animation:particle-explosion 1.1s cubic-bezier(.23,1,.32,1) forwards;
 }
 
-@keyframes particle-explosion{
-  0%{opacity:1;transform:scale(.4) translate3d(0,0,0)}
-  15%{opacity:1;transform:scale(1.3) translate3d(var(--dx),var(--dy),0)}
-  60%{opacity:.8;transform:scale(1) translate3d(calc(var(--dx) * 2.5),calc(var(--dy) * 2.5),0)}
-  100%{opacity:0;transform:scale(.3) translate3d(calc(var(--dx) * 3.5),calc(var(--dy) * 3.5),0)}
+.click-particle{
+  position:absolute;
+  top:0;
+  left:0;
+  border-radius:50%;
+  pointer-events:none;
+  opacity:0;
+  background:radial-gradient(circle,#ffb3ba 0%,#ffc1cc 100%);
+  box-shadow:0 0 6px rgba(255,255,255,.8);
 }
 
 .click-particle.color-1{background:radial-gradient(circle,#ffb3ba 0%,#ffc1cc 100%)}
@@ -542,6 +544,25 @@ body:has(.cards-grid) main > .glass-card{
 .cards-grid .hero:nth-child(2){grid-column:9 / span 4}
 .cards-grid .hero:nth-child(3){grid-column:1 / span 5}
 .cards-grid .hero:nth-child(4){grid-column:6 / span 7}
+.home-contact{isolation:isolate}
+.home-contact::after{
+  content:"";
+  position:absolute;
+  top:-8%;
+  right:-2%;
+  bottom:-8%;
+  z-index:0;
+  width:52%;
+  background:url("index_bg_image.png") center 32% / cover no-repeat;
+  opacity:.22;
+  filter:grayscale(.24) saturate(.76) blur(.7px);
+  transform:scale(1.035);
+  transform-origin:right center;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.45) 38%,#000 76%);
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.45) 38%,#000 76%);
+  pointer-events:none;
+}
+html[data-theme="light"] .home-contact::after{opacity:.17;filter:grayscale(.32) saturate(.7) blur(.7px)}
 .cards-grid .hero:first-child::after{
   content:"YL";
   position:absolute;
@@ -761,32 +782,6 @@ html[data-theme="light"] .github-day[data-level="2"]{border-color:#40c463;backgr
 html[data-theme="light"] .github-day[data-level="3"]{border-color:#30a14e;background:#30a14e}
 html[data-theme="light"] .github-day[data-level="4"]{border-color:#216e39;background:#216e39}
 
-.github-repositories{
-  display:grid;
-  grid-template-columns:auto minmax(0,1fr);
-  gap:12px;
-  align-items:center;
-  margin-top:13px;
-  color:var(--muted);
-  font:600 11px/1.4 var(--font-body);
-}
-
-#githubRepoList{display:flex;justify-content:flex-end;gap:7px;min-width:0}
-#githubRepoList > span{color:var(--faint);font-weight:500}
-#githubRepoList a{
-  display:grid;
-  min-width:0;
-  max-width:31%;
-  padding:7px 9px;
-  border:1px solid var(--line);
-  color:var(--text);
-  background:transparent;
-  text-decoration:none;
-}
-#githubRepoList a:hover{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));background:var(--accent-soft)}
-#githubRepoList strong{overflow:hidden;font:600 11px/1.3 var(--font-body);text-overflow:ellipsis;white-space:nowrap}
-#githubRepoList small{overflow:hidden;color:var(--muted);font:500 9px/1.3 var(--font-mono);text-overflow:ellipsis;white-space:nowrap}
-
 .terminal-readout::after{
   content:"";
   position:absolute;
@@ -838,25 +833,28 @@ html[data-theme="light"] .github-day[data-level="4"]{border-color:#216e39;backgr
 }
 
 .query-panel{
-  margin-bottom:12px;
-  border-top:1px solid var(--line-strong);
-  border-bottom:1px solid var(--line-strong);
+  display:grid;
+  grid-template-columns:minmax(280px,.78fr) minmax(480px,1.22fr);
+  gap:14px;
+  align-items:stretch;
+  margin-bottom:28px;
+  border:0;
 }
 
 .query-row{
   display:block;
-  min-height:58px;
-  border-bottom:1px solid var(--line);
+  min-height:54px;
+  border:0;
 }
-
-.query-row:last-child{border-bottom:0}
 
 .search-control{
   display:grid;
   grid-template-columns:28px minmax(0,1fr) auto;
   align-items:center;
-  min-height:58px;
+  min-height:54px;
   padding:0 10px 0 4px;
+  border:1px solid var(--line);
+  background:color-mix(in srgb,var(--surface) 88%,transparent);
 }
 
 .search-mark{color:var(--accent);font:500 20px/1 var(--font-mono)}
@@ -892,7 +890,7 @@ html[data-theme="light"] .github-day[data-level="4"]{border-color:#216e39;backgr
 .clear-search[hidden]{display:none}
 .clear-search:hover{color:var(--text);border-color:var(--accent);background:var(--accent-soft)}
 
-.filter-list{display:grid;grid-template-columns:.8fr .95fr 1.05fr 1.2fr 1fr;align-items:center;min-height:58px;padding:7px 0;overflow:hidden}
+.filter-list{display:grid;grid-template-columns:.8fr .95fr 1.05fr 1.2fr 1fr;align-items:center;min-height:54px;padding:4px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 88%,transparent);overflow:hidden}
 
 .filter-button{
   min-width:0;
@@ -918,7 +916,7 @@ html[data-theme="light"] .github-day[data-level="4"]{border-color:#216e39;backgr
   align-items:start;
 }
 
-#list{min-width:0;min-height:45vh;min-height:45svh;border-bottom:1px solid var(--line-strong)}
+#list{min-width:0;min-height:45vh;min-height:45svh;border-bottom:0}
 
 .blog-sidebar{
   position:sticky;
@@ -1015,7 +1013,7 @@ html[data-theme="light"] .github-day[data-level="4"]{border-color:#216e39;backgr
   transition:background-color .2s ease,padding .2s var(--ease);
 }
 
-.post:first-child{border-top:1px solid var(--line-strong) !important}
+.post:first-child{border-top:0 !important}
 .post.has-cover{padding-right:clamp(165px,31%,265px) !important}
 .post:hover{padding-right:18px !important;padding-left:18px !important;background:var(--surface) !important;transform:none !important;box-shadow:none !important}
 .post.has-cover:hover{padding-right:clamp(165px,31%,265px) !important}
@@ -1629,6 +1627,7 @@ body.reveal:has(.about-top) .glass-card{
   .cards-grid .hero:last-child > div > div:last-child{border-bottom:0}
   .blog-intro{grid-template-columns:1fr;gap:10px;margin-bottom:34px}
   .blog-type-note{justify-self:start;min-width:0;margin:-6px 0 10px;white-space:normal}
+  .query-panel{grid-template-columns:1fr;gap:10px;margin-bottom:24px}
   .blog-sidebar{grid-template-columns:1fr;gap:26px}
   .filter-list{min-height:54px}
   .filter-button{min-width:0;padding:0 4px}
@@ -1675,9 +1674,6 @@ body.reveal:has(.about-top) .glass-card{
   .github-activity-head{display:grid;gap:3px}
   #githubStatus{text-align:left}
   .github-source-badge{justify-self:start}
-  .github-repositories{grid-template-columns:1fr;gap:7px}
-  #githubRepoList{justify-content:flex-start;overflow-x:auto;padding-bottom:3px;scrollbar-width:thin}
-  #githubRepoList a{flex:0 0 72%;max-width:none}
 }
 
 @media(max-width:390px){

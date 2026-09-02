@@ -70,7 +70,7 @@
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%)}}
   </style>
   <script src="source/site-preferences.js?v=20260902"></script>
-  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-6">
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-7">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -85,7 +85,7 @@
         'home.contact.title': 'Get in Touch',
         'home.contact.email': 'Have a question or want to collaborate? Email me at:',
         'home.contact.github': 'You can also find me on <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a>.',
-        'home.stats.title': 'Writing at a Glance',
+        'home.stats.title': 'Statistics',
         'home.stats.note': 'Calculated from all Markdown posts.',
         'home.stats.active': 'Active Days',
         'home.stats.updated': 'Last Updated',
@@ -98,7 +98,6 @@
         'home.github.stars': 'Stars on public repositories',
         'home.github.activity': 'Contribution calendar',
         'home.github.source': 'GitHub public data',
-        'home.github.recentRepos': 'Recently updated',
         'home.github.loading': 'Connecting to GitHub…',
         'home.github.unavailable': 'GitHub data is temporarily unavailable.',
         'home.github.partial': 'Some live GitHub details are temporarily unavailable.',
@@ -135,7 +134,6 @@
         'home.github.stars': '公开仓库获赞',
         'home.github.activity': '贡献日历',
         'home.github.source': 'GitHub 公开数据',
-        'home.github.recentRepos': '最近更新',
         'home.github.loading': '正在连接 GitHub…',
         'home.github.unavailable': 'GitHub 数据暂时不可用',
         'home.github.partial': '部分 GitHub 实时数据暂时无法读取',
@@ -149,7 +147,7 @@
       }
     };
   </script>
-  <script src="source/site-ui.js?v=20260902-3" defer></script>
+  <script src="source/site-ui.js?v=20260902-4" defer></script>
   <script src="source/typewriter.js?v=20260902-2" defer></script>
 </head>
 <body class="preload page-home">
@@ -209,14 +207,14 @@
           <p style="margin-top:8px"><a href="https://github.com/yunli2024/yunli2024.github.io" style="color:var(--accent)" data-i18n="home.about.source">View this site’s source</a></p>
         </article>
 
-        <article class="hero">
+        <article class="hero home-contact">
           <h2 data-i18n="home.contact.title">Get in Touch</h2>
           <p><span data-i18n="home.contact.email">Have a question or want to collaborate? Email me at:</span> <a href="mailto:12410922@mail.sustech.edu.cn" style="color:var(--accent)">12410922@mail.sustech.edu.cn</a></p>
           <p style="margin-top:8px" data-i18n-html="home.contact.github">You can also find me on <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a>.</p>
         </article>
 
         <article class="hero">
-          <h2 data-i18n="home.stats.title">Writing at a Glance</h2>
+          <h2 data-i18n="home.stats.title">Statistics</h2>
           <p style="color:var(--muted)" data-i18n="home.stats.note">Calculated from all Markdown posts.</p>
           <div class="writing-stats">
             <div class="writing-stat">
@@ -260,10 +258,6 @@
             </div>
             <div class="github-calendar-shell">
               <div id="githubHeatmap" class="github-heatmap" role="img" aria-label="GitHub contribution activity for the last year" data-i18n-aria-label="home.github.heatmapLabel"></div>
-            </div>
-            <div class="github-repositories">
-              <span data-i18n="home.github.recentRepos">Recently updated</span>
-              <div id="githubRepoList"><span data-i18n="home.github.loading">Connecting to GitHub…</span></div>
             </div>
           </section>
         </article>
@@ -326,7 +320,7 @@
     loadBlogStats();
 
     const GITHUB_USER = 'yunli2024';
-    const GITHUB_CACHE_KEY = 'yunli-github-public-stats-v2';
+    const GITHUB_CACHE_KEY = 'yunli-github-public-stats-v3';
     const GITHUB_CONTRIBUTIONS_API = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USER}?y=last`;
     const githubState = {statusKey:'home.github.loading',data:null};
 
@@ -390,27 +384,7 @@
       document.getElementById('githubFollowers').textContent = Number.isFinite(profile.followers) ? profile.followers : '—';
       document.getElementById('githubStars').textContent = Number.isFinite(data.totalStars) ? data.totalStars : '—';
       renderGithubHeatmap(data.contributions || [],data.totalContributions);
-      renderGithubRepositories(data.repositories || []);
       renderGithubStatus();
-    }
-
-    function renderGithubRepositories(repositories = []){
-      const container = document.getElementById('githubRepoList');
-      if(!container) return;
-      const fragment = document.createDocumentFragment();
-      repositories.slice(0,3).forEach(repository => {
-        const link = document.createElement('a');
-        link.href = repository.url;
-        link.target = '_blank';
-        link.rel = 'noopener';
-        const name = document.createElement('strong');
-        name.textContent = repository.name;
-        const meta = document.createElement('small');
-        meta.textContent = [repository.language,`★ ${repository.stars}`].filter(Boolean).join(' · ');
-        link.append(name,meta);
-        fragment.appendChild(link);
-      });
-      container.replaceChildren(fragment);
     }
 
     async function fetchGithubJson(url,headers = {}){
@@ -446,18 +420,6 @@
           ? contributionsResult.value
           : null;
         if(!profileSource && !repositorySource && !contributionSource && !cached) throw new Error('GitHub data unavailable');
-        const selectedRepositories = repositorySource
-          ? repositorySource
-            .filter(repository => !repository.fork)
-            .sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at))
-            .slice(0,3)
-            .map(repository => ({
-              name:String(repository.name || ''),
-              url:String(repository.html_url || ''),
-              language:repository.language ? String(repository.language) : '',
-              stars:Number(repository.stargazers_count) || 0
-            }))
-          : cachedData.repositories || [];
         const data = {
           profile:profileSource ? {
             login:String(profileSource.login || GITHUB_USER),
@@ -469,7 +431,6 @@
           totalStars:repositorySource
             ? repositorySource.reduce((total,repository) => total + (Number(repository.stargazers_count) || 0),0)
             : cachedData.totalStars,
-          repositories:selectedRepositories,
           totalContributions:Number(contributionSource?.total?.lastYear ?? cachedData.totalContributions),
           contributions:Array.isArray(contributionSource?.contributions)
             ? contributionSource.contributions.map(day => ({date:String(day.date || ''),count:Number(day.count) || 0,level:Number(day.level) || 0}))
