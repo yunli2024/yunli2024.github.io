@@ -70,7 +70,7 @@
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%)}}
   </style>
   <script src="source/site-preferences.js?v=20260902"></script>
-  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-7">
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-8">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -82,6 +82,10 @@
         'home.about.copy1': 'This is my little corner of the internet. I write whenever inspiration strikes and share things I find interesting.',
         'home.about.copy2': 'Browse my notes and projects above, or visit About to get to know me a little better.',
         'home.about.source': 'View this site’s source',
+        'home.news.title': 'News',
+        'home.news.research': 'A research update will be added here.',
+        'home.news.project': 'A project milestone will be added here.',
+        'home.news.writing': 'A new writing update will be added here.',
         'home.contact.title': 'Get in Touch',
         'home.contact.email': 'Have a question or want to collaborate? Email me at:',
         'home.contact.github': 'You can also find me on <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a>.',
@@ -118,6 +122,10 @@
         'home.about.copy1': '是云离的个人主页，随缘写写，分享点有趣的东西。',
         'home.about.copy2': '上方导航可查看博客文章、项目等。也可以通过“关于”页面了解更多关于我~',
         'home.about.source': '查看此网站仓库',
+        'home.news.title': '动态',
+        'home.news.research': '科研动态待补充。',
+        'home.news.project': '项目进展待补充。',
+        'home.news.writing': '新文章动态待补充。',
         'home.contact.title': '联系我',
         'home.contact.email': '有问题或合作请发邮件：',
         'home.contact.github': '也可以在 <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a> 找到我。',
@@ -147,7 +155,7 @@
       }
     };
   </script>
-  <script src="source/site-ui.js?v=20260902-4" defer></script>
+  <script src="source/site-ui.js?v=20260902-5" defer></script>
   <script src="source/typewriter.js?v=20260902-2" defer></script>
 </head>
 <body class="preload page-home">
@@ -200,12 +208,32 @@
           </div>
         </article>
 
-        <article class="hero">
+        <article class="hero home-about">
           <h2 data-i18n="home.about.title">About This Site</h2>
           <p data-i18n="home.about.copy1">This is my little corner of the internet. I write whenever inspiration strikes and share things I find interesting.</p>
           <p data-i18n="home.about.copy2">Browse my notes and projects above, or visit About to get to know me a little better.</p>
           <p style="margin-top:8px"><a href="https://github.com/yunli2024/yunli2024.github.io" style="color:var(--accent)" data-i18n="home.about.source">View this site’s source</a></p>
         </article>
+
+        <section class="home-news" aria-labelledby="home-news-title">
+          <div class="home-news-heading">
+            <h2 id="home-news-title" data-i18n="home.news.title">News</h2>
+          </div>
+          <div class="home-news-list">
+            <article class="home-news-item">
+              <time>2026 / — / —</time>
+              <p data-i18n="home.news.research">A research update will be added here.</p>
+            </article>
+            <article class="home-news-item">
+              <time>2026 / — / —</time>
+              <p data-i18n="home.news.project">A project milestone will be added here.</p>
+            </article>
+            <article class="home-news-item">
+              <time>2026 / — / —</time>
+              <p data-i18n="home.news.writing">A new writing update will be added here.</p>
+            </article>
+          </div>
+        </section>
 
         <article class="hero home-contact">
           <h2 data-i18n="home.contact.title">Get in Touch</h2>
@@ -213,7 +241,7 @@
           <p style="margin-top:8px" data-i18n-html="home.contact.github">You can also find me on <a href="https://github.com/yunli2024" style="color:var(--accent)">GitHub</a>.</p>
         </article>
 
-        <article class="hero">
+        <article class="hero home-statistics">
           <h2 data-i18n="home.stats.title">Statistics</h2>
           <p style="color:var(--muted)" data-i18n="home.stats.note">Calculated from all Markdown posts.</p>
           <div class="writing-stats">

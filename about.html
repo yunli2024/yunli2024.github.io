@@ -54,7 +54,7 @@
 		.reveal .glass-card:nth-of-type(4){animation-delay:680ms}
 	</style>
 	<script src="source/site-preferences.js?v=20260902"></script>
-  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-7">
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-8">
 	<script>
 		window.PAGE_I18N = {
 			en: {
@@ -69,6 +69,9 @@
 				'about.photo.static':'Portrait of Yunli. One photo is currently available.',
 				'about.photo.caption':'PORTRAIT / {number}',
 				'cv.heading':'CV',
+				'education.heading':'Education',
+				'education.period':'2024 — Present',
+				'education.program':'Undergraduate · Computer Science and Engineering',
 				'cv.school.label':'University:',
 				'cv.school.value':'Southern University of Science and Technology (SUSTech)',
 				'cv.department.label':'Department:',
@@ -99,6 +102,9 @@
 				'about.photo.static':'云离的照片。当前仅有一张。',
 				'about.photo.caption':'照片 / {number}',
 				'cv.heading':'个人履历',
+				'education.heading':'教育经历',
+				'education.period':'2024 — 至今',
+				'education.program':'本科 · 计算机科学与工程',
 				'cv.school.label':'学校：',
 				'cv.school.value':'南方科技大学（SUSTech）',
 				'cv.department.label':'院系：',
@@ -119,7 +125,7 @@
 			}
 		};
 	</script>
-  <script src="source/site-ui.js?v=20260902-4" defer></script>
+  <script src="source/site-ui.js?v=20260902-5" defer></script>
 	<script src="source/typewriter.js?v=20260902-2" defer></script>
 </head>
 <body class="preload page-about">
@@ -153,7 +159,7 @@
 		</header>
 
 		<main>
-			<section class="glass-card wrap">
+			<section class="glass-card wrap about-hero-card">
 				<div class="about-top">
 					<div class="about-text" style="flex:1;min-width:0">
 						<h1 data-i18n="about.heading">About Yunli</h1>
@@ -170,7 +176,19 @@
 				</div>
 			</section>
 
-			<section class="glass-card wrap">
+			<section class="glass-card wrap education-card">
+				<h2 data-i18n="education.heading">Education</h2>
+				<div class="education-entry">
+					<time data-i18n="education.period">2024 — Present</time>
+					<div>
+						<h3 data-i18n="cv.school.value">Southern University of Science and Technology (SUSTech)</h3>
+						<p data-i18n="education.program">Undergraduate · Computer Science and Engineering</p>
+					</div>
+				</div>
+				<span class="education-watermark" aria-hidden="true">SUSTech</span>
+			</section>
+
+			<section class="glass-card wrap cv-card">
 				<h2 data-i18n="cv.heading">CV</h2>
 				<p><strong data-i18n="cv.school.label">University:</strong> <a href="https://www.sustech.edu.cn" target="_blank" rel="noopener" data-i18n="cv.school.value">Southern University of Science and Technology (SUSTech)</a></p>
 				<p><strong data-i18n="cv.department.label">Department:</strong> <a href="https://cse.sustech.edu.cn" target="_blank" rel="noopener" data-i18n="cv.department.value">Department of Computer Science and Engineering (CSE)</a></p>
@@ -179,13 +197,13 @@
 				<p data-i18n="cv.privacy">To protect my privacy, I do not publish my full CV or transcript here. Feel free to email me at 12410922@mail.sustech.edu.cn to request them.</p>
 			</section>
 
-			<section class="glass-card wrap">
+			<section class="glass-card wrap research-card">
 				<h2 data-i18n="research.heading">Research</h2>
 				<p><strong data-i18n="research.interests">My research interests center on computer vision and image editing.</strong></p>
 				<p><strong data-i18n="research.advisor.label">Supervised by:</strong> <a href="https://www.sustech.edu.cn/zh/faculties/zhangjianguo.html" id="advisor-link" data-i18n="research.advisor.name">Professor Jianguo Zhang</a></p>
 			</section>
 
-			<section class="glass-card wrap">
+			<section class="glass-card wrap beyond-card">
 				<h2 data-i18n="other.heading">Beyond the Lab</h2>
 				<p data-i18n="other.runner">I am also an amateur marathon runner!</p>
 				<p class="personal-record"><span data-i18n="other.record.label">HALF MARATHON / PERSONAL BEST</span><strong>1:59:32</strong><small data-i18n="other.record.place">@ Hangzhou Dream Town, 2026</small></p>

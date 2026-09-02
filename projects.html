@@ -76,7 +76,7 @@
     .reveal .projects-grid .card:nth-child(6){animation-delay:1040ms}
   </style>
   <script src="source/site-preferences.js?v=20260902"></script>
-  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-7">
+  <link rel="stylesheet" href="source/ui-polish.css?v=20260902-8">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -85,9 +85,16 @@
         'projects.title': 'Projects',
         'projects.intro': 'Mostly course projects, with a few experiments along the way.',
         'projects.score': 'Final Score:',
-        'projects.repository': 'Repository',
+        'projects.repository': 'Code',
         'projects.details': 'Project Details',
-        'projects.privateRepository': 'Private Repository',
+        'projects.privateRepository': 'Private Code',
+        'projects.takeaway': 'Takeaway',
+        'projects.klotski.takeaway': 'Built a complete desktop puzzle game with Java and Swing.',
+        'projects.matrix.takeaway': 'Implemented matrix-calculation logic and interaction on an FPGA.',
+        'projects.recipe1.takeaway': 'Designed the relational data model and core recipe-management flow.',
+        'projects.recipe2.takeaway': 'Added database optimization and a practical Java interface.',
+        'projects.visual.takeaway': 'Connected real-time keypoints to three interactive visual-computing experiences.',
+        'projects.cpu.takeaway': 'Delivered an RV32I datapath with UART debugging and interactive teaching support.',
         'projects.cpu.coverAria': 'View details for the CS202 RISC-V CPU project',
         'projects.cpu.repositoryTitle': 'This GitHub Classroom repository is private and requires authorization.',
         'projects.klotski.title': 'CS109 · Spring 2025 Project: Klotski',
@@ -132,9 +139,16 @@
         'projects.title': '项目',
         'projects.intro': '主要是一些课程项目啦。',
         'projects.score': '最终成绩：',
-        'projects.repository': '代码仓库',
+        'projects.repository': '代码',
         'projects.details': '项目详情',
-        'projects.privateRepository': '私有代码仓库',
+        'projects.privateRepository': '私有代码',
+        'projects.takeaway': '核心成果',
+        'projects.klotski.takeaway': '用 Java 与 Swing 完成可交互的桌面华容道游戏。',
+        'projects.matrix.takeaway': '在 FPGA 上完成矩阵运算逻辑与交互实现。',
+        'projects.recipe1.takeaway': '完成菜谱关系数据模型与基础管理流程。',
+        'projects.recipe2.takeaway': '加入数据库优化与 Java 前端界面，完善使用流程。',
+        'projects.visual.takeaway': '将实时关键点分析用于三类交互式视觉计算体验。',
+        'projects.cpu.takeaway': '完成 RV32I 数据通路、UART 调试与交互式教学支持。',
         'projects.cpu.coverAria': '查看 CS202 RISC-V CPU 项目详情',
         'projects.cpu.repositoryTitle': 'GitHub Classroom 私有仓库，访问需要授权',
         'projects.klotski.title': 'CS109 2025 年春季课程项目：三国华容道（Klotski）',
@@ -175,7 +189,7 @@
       }
     };
   </script>
-  <script src="source/site-ui.js?v=20260902-4" defer></script>
+  <script src="source/site-ui.js?v=20260902-5" defer></script>
   <script src="source/typewriter.js?v=20260902-2" defer></script>
 </head>
 <body class="preload page-projects">
@@ -211,13 +225,14 @@
 
     
     <div class="projects-grid">
-      <article class="card">
+      <article id="project-klotski" class="card">
         <div class="media">
            <img class="media-contain" src="source/cs109_project_example.png" alt="Klotski game interface" data-i18n-alt="projects.klotski.alt" fetchpriority="high" decoding="async">
         </div>
         <div>
           <h2 data-i18n="projects.klotski.title">CS109 · Spring 2025 Project: Klotski</h2>
           <p data-i18n="projects.klotski.description">Fundamentals of Computer Programming course project: a Java version of the classic Klotski puzzle.</p>
+          <div class="project-takeaway"><span data-i18n="projects.takeaway">Takeaway</span><p data-i18n="projects.klotski.takeaway">Built a complete desktop puzzle game with Java and Swing.</p></div>
           <div class="score"><span class="score-label" data-i18n="projects.score">Final Score:</span><span class="score-star">⭐</span><span class="score-value">104</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
         <div class="tags">
@@ -231,13 +246,14 @@
       </article>
 
       <!-- 用这个模板添加更多项目：复制并修改标题、描述、标签与链接 -->
-      <article class="card">
+      <article id="project-matrix" class="card">
         <div class="media">
           <img class="media-contain" src="source/cs207_project_example.png" alt="FPGA matrix calculator interface" data-i18n-alt="projects.matrix.alt" loading="lazy" decoding="async">
         </div>
         <div>
           <h2 data-i18n="projects.matrix.title">CS207 · Fall 2025 Project: FPGA Matrix Calculator</h2>
           <p data-i18n="projects.matrix.description">Digital Logic course project: an FPGA-based matrix calculator.</p>
+          <div class="project-takeaway"><span data-i18n="projects.takeaway">Takeaway</span><p data-i18n="projects.matrix.takeaway">Implemented matrix-calculation logic and interaction on an FPGA.</p></div>
           <div class="score"><span class="score-label" data-i18n="projects.score">Final Score:</span><span class="score-star">⭐</span><span class="score-value">106</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
         <div class="tags">
@@ -250,13 +266,14 @@
         </div>
       </article>
       
-      <article class="card">
+      <article id="project-recipe-management" class="card">
         <div class="media">
           <img class="media-contain" src="source/cs307_project1_example.png" alt="Database schema for the SUSTech Recipe Management System" data-i18n-alt="projects.recipe1.alt" loading="lazy" decoding="async">
         </div>
         <div>
           <h2 data-i18n="projects.recipe1.title">CS307 · Fall 2025 Project I: SUSTech Recipe Management System</h2>
           <p data-i18n="projects.recipe1.description">Database Systems course project I: a recipe management system for SUSTech.</p>
+          <div class="project-takeaway"><span data-i18n="projects.takeaway">Takeaway</span><p data-i18n="projects.recipe1.takeaway">Designed the relational data model and core recipe-management flow.</p></div>
           <div class="score"><span class="score-label" data-i18n="projects.score">Final Score:</span><span class="score-star">⭐</span><span class="score-value">99</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
         <div class="tags">
@@ -269,13 +286,14 @@
         </div>
       </article>
 
-      <article class="card">
+      <article id="project-recipe-database" class="card">
         <div class="media">
           <img class="media-contain" src="source/cs307_project2_example.png" alt="SUSTech Recipe Database System interface" data-i18n-alt="projects.recipe2.alt" loading="lazy" decoding="async">
         </div>
         <div>
           <h2 data-i18n="projects.recipe2.title">CS307 · Fall 2025 Project II: SUSTech Recipe Database System</h2>
           <p data-i18n="projects.recipe2.description">Database Systems course project II: a database-backed recipe system for SUSTech.</p>
+          <div class="project-takeaway"><span data-i18n="projects.takeaway">Takeaway</span><p data-i18n="projects.recipe2.takeaway">Added database optimization and a practical Java interface.</p></div>
           <div class="score"><span class="score-label" data-i18n="projects.score">Final Score:</span><span class="score-star">⭐</span><span class="score-value">110+</span><span style="color:var(--muted)">/ 100</span></div>
         </div>
         <div class="tags">
@@ -288,13 +306,14 @@
         </div>
       </article>
 
-      <article class="card">
+      <article id="project-visual-computing" class="card">
         <div class="media">
           <img src="source/nus_visual_computing_project.png" alt="Motion-controlled platform game powered by real-time body keypoints" data-i18n-alt="projects.visual.alt" loading="lazy" decoding="async">
         </div>
         <div>
           <h2 data-i18n="projects.visual.title">NUS School of Computing · Visual Computing Project: Real-Time Face and Body Keypoint Analysis</h2>
           <p data-i18n="projects.visual.description">A visual computing project featuring facial-expression recognition, dance scoring, and motion-controlled games powered by real-time face and body keypoints.</p>
+          <div class="project-takeaway"><span data-i18n="projects.takeaway">Takeaway</span><p data-i18n="projects.visual.takeaway">Connected real-time keypoints to three interactive visual-computing experiences.</p></div>
           <div class="score"><span class="score-label" data-i18n="projects.score">Final Score:</span><span class="score-value"></span></div>
         </div>
         <div class="tags">
@@ -307,13 +326,14 @@
         </div>
       </article>
 
-      <article class="card">
+      <article id="project-riscv-cpu" class="card">
         <a class="media" href="project-cs202.html" aria-label="View details for the CS202 RISC-V CPU project" data-i18n-aria-label="projects.cpu.coverAria">
           <img class="media-card-cover" src="source/cs202_cpu_project.svg" alt="Single-cycle RV32I CPU datapath and UART debugging architecture" data-i18n-alt="projects.cpu.alt" loading="lazy" decoding="async">
         </a>
         <div>
           <h2 data-i18n="projects.cpu.title">CS202 · Spring 2026 Project: Single-Cycle RISC-V CPU</h2>
           <p data-i18n="projects.cpu.description">Computer Organization course project: a single-cycle RV32I CPU built with Verilog and Vivado, with UART debugging and interactive teaching tools.</p>
+          <div class="project-takeaway"><span data-i18n="projects.takeaway">Takeaway</span><p data-i18n="projects.cpu.takeaway">Delivered an RV32I datapath with UART debugging and interactive teaching support.</p></div>
           <div class="score"><span class="score-label" data-i18n="projects.score">Final Score:</span><span class="score-value"></span></div>
         </div>
         <div class="tags">
