@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="coErase: Seeing Together for Group Object Removal. A research project exploring complementary observations across a group of images.">
+  <meta name="theme-color" content="#f8f7f3">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="coErase — Seeing Together for Group Object Removal">
+  <meta property="og:description" content="One image group. One instruction. Exploring how clearer views can help edit harder ones.">
+  <meta property="og:url" content="https://yunli2024.github.io/coErase/">
+  <link rel="canonical" href="https://yunli2024.github.io/coErase/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2325463c'/%3E%3Cpath d='M42 22a15 15 0 1 0 0 20' fill='none' stroke='%23f8f7f3' stroke-width='7'/%3E%3Ccircle cx='43' cy='20' r='5' fill='%23df8059'/%3E%3C/svg%3E">
+  <title>coErase — Seeing Together for Group Object Removal</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f8f7f3;
+      --ink: #243c34;
+      --muted: #58655e;
+      --line: #dedfd7;
+      --accent: #b64f2e;
+      --green: #25463c;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 30px; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.65;
+    }
+    a { color: inherit; text-underline-offset: 4px; }
+    a:hover { color: var(--accent); }
+    a:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; border-radius: 3px; }
+    .wrap { width: min(1040px, calc(100% - 64px)); margin-inline: auto; }
+    .skip { position: absolute; top: -100px; left: 20px; padding: 10px 18px; background: white; z-index: 2; }
+    .skip:focus { top: 12px; }
+    .header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 26px; border-bottom: 1px solid var(--line); }
+    .brand { font-size: 22px; font-weight: 750; letter-spacing: -1px; text-decoration: none; }
+    .brand span { color: var(--accent); }
+    nav { display: flex; align-items: center; gap: 28px; font-size: 14px; }
+    nav a { text-decoration: none; }
+    .hero { padding: 76px 0 36px; text-align: center; }
+    .eyebrow { margin: 0; color: var(--muted); font-size: 11px; font-weight: 650; letter-spacing: 2.5px; text-transform: uppercase; }
+    h1 { margin: 13px 0 4px; font-size: clamp(72px, 12vw, 124px); font-weight: 750; letter-spacing: -7px; line-height: 1.1; }
+    h1 span { color: var(--accent); }
+    .subtitle { margin: 22px auto 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(23px, 3.5vw, 34px); line-height: 1.3; letter-spacing: -.6px; }
+    .intro { max-width: 610px; margin: 22px auto 0; color: var(--muted); font-size: 17px; line-height: 1.75; }
+    .byline { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin: 24px 0 0; font-size: 14px; }
+    .byline .dot { color: #a4aaa4; }
+    .byline .label { color: var(--muted); }
+    .status { display: inline-flex; align-items: center; gap: 8px; margin-top: 25px; padding: 6px 14px; border: 1px solid #d7dfd5; border-radius: 30px; color: var(--green); background: #eff2ea; font-size: 12px; }
+    .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #47745c; }
+    .concept { margin: 26px auto 60px; max-width: 820px; }
+    .concept svg { display: block; width: 100%; height: auto; }
+    .concept figcaption { text-align: center; color: var(--muted); font-size: 12px; margin-top: 8px; }
+    .section { display: grid; grid-template-columns: 210px 1fr; gap: 40px; padding-block: 38px; border-top: 1px solid var(--line); }
+    h2 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -.4px; }
+    .number { display: block; margin-bottom: 8px; color: var(--accent); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; }
+    .section p { margin: 0; color: var(--muted); font-size: 16px; }
+    .section p + p { margin-top: 14px; }
+    .section strong { color: var(--ink); font-weight: 600; }
+    .resources { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .resource { border-top: 2px solid #c8d3c7; padding-top: 15px; }
+    .resource h3 { margin: 0 0 7px; font-size: 15px; font-weight: 650; }
+    .resource p { font-size: 13px; line-height: 1.6; }
+    .pending { display: inline-block; margin-top: 16px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+    .news { display: grid; grid-template-columns: 110px 1fr; gap: 18px; }
+    time { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; padding-top: 3px; }
+    .footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding-block: 24px 36px; border-top: 1px solid var(--line); margin-top: 12px; font-size: 12px; color: var(--muted); }
+    .footer p { margin: 0; }
+    .footer a { text-decoration: none; }
+    @media (max-width: 680px) {
+      .wrap { width: calc(100% - 36px); }
+      .header { padding-block: 20px; }
+      nav { gap: 17px; font-size: 12px; }
+      .hero { padding-top: 52px; }
+      h1 { letter-spacing: -5px; }
+      .intro { font-size: 15px; }
+      .section { grid-template-columns: 1fr; gap: 22px; padding-block: 30px; }
+      .number { display: inline; margin-right: 10px; }
+      .concept { margin-block: 14px 38px; }
+      .concept svg text { display: none; }
+      .resources { gap: 15px; }
+      .news { grid-template-columns: 95px 1fr; gap: 12px; }
+    }
+    @media (max-width: 390px) {
+      nav { gap: 12px; }
+      .resources { grid-template-columns: 1fr; gap: 22px; }
+      .pending { margin-top: 9px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="header wrap">
+    <a class="brand" href="./" aria-label="coErase home">co<span>Erase</span></a>
+    <nav aria-label="Main navigation">
+      <a href="#about">About</a>
+      <a href="#updates">Updates</a>
+      <a href="https://yunli2024.github.io/">Yunli ↗</a>
+    </nav>
+  </header>
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="project-title">
+      <p class="eyebrow">Group object removal</p>
+      <h1 id="project-title">co<span>Erase</span></h1>
+      <p class="subtitle">Seeing Together for Group Object Removal</p>
+      <p class="intro">One image group. One instruction.<br>Exploring how clearer views can help edit harder ones.</p>
+      <p class="byline"><span class="label">Maintained by</span> <a href="https://yunli2024.github.io/about.html">Yunli</a> <span class="dot" aria-hidden="true">·</span> <span>SUSTech</span></p>
+      <span class="status">Research in progress</span>
+    </section>
+
+    <figure class="concept">
+      <svg viewBox="0 0 820 232" role="img" aria-labelledby="concept-title concept-description">
+        <title id="concept-title">Complementary observations of the same target</title>
+        <desc id="concept-description">Three schematic views show a terracotta target clearly, partly behind an occluder, and at a smaller scale. Connections represent sharing observations across the image group.</desc>
+        <defs>
+          <clipPath id="view-one"><rect x="20" y="24" width="236" height="144" rx="12"/></clipPath>
+          <clipPath id="view-two"><rect x="292" y="24" width="236" height="144" rx="12"/></clipPath>
+          <clipPath id="view-three"><rect x="564" y="24" width="236" height="144" rx="12"/></clipPath>
+        </defs>
+        <g clip-path="url(#view-one)">
+          <rect x="20" y="24" width="236" height="144" fill="#e9ece3"/>
+          <path d="M20 121 83 74 154 128 213 93 256 121V168H20Z" fill="#cbd5c4"/>
+          <path d="M20 141 115 123 256 142V168H20Z" fill="#b4c5b2"/>
+          <ellipse cx="142" cy="148" rx="34" ry="7" fill="#344f3e" opacity=".12"/>
+          <rect x="118" y="82" width="45" height="59" rx="10" fill="#d9805a"/>
+          <path d="M129 83V76a12 12 0 0 1 24 0v7" stroke="#a14a30" stroke-width="5" fill="none"/>
+          <rect x="110" y="58" width="61" height="91" rx="15" stroke="#9b4c34" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+        </g>
+        <g clip-path="url(#view-two)">
+          <rect x="292" y="24" width="236" height="144" fill="#e9ece3"/>
+          <path d="M292 110 361 80 447 128 499 81 528 112V168H292Z" fill="#cbd5c4"/>
+          <path d="M292 148 402 126 528 143V168H292Z" fill="#b4c5b2"/>
+          <rect x="396" y="85" width="36" height="57" rx="9" fill="#d9805a"/>
+          <path d="M405 86v-7a9 9 0 0 1 18 0v7" stroke="#a14a30" stroke-width="4" fill="none"/>
+          <path d="M408 168V117c0-20 19-24 31-15l41 30v36Z" fill="#839a7e"/>
+          <rect x="388" y="63" width="52" height="87" rx="13" stroke="#9b4c34" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+        </g>
+        <g clip-path="url(#view-three)">
+          <rect x="564" y="24" width="236" height="144" fill="#e9ece3"/>
+          <path d="M564 123 638 61 724 132 773 82 800 102V168H564Z" fill="#cbd5c4"/>
+          <path d="M564 141 679 128 800 150V168H564Z" fill="#b4c5b2"/>
+          <rect x="683" y="106" width="22" height="29" rx="5" fill="#d9805a"/>
+          <path d="M689 107v-4a5 5 0 0 1 10 0v4" stroke="#a14a30" stroke-width="3" fill="none"/>
+          <rect x="675" y="93" width="38" height="49" rx="10" stroke="#9b4c34" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+        </g>
+        <g fill="none" stroke="#c6cec1">
+          <rect x="20" y="24" width="236" height="144" rx="12"/>
+          <rect x="292" y="24" width="236" height="144" rx="12"/>
+          <rect x="564" y="24" width="236" height="144" rx="12"/>
+          <path d="M138 168v26h544v-26M410 168v26"/>
+        </g>
+        <g fill="#536450" font-size="12" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+          <text x="36" y="46">01 / Clearer view</text>
+          <text x="308" y="46">02 / Partial view</text>
+          <text x="580" y="46">03 / Distant view</text>
+          <text x="410" y="223" text-anchor="middle" letter-spacing=".5">Shared target · Different observations</text>
+        </g>
+        <circle cx="410" cy="194" r="4" fill="#839a7e"/>
+      </svg>
+      <figcaption>Task illustration · schematic, not experimental results</figcaption>
+    </figure>
+
+    <section id="about" class="section" aria-labelledby="about-title">
+      <h2 id="about-title"><span class="number">01</span>About the project</h2>
+      <div>
+        <p>The same object can look very different across photos. A clear view may reveal details that are small, occluded, or ambiguous in another.</p>
+        <p><strong>coErase studies group object removal:</strong> using complementary observations to identify and remove the same target across an image group, while preserving each view’s unrelated content.</p>
+      </div>
+    </section>
+
+    <section id="materials" class="section" aria-labelledby="materials-title">
+      <h2 id="materials-title"><span class="number">02</span>Project materials</h2>
+      <div class="resources">
+        <article class="resource">
+          <h3>Selected examples</h3>
+          <p>Curated image groups and qualitative removal examples.</p>
+          <span class="pending">Coming soon</span>
+        </article>
+        <article class="resource">
+          <h3>Comparisons</h3>
+          <p>Side-by-side results for inspecting edits across views.</p>
+          <span class="pending">Coming soon</span>
+        </article>
+        <article class="resource">
+          <h3>Research materials</h3>
+          <p>Project notes and resources as they become available.</p>
+          <span class="pending">Coming soon</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="updates" class="section" aria-labelledby="updates-title">
+      <h2 id="updates-title"><span class="number">03</span>Updates</h2>
+      <div class="news">
+        <time datetime="2026-10-08">08 Oct 2026</time>
+        <p>The coErase project page is live. Selected examples and further project materials will be shared here.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="footer wrap">
+    <p>© 2026 coErase · Maintained by <a href="https://yunli2024.github.io/">Yunli</a></p>
+    <a href="https://github.com/yunli2024">GitHub ↗</a>
+  </footer>
+</body>
+</html>
