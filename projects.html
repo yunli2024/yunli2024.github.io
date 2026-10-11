@@ -36,18 +36,15 @@
     /* 固定卡片与封面高度以保证每行两个卡片等高显示 */
     .projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:18px;align-items:stretch}
     .projects-grid > .card{height:360px;display:flex;flex-direction:column}
-    /* 封面区域固定高度，图片覆盖并居中裁剪 */
-    .card .media{height:180px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(96,165,250,0.02));display:block;color:var(--muted)}
-    .card .media img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block}
-    .card .media img.media-top{object-position:center top}
-    .card .media img.media-card-cover{object-fit:cover;object-position:center center}
+    /* 所有封面使用 16:9，随卡片宽度缩放 */
+    .card .media{position:relative;flex:none;aspect-ratio:16 / 9;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(96,165,250,0.02));display:block;color:var(--muted)}
+    .card .media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
     /* 对 SVG 使用 contain 避免被裁剪 */
     .card .media img[src$='.svg']{object-fit:contain;background:transparent}
     /* 移动端回退为单列并移除固定高度 */
     @media (max-width:880px){
       .projects-grid{grid-template-columns:1fr}
       .projects-grid > .card{height:auto}
-      .card .media{height:140px}
     }
     .card h3{margin:0;font-size:1.05rem}
     .card p{margin:0;color:var(--muted);font-size:0.95rem}
@@ -60,7 +57,6 @@
     .tag{background:rgba(255,255,255,0.03);padding:4px 8px;border-radius:999px;font-size:0.8rem;color:var(--muted);border:1px solid var(--card-border)}
     .card .links{margin-top:auto;display:flex;gap:10px}
     .card a{font-weight:600}
-    @media (max-width:420px){ .card .media{height:90px} }
     @keyframes popInUp {
       0% {opacity:0; transform:translateY(24px) scale(0.98)}
       60% {opacity:1; transform:translateY(-4px) scale(1.01)}
@@ -76,7 +72,7 @@
     .reveal .projects-grid .card:nth-child(6){animation-delay:1040ms}
   </style>
   <script src="source/site-preferences.js?v=20260902"></script>
-<link rel="stylesheet" href="source/ui-polish.css?v=20260902-14">
+<link rel="stylesheet" href="source/ui-polish.css?v=20261011-1">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -105,7 +101,7 @@
         'projects.matrix.alt': 'FPGA matrix calculator interface',
         'projects.recipe1.title': 'CS307 · Fall 2025 Project I: SUSTech Recipe Management System',
         'projects.recipe1.description': 'Database Systems course project I: a recipe management system for SUSTech.',
-        'projects.recipe1.alt': 'Database schema for the SUSTech Recipe Management System',
+        'projects.recipe1.alt': 'Measured database import times for different JDBC batch sizes in the SUSTech Recipe Management System',
         'projects.recipe2.title': 'CS307 · Fall 2025 Project II: SUSTech Recipe Database System',
         'projects.recipe2.description': 'Database Systems course project II: a database-backed recipe system for SUSTech.',
         'projects.recipe2.alt': 'SUSTech Recipe Database System interface',
@@ -159,7 +155,7 @@
         'projects.matrix.alt': 'FPGA 矩阵计算器演示界面',
         'projects.recipe1.title': 'CS307 2025 年秋季课程项目 I：南科大菜谱管理系统（SUSTech Recipe Management System）',
         'projects.recipe1.description': '数据库原理课程项目I：SUSTech 菜谱管理系统',
-        'projects.recipe1.alt': '菜谱管理系统数据库结构图',
+        'projects.recipe1.alt': '菜谱管理系统在不同 JDBC 批量大小下的数据库导入耗时对比',
         'projects.recipe2.title': 'CS307 2025 年秋季课程项目 II：南科大菜谱数据库系统（SUSTech Recipe Database System）',
         'projects.recipe2.description': '数据库原理课程项目II：SUSTech 菜谱数据库系统',
         'projects.recipe2.alt': '菜谱数据库系统界面',
@@ -227,7 +223,7 @@
     <div class="projects-grid">
       <article id="project-klotski" class="card">
         <div class="media">
-           <img class="media-contain" src="source/cs109_project_example.png" alt="Klotski game interface" data-i18n-alt="projects.klotski.alt" fetchpriority="high" decoding="async">
+           <img src="source/cs109_project_example.png" alt="Klotski game interface" data-i18n-alt="projects.klotski.alt" fetchpriority="high" decoding="async">
         </div>
         <div>
           <h2 data-i18n="projects.klotski.title">CS109 · Spring 2025 Project: Klotski</h2>
@@ -248,7 +244,7 @@
       <!-- 用这个模板添加更多项目：复制并修改标题、描述、标签与链接 -->
       <article id="project-matrix" class="card">
         <div class="media">
-          <img class="media-contain" src="source/cs207_project_example.png" alt="FPGA matrix calculator interface" data-i18n-alt="projects.matrix.alt" loading="lazy" decoding="async">
+          <img src="source/cs207_project_example.png" alt="FPGA matrix calculator interface" data-i18n-alt="projects.matrix.alt" loading="lazy" decoding="async">
         </div>
         <div>
           <h2 data-i18n="projects.matrix.title">CS207 · Fall 2025 Project: FPGA Matrix Calculator</h2>
@@ -267,8 +263,9 @@
       </article>
       
       <article id="project-recipe-management" class="card">
-        <div class="media">
-          <img class="media-contain" src="source/cs307_project1_example.png" alt="Database schema for the SUSTech Recipe Management System" data-i18n-alt="projects.recipe1.alt" loading="lazy" decoding="async">
+        <div class="media media-figure">
+          <!-- Original benchmark: CS307_DATABASE_Project_1_25FALL/diagram/task3experiment1.png -->
+          <img src="source/cs307_project1_benchmark.png" alt="Measured database import times for different JDBC batch sizes in the SUSTech Recipe Management System" data-i18n-alt="projects.recipe1.alt" loading="lazy" decoding="async">
         </div>
         <div>
           <h2 data-i18n="projects.recipe1.title">CS307 · Fall 2025 Project I: SUSTech Recipe Management System</h2>
@@ -287,8 +284,8 @@
       </article>
 
       <article id="project-recipe-database" class="card">
-        <div class="media">
-          <img class="media-contain" src="source/cs307_project2_example.png" alt="SUSTech Recipe Database System interface" data-i18n-alt="projects.recipe2.alt" loading="lazy" decoding="async">
+        <div class="media media-interface">
+          <img src="source/cs307_project2_example.png" alt="SUSTech Recipe Database System interface" data-i18n-alt="projects.recipe2.alt" loading="lazy" decoding="async">
         </div>
         <div>
           <h2 data-i18n="projects.recipe2.title">CS307 · Fall 2025 Project II: SUSTech Recipe Database System</h2>
@@ -307,7 +304,7 @@
       </article>
 
       <article id="project-visual-computing" class="card">
-        <div class="media">
+        <div class="media media-demo">
           <img src="source/nus_visual_computing_project.png" alt="Motion-controlled platform game powered by real-time body keypoints" data-i18n-alt="projects.visual.alt" loading="lazy" decoding="async">
         </div>
         <div>
@@ -327,8 +324,8 @@
       </article>
 
       <article id="project-riscv-cpu" class="card">
-        <a class="media" href="project-cs202.html" aria-label="View details for the CS202 RISC-V CPU project" data-i18n-aria-label="projects.cpu.coverAria">
-          <img class="media-card-cover" src="source/cs202_cpu_project.svg" alt="Single-cycle RV32I CPU datapath and UART debugging architecture" data-i18n-alt="projects.cpu.alt" loading="lazy" decoding="async">
+        <a class="media media-diagram" href="project-cs202.html" aria-label="View details for the CS202 RISC-V CPU project" data-i18n-aria-label="projects.cpu.coverAria">
+          <img src="source/cs202_cpu_project.svg" alt="Single-cycle RV32I CPU datapath and UART debugging architecture" data-i18n-alt="projects.cpu.alt" loading="lazy" decoding="async">
         </a>
         <div>
           <h2 data-i18n="projects.cpu.title">CS202 · Spring 2026 Project: Single-Cycle RISC-V CPU</h2>
