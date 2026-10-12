@@ -70,7 +70,7 @@
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%)}}
   </style>
   <script src="source/site-preferences.js?v=20260902"></script>
-<link rel="stylesheet" href="source/ui-polish.css?v=20261012-1">
+<link rel="stylesheet" href="source/ui-polish.css?v=20261012-2">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -78,14 +78,11 @@
         'meta.description': 'Yunli’s personal website—notes on learning, research, projects, and everyday life.',
         'home.greeting': 'Hi, I’m Yunli',
         'home.subtitle': 'Computer Science undergraduate at SUSTech · 2024 cohort',
-        'home.about.title': 'Research & Projects',
-        'home.about.copy1': 'My research interests center on computer vision and image editing.',
-        'home.about.copy2': 'I study in Professor Jianguo Zhang’s group at SUSTech and explore visual computing, databases, and computer systems through course projects.',
-        'home.about.selected': 'Selected projects',
-        'home.about.visual': 'Face & Body Keypoints',
-        'home.about.cpu': 'RISC-V CPU',
-        'home.about.projects': 'All projects',
-        'home.about.profile': 'About me',
+        'home.about.title': 'Explore',
+        'home.about.copy': 'Use the navigation above to find something you like.',
+        'home.about.blog': 'Course notes, learning, and everyday life.',
+        'home.about.projects': 'Course projects and small experiments.',
+        'home.about.profile': 'Background, interests, and a little more.',
         'home.news.title': 'News',
         'home.news.scholarships': 'Awarded the National Scholarship and BYD Scholarship (11 out of ~2,500 students). 🎉',
         'home.news.nus': 'Attended the School of Computing Summer Workshop at the National University of Singapore.',
@@ -124,14 +121,11 @@
         'meta.description': '云离的个人主页',
         'home.greeting': '你好，我是云离',
         'home.subtitle': '南方科技大学 2024 级本科生',
-        'home.about.title': '研究与实践',
-        'home.about.copy1': '我的研究兴趣是计算机视觉与图像编辑。',
-        'home.about.copy2': '目前在南方科技大学张建国教授课题组学习，也通过课程项目探索视觉计算、数据库与计算机系统。',
-        'home.about.selected': '精选项目',
-        'home.about.visual': '人脸与人体关键点',
-        'home.about.cpu': 'RISC-V 处理器',
-        'home.about.projects': '全部项目',
-        'home.about.profile': '关于我',
+        'home.about.title': '随便逛逛',
+        'home.about.copy': '从上方的导航出发，找点感兴趣的内容。',
+        'home.about.blog': '课程笔记、学习记录与日常碎片。',
+        'home.about.projects': '课程项目与动手做的小作品。',
+        'home.about.profile': '个人经历、兴趣爱好，还有一些其他的事。',
         'home.news.title': '新闻',
         'home.news.scholarships': '获得国家奖学金和比亚迪奖学金（11 / 约 2,500 人）。🎉',
         'home.news.nus': '前往新加坡国立大学计算机学院参加暑期工作坊（Summer Workshop）。',
@@ -221,17 +215,24 @@
         </article>
 
         <article class="hero home-about">
-          <h2 data-i18n="home.about.title">Research &amp; Projects</h2>
-          <p data-i18n="home.about.copy1">My research interests center on computer vision and image editing.</p>
-          <p data-i18n="home.about.copy2">I study in Professor Jianguo Zhang’s group at SUSTech and explore visual computing, databases, and computer systems through course projects.</p>
-          <div class="home-selected" role="group" aria-label="Selected projects" data-i18n-aria-label="home.about.selected">
-            <span class="home-selected-label" data-i18n="home.about.selected">Selected projects</span>
-            <a href="projects.html#project-visual-computing" data-i18n="home.about.visual">Face &amp; Body Keypoints</a>
-            <a href="project-cs202.html" data-i18n="home.about.cpu">RISC-V CPU</a>
-          </div>
-          <div class="home-about-links">
-            <a href="projects.html" data-i18n="home.about.projects">All projects</a>
-            <a href="about.html" data-i18n="home.about.profile">About me</a>
+          <h2 data-i18n="home.about.title">Explore</h2>
+          <p data-i18n="home.about.copy">Use the navigation above to find something you like.</p>
+          <div class="home-guide-list">
+            <a href="blog.html">
+              <strong data-i18n="nav.blog">Blog</strong>
+              <span data-i18n="home.about.blog">Course notes, learning, and everyday life.</span>
+              <span class="home-guide-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a href="projects.html">
+              <strong data-i18n="nav.projects">Projects</strong>
+              <span data-i18n="home.about.projects">Course projects and small experiments.</span>
+              <span class="home-guide-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a href="about.html">
+              <strong data-i18n="nav.about">About</strong>
+              <span data-i18n="home.about.profile">Background, interests, and a little more.</span>
+              <span class="home-guide-arrow" aria-hidden="true">↗</span>
+            </a>
           </div>
         </article>
 

@@ -735,14 +735,12 @@ html[lang="zh-CN"] .cards-grid .hero:first-child::after{
 
 .profile-copy{position:relative;z-index:1;width:100%;align-self:flex-end}
 
-.home-selected{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
-.home-selected-label{flex-basis:100%;color:var(--muted);font:500 12px/1.5 var(--font-mono)}
-.home-selected a,.home-about-links a{display:inline-flex;align-items:center;gap:6px;min-height:44px;text-decoration:none;font:600 14px/1.4 var(--font-body)}
-.home-selected a{color:var(--text)}
-.home-selected a::after,.home-about-links a::after{content:"↗";color:var(--accent)}
-.home-about-links{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:10px}
-.home-about-links a{color:var(--accent)}
-@media(hover:hover) and (pointer:fine){.home-selected a:hover,.home-about-links a:hover{text-decoration:underline;text-underline-offset:4px}}
+.home-guide-list{position:relative;z-index:1;margin-top:22px}
+.home-guide-list a{display:grid;grid-template-columns:58px minmax(0,1fr) 14px;align-items:center;gap:12px;min-height:64px;padding:14px 0;border-top:1px solid var(--line);color:var(--text);text-decoration:none;font:400 14px/1.5 var(--font-body)}
+.home-guide-list strong{font-weight:600}
+.home-guide-list a > span:not(.home-guide-arrow){color:var(--muted)}
+.home-guide-arrow{color:var(--accent)}
+@media(hover:hover) and (pointer:fine){.home-guide-list a:hover strong{color:var(--accent);text-decoration:underline;text-underline-offset:4px}}
 
 .home-news{
   width:100%;
