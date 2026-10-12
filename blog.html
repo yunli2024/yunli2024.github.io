@@ -7,7 +7,7 @@
   <title>Blog — Yunli</title>
   <meta name="description" content="Notes on learning, research, and everyday life from Yunli.">
   <script src="source/site-preferences.js?v=20260902"></script>
-<link rel="stylesheet" href="source/ui-polish.css?v=20260902-14">
+<link rel="stylesheet" href="source/ui-polish.css?v=20261012-1">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -20,6 +20,11 @@
         'blog.search.placeholder': 'Search titles, tags, or keywords',
         'blog.search.clear': 'Clear',
         'blog.category.heading': 'CATEGORY',
+        'blog.sort.label': 'Sort posts',
+        'blog.sort.latest': 'Latest',
+        'blog.sort.popular': 'Popular',
+        'blog.sort.loading': 'Loading like counts…',
+        'blog.sort.unavailable': 'Popular sorting is temporarily unavailable.',
         'blog.category.all': 'All',
         'blog.category.course': 'Courses',
         'blog.category.academic': 'Academic',
@@ -63,6 +68,11 @@
         'blog.search.placeholder': '输入标题、标签或关键词',
         'blog.search.clear': '清除',
         'blog.category.heading': '分类',
+        'blog.sort.label': '文章排序',
+        'blog.sort.latest': '最新',
+        'blog.sort.popular': '热门',
+        'blog.sort.loading': '正在读取点赞数…',
+        'blog.sort.unavailable': '热门排序暂时不可用',
         'blog.category.all': '全部',
         'blog.category.course': '课程',
         'blog.category.academic': '学术',
@@ -98,7 +108,7 @@
       }
     };
   </script>
-  <script src="source/site-ui.js?v=20260902-5" defer></script>
+  <script src="source/site-ui.js?v=20261012-1" defer></script>
   <script src="source/typewriter.js?v=20260902-2" defer></script>
 </head>
 <body class="preload page-blog">
@@ -166,7 +176,13 @@
       </div>
     </form>
 
-    <div id="resultMeta" class="visually-hidden" aria-live="polite" data-i18n="blog.status.sync">Syncing post index</div>
+    <div class="archive-toolbar">
+      <div id="resultMeta" class="archive-count" aria-live="polite" data-i18n="blog.status.sync">Syncing post index</div>
+      <div class="sort-controls" role="group" aria-label="Sort posts" data-i18n-aria-label="blog.sort.label">
+        <button class="sort-button is-active" type="button" data-sort="latest" aria-pressed="true" data-i18n="blog.sort.latest">Latest</button>
+        <button class="sort-button" type="button" data-sort="popular" aria-pressed="false" data-i18n="blog.sort.popular" title="Loading like counts…" data-i18n-title="blog.sort.loading" disabled>Popular</button>
+      </div>
+    </div>
     <div class="blog-archive-layout">
       <div id="list" aria-busy="true">
         <p class="list-status" data-i18n="blog.status.loading">Loading post index…</p>
@@ -218,6 +234,7 @@
         return ['course','academic','reflection','daily-life'].includes(requested) ? requested : 'all';
       })(),
       query: '',
+      sort: 'latest',
       likes: new Map(),
       availableCovers: new Set(),
       likesReady: false,
@@ -325,8 +342,8 @@
       const coverFile = coverFileFor(item);
       const coverAvailable = state.availableCovers.has(coverFile);
       const article = document.createElement('article');
-      article.className = `post pop-in${coverAvailable ? ' has-cover' : ''}`;
-      article.style.animationDelay = `${Math.min(index * 45, 270)}ms`;
+      article.className = `post${coverAvailable ? ' has-cover' : ''}`;
+      article.dataset.file = filePath;
 
       const number = document.createElement('span');
       number.className = 'post-index';
@@ -347,7 +364,11 @@
       meta.className = 'post-meta';
       appendMeta(meta, item.date || t('blog.dateFallback'));
       appendMeta(meta, t('blog.meta.category', {category: categoryLabel(category)}));
-      if(typeof likes === 'number') appendMeta(meta, t('blog.meta.likes', {likes}));
+      const likeCount = document.createElement('span');
+      likeCount.className = 'post-likes';
+      likeCount.hidden = typeof likes !== 'number';
+      likeCount.textContent = typeof likes === 'number' ? t('blog.meta.likes', {likes}) : '';
+      meta.appendChild(likeCount);
       content.appendChild(meta);
 
       if(item.excerpt){
@@ -399,13 +420,15 @@
         return categoryMatches && matchesQuery(item, state.query);
       });
 
-      if(state.likesReady){
-        filtered.sort((a,b) => {
+      filtered.sort((a,b) => {
+        if(state.sort === 'popular' && state.likesReady){
           const difference = (state.likes.get(normalizeFilePath(b.file)) || 0)
             - (state.likes.get(normalizeFilePath(a.file)) || 0);
-          return difference || String(b.date || '').localeCompare(String(a.date || ''));
-        });
-      }
+          if(difference) return difference;
+        }
+        return String(b.date || '').localeCompare(String(a.date || ''))
+          || String(a.file || '').localeCompare(String(b.file || ''));
+      });
       return filtered;
     }
 
@@ -511,7 +534,22 @@
         if(typeof likes === 'number') state.likes.set(filePath, likes);
       }));
       state.likesReady = state.likes.size > 0;
-      renderList();
+      const popularButton = document.querySelector('[data-sort="popular"]');
+      popularButton.disabled = !state.likesReady;
+      if(state.likesReady){
+        popularButton.removeAttribute('title');
+        popularButton.removeAttribute('data-i18n-title');
+      }else{
+        popularButton.dataset.i18nTitle = 'blog.sort.unavailable';
+        popularButton.title = t('blog.sort.unavailable');
+      }
+      // Update counts in place so late responses preserve order, focus, and scroll.
+      document.querySelectorAll('#list .post').forEach(article => {
+        const likes = state.likes.get(article.dataset.file);
+        const count = article.querySelector('.post-likes');
+        count.hidden = typeof likes !== 'number';
+        count.textContent = typeof likes === 'number' ? t('blog.meta.likes', {likes}) : '';
+      });
     }
 
     async function loadIndex(){
@@ -547,6 +585,7 @@
     const clearSearch = document.getElementById('clearSearch');
     const categorySelect = document.getElementById('categorySelect');
     const filterButtons = Array.from(document.querySelectorAll('.filter-button'));
+    const sortButtons = Array.from(document.querySelectorAll('.sort-button'));
 
     function setActiveCategory(category,{updateUrl = true} = {}){
       state.activeCategory = ['course','academic','reflection','daily-life'].includes(category) ? category : 'all';
@@ -587,6 +626,19 @@
     filterButtons.forEach(button => {
       button.addEventListener('click', () => {
         setActiveCategory(button.dataset.category || 'all');
+      });
+    });
+
+    sortButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        if(button.dataset.sort === state.sort) return;
+        state.sort = button.dataset.sort;
+        sortButtons.forEach(control => {
+          const active = control.dataset.sort === state.sort;
+          control.classList.toggle('is-active',active);
+          control.setAttribute('aria-pressed',String(active));
+        });
+        renderList();
       });
     });
 

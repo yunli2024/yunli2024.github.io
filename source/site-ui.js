@@ -26,6 +26,7 @@
       'controls.theme.toDark': 'Switch to dark theme',
       'search.open': 'Search site',
       'search.title': 'Search',
+      'search.label': 'Search blog posts and projects',
       'search.placeholder': 'Search blog posts and projects',
       'search.close': 'Close search',
       'search.start': 'Search across blog posts and projects.',
@@ -55,6 +56,7 @@
       'controls.theme.toDark': '切换到深色主题',
       'search.open': '搜索网站',
       'search.title': '搜索',
+      'search.label': '搜索博客文章与项目',
       'search.placeholder': '搜索博客文章与项目',
       'search.close': '关闭搜索',
       'search.start': '搜索博客文章与项目。',
@@ -328,8 +330,8 @@
         </div>
         <label class="site-search-field">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
-          <input type="search" autocomplete="off" spellcheck="false" data-i18n-placeholder="search.placeholder" placeholder="Search blog posts and projects">
-          <kbd>/</kbd>
+          <input type="search" autocomplete="off" spellcheck="false" aria-label="Search blog posts and projects" data-i18n-aria-label="search.label" data-i18n-placeholder="search.placeholder" placeholder="Search blog posts and projects">
+          <kbd aria-hidden="true">/</kbd>
         </label>
         <p class="visually-hidden site-search-status" role="status" aria-live="polite"></p>
         <div class="site-search-results" role="list" data-i18n-aria-label="search.results" aria-label="Search results"></div>
@@ -649,6 +651,20 @@
     document.documentElement.dataset.i18nReady = 'true';
   }
 
+  function initAnchorOffset(){
+    const header = document.querySelector('header');
+    if(!header) return;
+    const updateOffset = () => {
+      document.documentElement.style.setProperty('--site-header-height',`${Math.ceil(header.getBoundingClientRect().height)}px`);
+    };
+    updateOffset();
+    if('ResizeObserver' in window){
+      new ResizeObserver(updateOffset).observe(header);
+    }else{
+      window.addEventListener('resize',updateOffset);
+    }
+  }
+
   function init(){
     initBlogDropdown();
     initSiteSearch();
@@ -666,6 +682,7 @@
 
     applyTheme(currentTheme, false);
     applyLanguage(currentLanguage, false);
+    initAnchorOffset();
     document.documentElement.dataset.i18nReady = 'true';
 
     window.addEventListener('pageshow', event => {

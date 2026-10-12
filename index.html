@@ -70,7 +70,7 @@
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){.glass-card{background-color:rgba(255,255,255,0.12);color:var(--text);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%)}}
   </style>
   <script src="source/site-preferences.js?v=20260902"></script>
-<link rel="stylesheet" href="source/ui-polish.css?v=20260902-14">
+<link rel="stylesheet" href="source/ui-polish.css?v=20261012-1">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -78,10 +78,14 @@
         'meta.description': 'Yunli’s personal website—notes on learning, research, projects, and everyday life.',
         'home.greeting': 'Hi, I’m Yunli',
         'home.subtitle': 'Computer Science undergraduate at SUSTech · 2024 cohort',
-        'home.about.title': 'About This Site',
-        'home.about.copy1': 'This is my little corner of the internet. I write whenever inspiration strikes and share things I find interesting.',
-        'home.about.copy2': 'Browse my notes and projects above, or visit About to get to know me a little better.',
-        'home.about.source': 'View this site’s source',
+        'home.about.title': 'Research & Projects',
+        'home.about.copy1': 'My research interests center on computer vision and image editing.',
+        'home.about.copy2': 'I study in Professor Jianguo Zhang’s group at SUSTech and explore visual computing, databases, and computer systems through course projects.',
+        'home.about.selected': 'Selected projects',
+        'home.about.visual': 'Face & Body Keypoints',
+        'home.about.cpu': 'RISC-V CPU',
+        'home.about.projects': 'All projects',
+        'home.about.profile': 'About me',
         'home.news.title': 'News',
         'home.news.scholarships': 'Awarded the National Scholarship and BYD Scholarship (11 out of ~2,500 students). 🎉',
         'home.news.nus': 'Attended the School of Computing Summer Workshop at the National University of Singapore.',
@@ -120,10 +124,14 @@
         'meta.description': '云离的个人主页',
         'home.greeting': '你好，我是云离',
         'home.subtitle': '南方科技大学 2024 级本科生',
-        'home.about.title': '网站说明',
-        'home.about.copy1': '是云离的个人主页，随缘写写，分享点有趣的东西。',
-        'home.about.copy2': '上方导航可查看博客文章、项目等。也可以通过“关于”页面了解更多关于我~',
-        'home.about.source': '查看此网站仓库',
+        'home.about.title': '研究与实践',
+        'home.about.copy1': '我的研究兴趣是计算机视觉与图像编辑。',
+        'home.about.copy2': '目前在南方科技大学张建国教授课题组学习，也通过课程项目探索视觉计算、数据库与计算机系统。',
+        'home.about.selected': '精选项目',
+        'home.about.visual': '人脸与人体关键点',
+        'home.about.cpu': 'RISC-V 处理器',
+        'home.about.projects': '全部项目',
+        'home.about.profile': '关于我',
         'home.news.title': '新闻',
         'home.news.scholarships': '获得国家奖学金和比亚迪奖学金（11 / 约 2,500 人）。🎉',
         'home.news.nus': '前往新加坡国立大学计算机学院参加暑期工作坊（Summer Workshop）。',
@@ -159,7 +167,7 @@
       }
     };
   </script>
-  <script src="source/site-ui.js?v=20260902-5" defer></script>
+  <script src="source/site-ui.js?v=20261012-1" defer></script>
   <script src="source/typewriter.js?v=20260902-2" defer></script>
 </head>
 <body class="preload page-home">
@@ -213,10 +221,18 @@
         </article>
 
         <article class="hero home-about">
-          <h2 data-i18n="home.about.title">About This Site</h2>
-          <p data-i18n="home.about.copy1">This is my little corner of the internet. I write whenever inspiration strikes and share things I find interesting.</p>
-          <p data-i18n="home.about.copy2">Browse my notes and projects above, or visit About to get to know me a little better.</p>
-          <p style="margin-top:8px"><a href="https://github.com/yunli2024/yunli2024.github.io" style="color:var(--accent)" data-i18n="home.about.source">View this site’s source</a></p>
+          <h2 data-i18n="home.about.title">Research &amp; Projects</h2>
+          <p data-i18n="home.about.copy1">My research interests center on computer vision and image editing.</p>
+          <p data-i18n="home.about.copy2">I study in Professor Jianguo Zhang’s group at SUSTech and explore visual computing, databases, and computer systems through course projects.</p>
+          <div class="home-selected" role="group" aria-label="Selected projects" data-i18n-aria-label="home.about.selected">
+            <span class="home-selected-label" data-i18n="home.about.selected">Selected projects</span>
+            <a href="projects.html#project-visual-computing" data-i18n="home.about.visual">Face &amp; Body Keypoints</a>
+            <a href="project-cs202.html" data-i18n="home.about.cpu">RISC-V CPU</a>
+          </div>
+          <div class="home-about-links">
+            <a href="projects.html" data-i18n="home.about.projects">All projects</a>
+            <a href="about.html" data-i18n="home.about.profile">About me</a>
+          </div>
         </article>
 
         <section class="home-news" aria-labelledby="home-news-title">
