@@ -7,7 +7,7 @@
   <title>Blog — Yunli</title>
   <meta name="description" content="Notes on learning, research, and everyday life from Yunli.">
   <script src="source/site-preferences.js?v=20260902"></script>
-<link rel="stylesheet" href="source/ui-polish.css?v=20261012-1">
+<link rel="stylesheet" href="source/ui-polish.css?v=20261012-3">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -41,15 +41,6 @@
         'blog.meta.likes': '♥ {likes}',
         'blog.tags.label': 'Post tags',
         'blog.sidebar.label': 'Blog discovery',
-        'blog.collections.title': 'Collections',
-        'blog.collections.course.title': 'Course Notes',
-        'blog.collections.course.copy': 'Reviews, guides, and study notes.',
-        'blog.collections.academic.title': 'Academic Notes',
-        'blog.collections.academic.copy': 'Research and technical reading.',
-        'blog.collections.reflection.title': 'Reflections',
-        'blog.collections.reflection.copy': 'Learning, plans, and monthly thoughts.',
-        'blog.collections.daily.title': 'Daily Moments',
-        'blog.collections.daily.copy': 'Small things worth remembering.',
         'blog.sidebar.tags': 'Tags',
         'blog.sidebar.tagsEmpty': 'Tags will appear after the archive loads.',
         'blog.results.one': '{count} POST',
@@ -89,15 +80,6 @@
         'blog.meta.likes': '♥ {likes}',
         'blog.tags.label': '文章标签',
         'blog.sidebar.label': '博客内容导航',
-        'blog.collections.title': '文章合集',
-        'blog.collections.course.title': '课程笔记',
-        'blog.collections.course.copy': '课程评价、经验与复习记录',
-        'blog.collections.academic.title': '学术记录',
-        'blog.collections.academic.copy': '科研、技术与阅读笔记',
-        'blog.collections.reflection.title': '思考随笔',
-        'blog.collections.reflection.copy': '学习、计划与阶段总结',
-        'blog.collections.daily.title': '生活片段',
-        'blog.collections.daily.copy': '值得记住的小事',
         'blog.sidebar.tags': '常用标签',
         'blog.sidebar.tagsEmpty': '文章索引加载后会显示标签',
         'blog.results.one': '{count} 篇文章',
@@ -188,27 +170,6 @@
         <p class="list-status" data-i18n="blog.status.loading">Loading post index…</p>
       </div>
       <aside class="blog-sidebar" aria-label="Blog discovery" data-i18n-aria-label="blog.sidebar.label">
-        <section class="blog-side-section" aria-labelledby="collections-title">
-          <h2 id="collections-title"><span aria-hidden="true">◇</span><span data-i18n="blog.collections.title">Collections</span></h2>
-          <div class="collection-list">
-            <a href="blog.html?category=course" data-collection-category="course">
-              <span><strong data-i18n="blog.collections.course.title">Course Notes</strong><small data-i18n="blog.collections.course.copy">Reviews, guides, and study notes.</small></span>
-              <b data-collection-count="course">0</b>
-            </a>
-            <a href="blog.html?category=academic" data-collection-category="academic">
-              <span><strong data-i18n="blog.collections.academic.title">Academic Notes</strong><small data-i18n="blog.collections.academic.copy">Research and technical reading.</small></span>
-              <b data-collection-count="academic">0</b>
-            </a>
-            <a href="blog.html?category=reflection" data-collection-category="reflection">
-              <span><strong data-i18n="blog.collections.reflection.title">Reflections</strong><small data-i18n="blog.collections.reflection.copy">Learning, plans, and monthly thoughts.</small></span>
-              <b data-collection-count="reflection">0</b>
-            </a>
-            <a href="blog.html?category=daily-life" data-collection-category="daily-life">
-              <span><strong data-i18n="blog.collections.daily.title">Daily Moments</strong><small data-i18n="blog.collections.daily.copy">Small things worth remembering.</small></span>
-              <b data-collection-count="daily-life">0</b>
-            </a>
-          </div>
-        </section>
         <section class="blog-side-section" aria-labelledby="sidebar-tags-title">
           <h2 id="sidebar-tags-title"><span aria-hidden="true">#</span><span data-i18n="blog.sidebar.tags">Tags</span></h2>
           <div id="sidebarTags" class="sidebar-tags">
@@ -227,19 +188,84 @@
 
   <script>
     const LIKE_API = 'https://homepagelike.12410922.workers.dev/like';
+    const initialParams = new URLSearchParams(location.search);
     const state = {
       items: [],
       activeCategory: (() => {
-        const requested = new URLSearchParams(location.search).get('category');
+        const requested = initialParams.get('category');
         return ['course','academic','reflection','daily-life'].includes(requested) ? requested : 'all';
       })(),
-      query: '',
-      sort: 'latest',
+      query: initialParams.get('q') || '',
+      sort: initialParams.get('sort') === 'popular' ? 'popular' : 'latest',
       likes: new Map(),
       availableCovers: new Set(),
       likesReady: false,
+      likesLoaded: false,
       loadState: 'loading'
     };
+
+    // The URL carries the view; history/session storage keeps its reading position.
+    const viewStorageKey = 'blog-view-position';
+    let pendingRestore = readViewPosition();
+    let restoringPosition = false;
+    history.scrollRestoration = 'manual';
+
+    function readViewPosition(){
+      try{
+        const saved = history.state?.blogView
+          || (location.hash ? JSON.parse(sessionStorage.getItem(viewStorageKey)) : null);
+        if(saved?.search === location.search) return saved;
+      }catch(error){ /* The URL still restores filters when storage is unavailable. */ }
+      if(location.hash.startsWith('#post-')){
+        try{return {anchorId:decodeURIComponent(location.hash.slice(1))};}catch(error){}
+      }
+      return null;
+    }
+
+    function syncViewUrl(){
+      pendingRestore = null;
+      const url = new URL(location.href);
+      for(const [key,value] of [
+        ['category',state.activeCategory === 'all' ? '' : state.activeCategory],
+        ['q',state.query],
+        ['sort',state.sort === 'popular' ? 'popular' : '']
+      ]){
+        if(value) url.searchParams.set(key,value);
+        else url.searchParams.delete(key);
+      }
+      url.hash = '';
+      history.replaceState({...history.state,blogView:null},'',url);
+    }
+
+    function saveViewPosition(anchor){
+      if(state.loadState !== 'ready' || pendingRestore) return;
+      const headerBottom = document.querySelector('header').getBoundingClientRect().bottom;
+      const visible = anchor || Array.from(document.querySelectorAll('#list .post'))
+        .find(article => article.getBoundingClientRect().bottom > headerBottom);
+      const position = {
+        search:location.search,
+        scrollY:window.scrollY,
+        anchorId:visible?.id,
+        anchorTop:visible?.getBoundingClientRect().top
+      };
+      history.replaceState({...history.state,blogView:position},'');
+      try{sessionStorage.setItem(viewStorageKey,JSON.stringify(position));}catch(error){}
+    }
+
+    async function restoreViewPosition(){
+      if(!pendingRestore || restoringPosition) return;
+      restoringPosition = true;
+      const position = pendingRestore;
+      await Promise.race([document.fonts.ready,new Promise(resolve => setTimeout(resolve,1200))]);
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      restoringPosition = false;
+      if(pendingRestore !== position) return;
+      pendingRestore = null;
+      const anchor = position.anchorId && document.getElementById(position.anchorId);
+      const offset = position.anchorTop ?? document.querySelector('header').getBoundingClientRect().bottom + 16;
+      const top = anchor ? window.scrollY + anchor.getBoundingClientRect().top - offset : position.scrollY || 0;
+      window.scrollTo({top:Math.max(0,top),behavior:'instant'});
+    }
 
     const t = (key, replacements = {}) => {
       if(window.SiteUI?.t) return window.SiteUI.t(key, replacements);
@@ -344,6 +370,7 @@
       const article = document.createElement('article');
       article.className = `post${coverAvailable ? ' has-cover' : ''}`;
       article.dataset.file = filePath;
+      article.id = `post-${encodeURIComponent(filePath)}`;
 
       const number = document.createElement('span');
       number.className = 'post-index';
@@ -355,7 +382,10 @@
 
       const heading = document.createElement('h2');
       const link = document.createElement('a');
-      link.href = `post.html?file=${encodeURIComponent(filePath)}`;
+      const returnTo = `blog.html${location.search}#${encodeURIComponent(article.id)}`;
+      link.href = `post.html?${new URLSearchParams({file:filePath,returnTo})}`;
+      link.addEventListener('click',() => saveViewPosition(article));
+      link.addEventListener('auxclick',() => saveViewPosition(article));
       link.textContent = item.title || t('blog.untitled');
       heading.appendChild(link);
       content.appendChild(heading);
@@ -435,13 +465,13 @@
     function renderList(){
       const list = document.getElementById('list');
       const resultMeta = document.getElementById('resultMeta');
-      if(state.loadState === 'loading'){
+      if(state.loadState === 'loading' || (state.loadState === 'ready' && state.sort === 'popular' && !state.likesLoaded)){
         list.replaceChildren();
         list.setAttribute('aria-busy', 'true');
         resultMeta.textContent = t('blog.status.sync');
         const loading = document.createElement('p');
         loading.className = 'list-status';
-        loading.textContent = t('blog.status.loading');
+        loading.textContent = t(state.loadState === 'loading' ? 'blog.status.loading' : 'blog.sort.loading');
         list.appendChild(loading);
         return;
       }
@@ -472,16 +502,7 @@
       const fragment = document.createDocumentFragment();
       items.forEach((item,index) => fragment.appendChild(createPostElement(item,index)));
       list.appendChild(fragment);
-    }
-
-    function updateCollectionCounts(){
-      document.querySelectorAll('[data-collection-count]').forEach(element => {
-        const category = element.dataset.collectionCount;
-        element.textContent = state.items.filter(item => getCategory(item) === category).length;
-      });
-      document.querySelectorAll('[data-collection-category]').forEach(link => {
-        link.classList.toggle('is-active',link.dataset.collectionCategory === state.activeCategory);
-      });
+      restoreViewPosition();
     }
 
     function renderSidebarTags(){
@@ -515,11 +536,10 @@
         count.textContent = tag.count;
         button.append(label,count);
         button.addEventListener('click',() => {
-          setActiveCategory('all');
           searchInput.value = tag.label;
           state.query = tag.label;
           clearSearch.hidden = false;
-          renderList();
+          setActiveCategory('all');
           document.getElementById('list')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
         });
         fragment.appendChild(button);
@@ -534,6 +554,7 @@
         if(typeof likes === 'number') state.likes.set(filePath, likes);
       }));
       state.likesReady = state.likes.size > 0;
+      state.likesLoaded = true;
       const popularButton = document.querySelector('[data-sort="popular"]');
       popularButton.disabled = !state.likesReady;
       if(state.likesReady){
@@ -542,6 +563,18 @@
       }else{
         popularButton.dataset.i18nTitle = 'blog.sort.unavailable';
         popularButton.title = t('blog.sort.unavailable');
+      }
+      if(state.sort === 'popular'){
+        if(!state.likesReady){
+          state.sort = 'latest';
+          // Preserve the saved position while gracefully falling back to date order.
+          const url = new URL(location.href);
+          url.searchParams.delete('sort');
+          history.replaceState(history.state,'',url);
+          updateSortControls();
+        }
+        renderList();
+        return;
       }
       // Update counts in place so late responses preserve order, focus, and scroll.
       document.querySelectorAll('#list .post').forEach(article => {
@@ -575,7 +608,6 @@
       state.items = index;
       await loadCoverManifest();
       state.loadState = 'ready';
-      updateCollectionCounts();
       renderSidebarTags();
       renderList();
       loadLikes();
@@ -586,6 +618,14 @@
     const categorySelect = document.getElementById('categorySelect');
     const filterButtons = Array.from(document.querySelectorAll('.filter-button'));
     const sortButtons = Array.from(document.querySelectorAll('.sort-button'));
+
+    function updateSortControls(){
+      sortButtons.forEach(control => {
+        const active = control.dataset.sort === state.sort;
+        control.classList.toggle('is-active',active);
+        control.setAttribute('aria-pressed',String(active));
+      });
+    }
 
     function setActiveCategory(category,{updateUrl = true} = {}){
       state.activeCategory = ['course','academic','reflection','daily-life'].includes(category) ? category : 'all';
@@ -599,19 +639,14 @@
         if(link.dataset.blogCategory === state.activeCategory) link.setAttribute('aria-current','page');
         else link.removeAttribute('aria-current');
       });
-      updateCollectionCounts();
-      if(updateUrl){
-        const url = new URL(location.href);
-        if(state.activeCategory === 'all') url.searchParams.delete('category');
-        else url.searchParams.set('category',state.activeCategory);
-        history.replaceState({},'',url);
-      }
+      if(updateUrl) syncViewUrl();
       renderList();
     }
 
     searchInput.addEventListener('input', () => {
       state.query = searchInput.value;
       clearSearch.hidden = state.query.length === 0;
+      syncViewUrl();
       renderList();
     });
 
@@ -620,6 +655,7 @@
       state.query = '';
       clearSearch.hidden = true;
       searchInput.focus();
+      syncViewUrl();
       renderList();
     });
 
@@ -633,25 +669,18 @@
       button.addEventListener('click', () => {
         if(button.dataset.sort === state.sort) return;
         state.sort = button.dataset.sort;
-        sortButtons.forEach(control => {
-          const active = control.dataset.sort === state.sort;
-          control.classList.toggle('is-active',active);
-          control.setAttribute('aria-pressed',String(active));
-        });
+        updateSortControls();
+        syncViewUrl();
         renderList();
-      });
-    });
-
-    document.querySelectorAll('[data-collection-category]').forEach(link => {
-      link.addEventListener('click',event => {
-        event.preventDefault();
-        setActiveCategory(link.dataset.collectionCategory || 'all');
-        document.getElementById('list')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
       });
     });
 
     document.querySelector('.query-panel').addEventListener('submit', event => event.preventDefault());
     window.addEventListener('site-language-change', renderList);
+    window.addEventListener('pagehide',() => saveViewPosition());
+    searchInput.value = state.query;
+    clearSearch.hidden = !state.query;
+    updateSortControls();
     setActiveCategory(state.activeCategory,{updateUrl:false});
     loadIndex();
   </script>

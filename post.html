@@ -145,7 +145,7 @@
     }
   </style>
   <script src="source/site-preferences.js?v=20260902"></script>
-<link rel="stylesheet" href="source/ui-polish.css?v=20261012-1">
+<link rel="stylesheet" href="source/ui-polish.css?v=20261012-3">
   <script>
     window.PAGE_I18N = {
       en: {
@@ -251,6 +251,10 @@
     <div class="post-layout">
       <div class="post-main">
         <a class="post-back" href="blog.html" data-i18n="post.back">BLOG / ← Back to all posts</a>
+        <details id="postTocMobile" class="post-toc-mobile" hidden>
+          <summary data-i18n="post.toc.title">On this page</summary>
+          <nav id="postTocMobileLinks" aria-label="Article outline" data-i18n-aria-label="post.toc.label"></nav>
+        </details>
         <article id="content" class="glass-card" aria-busy="true" aria-label="Article content" data-i18n-aria-label="post.content.label"><span data-i18n="post.loading">Loading this post…</span></article>
         <div id="likePanel" class="glass-card" style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <button id="likeBtn" type="button" data-i18n="like.button" style="padding:8px 14px;border-radius:999px;border:1px solid rgba(11,18,32,0.08);background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));cursor:pointer">Like this post</button>
@@ -319,6 +323,15 @@
     }
 
     function qs(name){const u=new URL(location.href);return u.searchParams.get(name)}
+    // Only a local blog URL may replace the return link.
+    try{
+      const returnTo = qs('returnTo');
+      const blogUrl = new URL('blog.html',location.href);
+      const returnUrl = returnTo && new URL(returnTo,location.href);
+      if(returnUrl && returnUrl.origin === blogUrl.origin && returnUrl.pathname === blogUrl.pathname){
+        document.querySelector('.post-back').href = returnUrl.href;
+      }
+    }catch(error){}
     function normalizePostFile(rawFile){
       if(typeof rawFile !== 'string' || !rawFile) return null;
       try{
@@ -369,16 +382,21 @@
     function buildPostToc(container){
       const aside = document.getElementById('postToc');
       const nav = document.getElementById('postTocLinks');
-      if(!aside || !nav) return;
+      const mobile = document.getElementById('postTocMobile');
+      const mobileNav = document.getElementById('postTocMobileLinks');
+      if(!aside || !nav || !mobile || !mobileNav) return;
       tocHeadings = Array.from(container.querySelectorAll(':scope > h2,:scope > h3'));
       tocLinks = [];
       if(!tocHeadings.length){
         aside.hidden = true;
+        mobile.hidden = true;
         nav.replaceChildren();
+        mobileNav.replaceChildren();
         return;
       }
       const usedIds = new Set();
       const fragment = document.createDocumentFragment();
+      const mobileFragment = document.createDocumentFragment();
       tocHeadings.forEach((heading,index) => {
         let slug = heading.textContent.trim().normalize('NFKC').toLowerCase()
           .replace(/[^\p{L}\p{N}]+/gu,'-')
@@ -388,20 +406,28 @@
         while(usedIds.has(id) || document.getElementById(id)) id = `${slug}-${suffix++}`;
         usedIds.add(id);
         heading.id = id;
-        const link = document.createElement('a');
-        link.href = `#${encodeURIComponent(id)}`;
-        link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
-        link.textContent = heading.textContent.trim();
-        link.addEventListener('click',event => {
-          event.preventDefault();
-          heading.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',block:'start'});
-          history.replaceState({},'',`#${encodeURIComponent(id)}`);
-        });
-        tocLinks.push(link);
-        fragment.appendChild(link);
+        heading.tabIndex = -1;
+        for(const target of [fragment,mobileFragment]){
+          const link = document.createElement('a');
+          link.href = `#${encodeURIComponent(id)}`;
+          link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
+          link.dataset.headingIndex = index;
+          link.textContent = heading.textContent.trim();
+          link.addEventListener('click',event => {
+            event.preventDefault();
+            mobile.open = false;
+            heading.focus({preventScroll:true});
+            heading.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',block:'start'});
+            history.replaceState(history.state,'',`#${encodeURIComponent(id)}`);
+          });
+          tocLinks.push(link);
+          target.appendChild(link);
+        }
       });
       nav.replaceChildren(fragment);
+      mobileNav.replaceChildren(mobileFragment);
       aside.hidden = false;
+      mobile.hidden = false;
     }
     function escapeHtml(value){
       return value.replace(/[&<>]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]));
@@ -765,8 +791,8 @@
       tocHeadings.forEach((heading,index) => {
         if(heading.getBoundingClientRect().top <= 170) activeIndex = index;
       });
-      tocLinks.forEach((link,index) => {
-        const active = index === activeIndex;
+      tocLinks.forEach(link => {
+        const active = Number(link.dataset.headingIndex) === activeIndex;
         link.classList.toggle('is-active',active);
         if(active) link.setAttribute('aria-current','location');
         else link.removeAttribute('aria-current');
