@@ -1,4 +1,5 @@
 import { applyEdits, emptyState, maxBatch, validEdit } from '../../hot100/state.mjs';
+import { readStatement } from './statements.mjs';
 
 const seconds = () => Math.floor(Date.now() / 1000);
 const encoder = new TextEncoder();
@@ -125,20 +126,28 @@ async function readBody(request) {
   try { return JSON.parse(buffer); } catch { return null; }
 }
 
-async function route(request, env, githubFetch) {
+async function route(request, env, upstreamFetch) {
   const url = new URL(request.url);
   const origin = request.headers.get('Origin');
   if (origin && origin !== new URL(env.SITE_URL).origin) return json({ error: 'Origin denied' }, 403);
   if (request.method === 'OPTIONS') return new Response(null, { status: 204 });
   if (request.method === 'GET' && url.pathname === '/auth/start') return startLogin(url, env);
-  if (request.method === 'GET' && url.pathname === '/auth/callback') return callback(request, url, env, githubFetch);
+  if (request.method === 'GET' && url.pathname === '/auth/callback') return callback(request, url, env, upstreamFetch);
   if (request.method === 'POST' && url.pathname === '/auth/exchange') return exchange(await readBody(request), env);
-  if (!['/state', '/logout'].includes(url.pathname)) return json({ error: 'Not found' }, 404);
+  const statement = url.pathname.match(/^\/statements\/(\d+)$/);
+  if (!['/state', '/logout'].includes(url.pathname) && !statement) return json({ error: 'Not found' }, 404);
   const token = (request.headers.get('Authorization') || '').match(/^Bearer ([A-Za-z0-9_-]{43})$/)?.[1];
   if (!token) return json({ error: 'Login required' }, 401);
   const key = await digest(token);
   const session = await env.DB.prepare('SELECT account FROM sessions WHERE digest = ? AND expires > ?').bind(key, seconds()).first();
   if (!session || session.account !== env.OWNER_GITHUB_ID) return json({ error: 'Login required' }, 401);
+  if (statement) {
+    if (request.method !== 'GET') return json({ error: 'Method not allowed' }, 405);
+    if (url.searchParams.has('language') && url.searchParams.get('language') !== 'zh-CN') {
+      return json({ error: '暂未提供此语言的题面' }, 400);
+    }
+    return readStatement(env.DB, session.account, Number(statement[1]), upstreamFetch);
+  }
   if (url.pathname === '/logout' && request.method === 'POST') {
     await env.DB.prepare('DELETE FROM sessions WHERE digest = ?').bind(key).run();
     return json({ ok: true });
@@ -150,9 +159,9 @@ async function route(request, env, githubFetch) {
   return saveEdits(env.DB, session.account, (await readBody(request))?.edits);
 }
 
-export async function handle(request, env, githubFetch = fetch) {
+export async function handle(request, env, upstreamFetch = fetch) {
   let response;
-  try { response = await route(request, env, githubFetch); }
+  try { response = await route(request, env, upstreamFetch); }
   catch { response = json({ error: '服务暂时不可用，请稍后重试' }, 503); }
   response.headers.set('Cache-Control', 'no-store');
   response.headers.set('Referrer-Policy', 'no-referrer');

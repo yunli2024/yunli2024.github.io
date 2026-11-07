@@ -64,6 +64,8 @@ h1 [lang="en"] { font: 500 clamp(43px, 8vw, 76px)/1 "Baskervville", "Georgia", s
 .statement p:first-child { margin-top: 0; }.statement p:last-child { margin-bottom: 0; }
 .statement img { height: auto; max-width: 100%; }.statement pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .statement table { display: block; max-width: 100%; overflow-x: auto; }
+.statement .statement-source { color: var(--soft); font-size: .75rem; margin: 14px 0 0; }
+.statement-retry { color: var(--accent); text-decoration: underline; text-underline-offset: .22em; min-height: 36px; }
 .read-link { color: var(--accent); font-size: .9rem; }
 .detail-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .detail-actions button { padding: 6px 12px; min-height: 36px; border-radius: 5px; border: 1px solid var(--rule); font-size: .85rem; }

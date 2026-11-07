@@ -28,3 +28,13 @@ CREATE TABLE IF NOT EXISTS applied_edits (
   uid TEXT NOT NULL,
   PRIMARY KEY (account, uid)
 );
+CREATE TABLE IF NOT EXISTS statement_cache (
+  account TEXT NOT NULL,
+  question_id INTEGER NOT NULL,
+  language TEXT NOT NULL,
+  html TEXT NOT NULL,
+  source_url TEXT NOT NULL,
+  source_sha TEXT NOT NULL,
+  fetched_at INTEGER NOT NULL,
+  PRIMARY KEY (account, question_id, language)
+);

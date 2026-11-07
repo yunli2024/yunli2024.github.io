@@ -38,9 +38,11 @@ npx.cmd --yes wrangler@4.158.0 secret put GITHUB_CLIENT_SECRET
 
 电脑登录后收藏一道题、写备注，并在「我的顺序」拖动它。看到「已同步」后，用手机登录同一个 GitHub 账号检查三项记录。离线修改会在联网后重试。跨设备分别修改不同字段会合并，同一条备注的两个版本以服务端最后收到的编辑为准。页面回到前台时立即拉取，停留在前台时每 20 秒检查一次。
 
-## 中文原文
+## 中文题面
 
-`hot100/catalog.mjs` 保存 100 道题的官方题号、中文标题、链接标识和独立编写的复习提示。官方完整中文题面可以从每题的原题链接阅读。页内阅读器查找 `hot100/statements.zh-CN.json` 中以题号为键的原文 HTML。例如取得适用于本网站的授权题面文件后，把第 1 题的完整 HTML 字符串放在键 `"1"` 下。阅读器保留文字、段落、样例、上下标和 HTTPS 配图。新语言可以增加独立的题面文件，个人记录继续按题号对应。[中文 Hot 100](https://leetcode.cn/studyplan/top-100-liked/) · [力扣服务协议第 3.1.6、5.2 条](https://leetcode.cn/terms/)
+登录后点开题目，可以在页内阅读完整中文题面，继续点「一句提示」才会显示复习提示。`catalog.mjs` 保存官方题号和中文标题，`statements.mjs` 固定 Doocs 上游提交并按题号对应来源文件。读取范围为源文件的 `description:start` 至 `description:end`，正文 HTML 保持原样。页面标注题面快照出处和 CC BY-SA 4.0 许可，并保留力扣官方链接。[Doocs 中文题面快照](https://github.com/doocs/leetcode/tree/8c8da55de17fd7ce04f0cc3f84cf82fc56e7e3d1) · [上游许可](https://github.com/doocs/leetcode/blob/8c8da55de17fd7ce04f0cc3f84cf82fc56e7e3d1/LICENSE)
+
+Worker 的 `GET /statements/{题号}` 校验登录身份后读取 D1 私有缓存，缺失时拉取上游快照。浏览器也按账号缓存已阅读的题面，已缓存内容可以离线阅读。切换登录状态时，页面清除已展开的题面。来源读取失败时可以原地重试。缓存表中的语言字段保留为 `zh-CN`，以后可按语言扩展，个人记录仍使用稳定题号。
 
 ## 本地验证
 

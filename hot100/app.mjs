@@ -1,6 +1,6 @@
 import { problems } from './catalog.mjs';
 import { maxNoteLength } from './state.mjs';
-import { current, edit, initialize, login, logout, onChange } from './sync.mjs';
+import { current, edit, initialize, loadStatement, login, logout, onChange } from './sync.mjs?v=20261107-originals';
 
 const list = document.querySelector('#problems');
 const template = document.querySelector('#problem-template');
@@ -10,7 +10,7 @@ let view = 'official';
 let opened = null;
 let dragging = false;
 let justDropped = null;
-let statements;
+let statementReader = null;
 let sortable;
 
 const sourceOf = problem => 'https://leetcode.cn/problems/' + problem.slug + '/description/';
@@ -34,7 +34,7 @@ const allowedTags = new Set('p div span pre code strong b em i sup sub br hr a i
 const discardTags = new Set('script style iframe object template svg form'.split(' '));
 
 // Keep the supplied text verbatim. Recreate only supported formatting in the active document.
-function safeContent(html, url) {
+function safeContent(html, url, sourceCommit) {
   const template = document.createElement('template');
   template.innerHTML = html;
   function copy(node) {
@@ -46,7 +46,12 @@ function safeContent(html, url) {
       const attr = tag === 'a' ? 'href' : 'src';
       const input = node.getAttribute(attr);
       try {
-        const resource = new URL(input, url);
+        let resource = new URL(input, url);
+        const repositoryPrefix = '/gh/doocs/leetcode@main/';
+        if (tag === 'img' && resource.hostname === 'fastly.jsdelivr.net'
+          && resource.pathname.startsWith(repositoryPrefix) && /^[a-f0-9]{40}$/.test(sourceCommit || '')) {
+          resource = new URL('https://raw.githubusercontent.com/doocs/leetcode/' + sourceCommit + '/' + resource.pathname.slice(repositoryPrefix.length));
+        }
         if (input && resource.protocol === 'https:') result.setAttribute(attr, resource.href);
       } catch { /* Keep the text if a resource URL is malformed. */ }
       if (tag === 'a') { result.target = '_blank'; result.rel = 'noopener noreferrer'; }
@@ -62,28 +67,47 @@ function safeContent(html, url) {
 
 async function showStatement(row, problem) {
   const panel = row.querySelector('.statement');
-  if (panel.dataset.ready) return;
-  panel.textContent = '正在读取题面…';
-  if (!statements) statements = fetch('./statements.zh-CN.json').then(response => {
-    if (!response.ok) throw new Error('题面文件暂时无法读取');
-    return response.json();
-  });
-  let html;
-  let failed = false;
-  try { html = (await statements)[problem.id]; }
-  catch { statements = null; failed = true; }
-  const url = sourceOf(problem);
-  if (typeof html === 'string' && html.trim()) {
-    panel.replaceChildren(safeContent(html, url));
-  } else {
-    const link = document.createElement('a');
-    link.className = 'read-link';
-    link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer';
-    link.textContent = '在力扣阅读完整中文原文 ↗';
-    panel.replaceChildren(link);
-    if (failed) panel.prepend(document.createTextNode('题面文件暂时无法读取。'));
+  const account = current().login;
+  if (account && panel.dataset.ready === account) return;
+  if (!account) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'statement-retry';
+    button.textContent = 'GitHub 登录';
+    button.addEventListener('click', login);
+    panel.replaceChildren(document.createTextNode('登录后可在这里阅读完整中文题面。 '), button);
+    return;
   }
-  if (!failed) panel.dataset.ready = 'true';
+  panel.textContent = '正在读取题面…';
+  panel.setAttribute('aria-busy', 'true');
+  try {
+    const result = await loadStatement(problem.id);
+    if (current().login !== account) return;
+    const content = document.createElement('div');
+    content.className = 'statement-content';
+    content.append(safeContent(result.html, sourceOf(problem), result.sourceCommit));
+    const credits = document.createElement('p');
+    credits.className = 'statement-source';
+    const archive = document.createElement('a');
+    archive.href = result.sourceUrl; archive.target = '_blank'; archive.rel = 'noopener noreferrer';
+    archive.textContent = 'Doocs 题面快照';
+    const license = document.createElement('a');
+    license.href = 'https://creativecommons.org/licenses/by-sa/4.0/'; license.target = '_blank'; license.rel = 'license noopener noreferrer';
+    license.textContent = 'CC BY-SA 4.0';
+    credits.append(archive, document.createTextNode(' · '), license);
+    panel.replaceChildren(content, credits);
+    panel.dataset.ready = account;
+  } catch (error) {
+    if (current().login !== account) return;
+    const retry = document.createElement('button');
+    retry.type = 'button'; retry.className = 'statement-retry';
+    retry.textContent = '重试';
+    retry.addEventListener('click', () => showStatement(row, problem));
+    const text = navigator.onLine ? '题面暂时无法读取，请重试。 ' : '这道题尚未缓存，请联网后重试。 ';
+    panel.replaceChildren(document.createTextNode(text), retry);
+  } finally {
+    panel.setAttribute('aria-busy', 'false');
+  }
 }
 
 function createRow(problem) {
@@ -135,6 +159,15 @@ function render() {
   const accountButton = document.querySelector('#account-button');
   accountButton.textContent = account ? account + ' · 退出' : 'GitHub 登录';
   accountButton.disabled = !configured;
+  if (statementReader !== account) {
+    statementReader = account;
+    closeProblem();
+    for (const row of rows.values()) {
+      const panel = row.querySelector('.statement');
+      delete panel.dataset.ready;
+      panel.replaceChildren();
+    }
+  }
   if (dragging) return;
   const favorites = new Set(state.favorites);
   const order = view === 'official' ? problems.map(problem => problem.id) : state.order;

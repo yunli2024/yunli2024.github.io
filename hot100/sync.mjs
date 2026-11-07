@@ -16,6 +16,7 @@ function editId() {
 }
 const writer = editId();
 const memory = new Map();
+const statementRequests = new Map();
 const events = new EventTarget();
 let storageFailed = false;
 let busy = false;
@@ -75,6 +76,31 @@ export function current() {
 }
 
 export const onChange = listener => events.addEventListener('change', listener);
+
+export async function loadStatement(id) {
+  const auth = session();
+  if (!active(auth)) throw Object.assign(new Error('登录后可在这里阅读完整题面'), { status: 401 });
+  const key = prefix + auth.account + '.statement.zh-CN.' + id;
+  const saved = read(key);
+  if (saved?.id === id && typeof saved.html === 'string' && saved.html) return saved;
+  if (!navigator.onLine) throw new Error('这道题尚未缓存，请联网后重试');
+  if (statementRequests.has(key)) return statementRequests.get(key);
+  const loading = request('/statements/' + id, auth).then(result => {
+    if (session()?.token !== auth.token) throw Object.assign(new Error('登录已更新，请重试'), { status: 401 });
+    if (result.id !== id || typeof result.html !== 'string' || !result.html) throw new Error('题面暂时无法读取');
+    write(key, result);
+    return result;
+  }).catch(error => {
+    if (error.status === 401 && session()?.token === auth.token) {
+      write(authKey, { ...auth, token: '', expires: 0 });
+      message = '需重新登录同步';
+      emit();
+    }
+    throw error;
+  }).finally(() => statementRequests.delete(key));
+  statementRequests.set(key, loading);
+  return loading;
+}
 
 export function edit(kind, id, value) {
   const scope = scopeOf(session());

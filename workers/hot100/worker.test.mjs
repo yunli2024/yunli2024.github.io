@@ -34,7 +34,7 @@ function database() {
   };
 }
 
-function fixture() {
+function fixture(fetchSource) {
   const env = { DB: database(), SITE_URL: site, OWNER_GITHUB_ID: '42', GITHUB_CLIENT_ID: 'test-id', GITHUB_CLIENT_SECRET: 'test-secret' };
   return async function call(path, { token, body, cookie, requestOrigin = origin, userId = 42 } = {}) {
     const headers = new Headers({ Origin: requestOrigin });
@@ -43,6 +43,7 @@ function fixture() {
     if (body) headers.set('Content-Type', 'application/json');
     const request = new Request(api + path, { headers, method: body ? 'POST' : 'GET', body: body ? JSON.stringify(body) : undefined });
     return handle(request, env, async (url, init) => {
+      if (url.startsWith('https://raw.githubusercontent.com/')) return fetchSource(url, init);
       if (url.endsWith('/access_token')) {
         assert.ok(JSON.parse(init.body).code_verifier);
         return Response.json({ access_token: 'fake-github-token' });
@@ -121,4 +122,48 @@ test('two device sessions merge changes, retries do not replay an obsolete edit'
   assert.equal(newer.state.order.at(-1), 287);
   assert.deepEqual(await read(laptop), newer);
   assert.equal((await call('/state', { token: phone, body: { edits: [edit('move', 1, 1)] } })).status, 400);
+});
+
+const originalHtml = '<p>这是用于验证完整题面读取的中文测试数据，文字与空格应保留原样。</p>\n<pre>input = [4, 1, 6]\noutput = 2</pre><p>约束为 10<sup>4</sup>，这是测试条件。</p>';
+const sourceDocument = '# [1. Test](https://leetcode.cn/problems/two-sum/)\n' +
+  '<!-- description:start -->\n' + originalHtml + '\n<!-- description:end -->\n## Solution\nPRIVATE_SOLUTION_MUST_NOT_APPEAR';
+
+test('original statements require login, keep text intact, exclude solutions and cache privately', async () => {
+  let requests = 0;
+  const call = fixture(async url => {
+    requests++;
+    assert.match(url, /0001\.Two%20Sum\/README\.md$/);
+    return new Response(sourceDocument);
+  });
+  assert.equal((await call('/statements/1')).status, 401);
+  assert.equal(requests, 0);
+  const token = await login(call);
+  const response = await call('/statements/1', { token });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('Cache-Control'), 'no-store');
+  const record = await response.json();
+  assert.equal(record.html, originalHtml);
+  assert.equal(record.id, 1);
+  assert.equal(record.language, 'zh-CN');
+  assert.match(record.sourceUrl, /^https:\/\/github\.com\/doocs\/leetcode\/blob\//);
+  assert.equal(record.license, 'CC BY-SA 4.0');
+  assert.equal(record.html.includes('PRIVATE_SOLUTION'), false);
+  assert.deepEqual(await (await call('/statements/1', { token })).json(), record);
+  assert.equal(requests, 1);
+  assert.equal((await call('/statements/9999', { token })).status, 404);
+  assert.equal((await call('/statements/1?language=en', { token })).status, 400);
+  assert.equal((await call('/statements/1', { token, body: {} })).status, 405);
+  await call('/logout', { token, body: {} });
+  assert.equal((await call('/statements/1', { token })).status, 401);
+});
+
+test('source failures and incomplete descriptions remain retryable', async () => {
+  let source = 'An incomplete upstream response';
+  let requests = 0;
+  const call = fixture(async () => { requests++; return new Response(source); });
+  const token = await login(call);
+  assert.equal((await call('/statements/1', { token })).status, 503);
+  source = sourceDocument;
+  assert.equal((await call('/statements/1', { token })).status, 200);
+  assert.equal(requests, 2);
 });
