@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS login_attempts (
   state TEXT PRIMARY KEY,
   verifier TEXT NOT NULL,
   challenge TEXT NOT NULL,
-  expires INTEGER NOT NULL
+  expires INTEGER NOT NULL,
+  return_to TEXT
 );
 CREATE TABLE IF NOT EXISTS login_tickets (
   digest TEXT PRIMARY KEY,

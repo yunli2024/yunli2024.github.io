@@ -34,8 +34,8 @@ function database() {
   };
 }
 
-function fixture(fetchSource) {
-  const env = { DB: database(), SITE_URL: site, OWNER_GITHUB_ID: '42', GITHUB_CLIENT_ID: 'test-id', GITHUB_CLIENT_SECRET: 'test-secret' };
+function fixture(fetchSource, overrides = {}) {
+  const env = { DB: database(), SITE_URL: site, OWNER_GITHUB_ID: '42', GITHUB_CLIENT_ID: 'test-id', GITHUB_CLIENT_SECRET: 'test-secret', ...overrides };
   return async function call(path, { token, body, cookie, requestOrigin = origin, userId = 42 } = {}) {
     const headers = new Headers({ Origin: requestOrigin });
     if (token) headers.set('Authorization', 'Bearer ' + token);
@@ -54,16 +54,18 @@ function fixture(fetchSource) {
   };
 }
 
-async function handoff(call, userId = 42) {
+async function handoff(call, userId = 42, returnTo, requestOrigin = origin) {
   const verifier = Buffer.from(crypto.getRandomValues(new Uint8Array(32))).toString('base64url');
-  const start = await call('/auth/start?challenge=' + await pkce(verifier));
+  const params = new URLSearchParams({ challenge: await pkce(verifier) });
+  if (returnTo) params.set('return_to', returnTo);
+  const start = await call('/auth/start?' + params, { requestOrigin });
   assert.equal(start.status, 302);
   const target = new URL(start.headers.get('Location'));
   assert.equal(target.origin, 'https://github.com');
   assert.equal(target.searchParams.get('code_challenge_method'), 'S256');
   const callback = '/auth/callback?state=' + target.searchParams.get('state') + '&code=test';
   const cookie = start.headers.get('Set-Cookie').split(';')[0];
-  const finish = await call(callback, { cookie, userId });
+  const finish = await call(callback, { cookie, userId, requestOrigin });
   return { result: new URL(finish.headers.get('Location')), callback, cookie, verifier };
 }
 
@@ -100,6 +102,60 @@ test('OAuth handoff is origin-bound, browser-bound, owner-only and single-use', 
   assert.equal((await exchange()).status, 401);
   assert.equal((await call('/logout', { token: session.token, body: {} })).status, 200);
   assert.equal((await call('/state', { token: session.token })).status, 401);
+});
+
+test('reader entry returns to its own allowed host and rejects arbitrary return addresses', async () => {
+  const readerSite = api + '/';
+  const call = fixture(undefined, { READER_SITE_URL: readerSite });
+  const challenge = 'a'.repeat(43);
+  for (const returnTo of ['https://foreign.example/', readerSite + '?next=foreign', site + 'other']) {
+    const response = await call('/auth/start?' + new URLSearchParams({ challenge, return_to: returnTo }));
+    assert.equal(response.status, 400);
+  }
+  const { result, verifier } = await handoff(call, 42, readerSite, api);
+  assert.equal(result.origin + result.pathname, readerSite);
+  const ticket = new URLSearchParams(result.hash.slice(1)).get('ticket');
+  const session = await (await call('/auth/exchange', { requestOrigin: api, body: { ticket, verifier } })).json();
+  for (const requestOrigin of [origin, api]) {
+    const response = await call('/state', { token: session.token, requestOrigin });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('Access-Control-Allow-Origin'), requestOrigin);
+  }
+  assert.equal((await handoff(call, 43, readerSite, api)).result.href, readerSite + '#loginError=owner');
+  const start = await call('/auth/start?' + new URLSearchParams({ challenge, return_to: readerSite }), { requestOrigin: api });
+  const target = new URL(start.headers.get('Location'));
+  const cancelled = await call('/auth/callback?state=' + target.searchParams.get('state'), {
+    requestOrigin: api, cookie: start.headers.get('Set-Cookie').split(';')[0]
+  });
+  assert.equal(cancelled.headers.get('Location'), readerSite + '#loginError=cancelled');
+
+  const db = database();
+  const legacy = fixture(undefined, { DB: db, READER_SITE_URL: readerSite });
+  const pending = await legacy('/auth/start?challenge=' + challenge);
+  await db.prepare('UPDATE login_attempts SET return_to = NULL WHERE state = ?')
+    .bind(new URL(pending.headers.get('Location')).searchParams.get('state')).run();
+  const finish = await legacy('/auth/callback?state=' + new URL(pending.headers.get('Location')).searchParams.get('state') + '&code=test', {
+    cookie: pending.headers.get('Set-Cookie').split(';')[0]
+  });
+  assert.equal(new URL(finish.headers.get('Location')).origin + new URL(finish.headers.get('Location')).pathname, site);
+});
+
+test('static reader assets are public while statements and progress stay authenticated', async () => {
+  const assetPaths = [];
+  const call = fixture(undefined, { READER_SITE_URL: api + '/', ASSETS: {
+    async fetch(request) {
+      assetPaths.push(new URL(request.url).pathname);
+      return new Response('<html>Reader</html>', { headers: { 'Content-Type': 'text/html' } });
+    }
+  } });
+  const response = await call('/', { requestOrigin: api });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('Content-Type'), 'text/html');
+  assert.equal(await response.text(), '<html>Reader</html>');
+  assert.equal((await call('/statements/1', { requestOrigin: api })).status, 401);
+  assert.equal((await call('/state', { requestOrigin: api })).status, 401);
+  assert.equal((await call('/state', { requestOrigin: 'https://foreign.example' })).status, 403);
+  assert.deepEqual(assetPaths, ['/']);
 });
 
 test('two device sessions merge changes, retries do not replay an obsolete edit', async () => {

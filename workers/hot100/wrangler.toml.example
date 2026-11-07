@@ -7,6 +7,12 @@ workers_dev = true
 SITE_URL = "https://yunli2024.github.io/hot100/"
 OWNER_GITHUB_ID = "189206900"
 GITHUB_CLIENT_ID = "replace-with-your-oauth-client-id"
+READER_SITE_URL = "https://hot100-sync.12410922.workers.dev/"
+
+[assets]
+directory = "../../hot100"
+binding = "ASSETS"
+run_worker_first = true
 
 [[d1_databases]]
 binding = "DB"

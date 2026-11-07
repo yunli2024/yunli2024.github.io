@@ -8,6 +8,8 @@ const secret = () => base64url(crypto.getRandomValues(new Uint8Array(32)));
 const digest = async text => base64url(new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(text))));
 const tokenShape = /^[A-Za-z0-9_-]{43}$/;
 const json = (data, status = 200) => Response.json(data, { status });
+const readerSites = env => [env.SITE_URL, env.READER_SITE_URL].filter(Boolean);
+const allowedOrigin = (env, origin) => readerSites(env).some(site => new URL(site).origin === origin);
 
 function redirect(url, cookie) {
   const headers = new Headers({ Location: url });
@@ -23,6 +25,8 @@ function stateCookie(url, value, ttl) {
 async function startLogin(url, env) {
   const challenge = url.searchParams.get('challenge') || '';
   if (!tokenShape.test(challenge)) return json({ error: 'Invalid browser challenge' }, 400);
+  const returnTo = url.searchParams.get('return_to') || env.SITE_URL;
+  if (!readerSites(env).includes(returnTo)) return json({ error: 'Invalid return address' }, 400);
   if (!env.GITHUB_CLIENT_ID || !env.GITHUB_CLIENT_SECRET || !/^\d+$/.test(env.OWNER_GITHUB_ID)) {
     return json({ error: 'GitHub 登录尚未配置完成' }, 503);
   }
@@ -32,7 +36,8 @@ async function startLogin(url, env) {
   await env.DB.batch([
     ...['login_attempts', 'login_tickets', 'sessions'].map(table =>
       env.DB.prepare('DELETE FROM ' + table + ' WHERE expires <= ?').bind(now)),
-    env.DB.prepare('INSERT INTO login_attempts VALUES (?, ?, ?, ?)').bind(state, verifier, challenge, now + 600)
+    env.DB.prepare('INSERT INTO login_attempts (state, verifier, challenge, expires, return_to) VALUES (?, ?, ?, ?, ?)')
+      .bind(state, verifier, challenge, now + 600, returnTo)
   ]);
   const target = new URL('https://github.com/login/oauth/authorize');
   target.search = new URLSearchParams({
@@ -43,8 +48,9 @@ async function startLogin(url, env) {
 }
 
 async function callback(request, url, env, githubFetch) {
+  let returnTo = env.SITE_URL;
   const finish = (key, value) => {
-    const target = new URL(env.SITE_URL);
+    const target = new URL(returnTo);
     target.hash = new URLSearchParams({ [key]: value }).toString();
     return redirect(target.href, stateCookie(url, '', 0));
   };
@@ -53,7 +59,9 @@ async function callback(request, url, env, githubFetch) {
   if (!tokenShape.test(state || '') || cookie !== 'hot100_oauth=' + state) return finish('loginError', 'expired');
   const attempt = await env.DB.prepare('DELETE FROM login_attempts WHERE state = ? AND expires > ? RETURNING *')
     .bind(state, seconds()).first();
-  if (!attempt || !url.searchParams.get('code')) return finish('loginError', 'cancelled');
+  if (!attempt) return finish('loginError', 'cancelled');
+  if (readerSites(env).includes(attempt.return_to)) returnTo = attempt.return_to;
+  if (!url.searchParams.get('code')) return finish('loginError', 'cancelled');
   try {
     const tokenResponse = await githubFetch('https://github.com/login/oauth/access_token', {
       method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
@@ -129,13 +137,19 @@ async function readBody(request) {
 async function route(request, env, upstreamFetch) {
   const url = new URL(request.url);
   const origin = request.headers.get('Origin');
-  if (origin && origin !== new URL(env.SITE_URL).origin) return json({ error: 'Origin denied' }, 403);
+  if (origin && !allowedOrigin(env, origin)) return json({ error: 'Origin denied' }, 403);
   if (request.method === 'OPTIONS') return new Response(null, { status: 204 });
   if (request.method === 'GET' && url.pathname === '/auth/start') return startLogin(url, env);
   if (request.method === 'GET' && url.pathname === '/auth/callback') return callback(request, url, env, upstreamFetch);
   if (request.method === 'POST' && url.pathname === '/auth/exchange') return exchange(await readBody(request), env);
   const statement = url.pathname.match(/^\/statements\/(\d+)$/);
-  if (!['/state', '/logout'].includes(url.pathname) && !statement) return json({ error: 'Not found' }, 404);
+  if (!['/state', '/logout'].includes(url.pathname) && !statement) {
+    if (env.ASSETS) {
+      const asset = await env.ASSETS.fetch(request);
+      return new Response(asset.body, asset);
+    }
+    return json({ error: 'Not found' }, 404);
+  }
   const token = (request.headers.get('Authorization') || '').match(/^Bearer ([A-Za-z0-9_-]{43})$/)?.[1];
   if (!token) return json({ error: 'Login required' }, 401);
   const key = await digest(token);
@@ -167,7 +181,7 @@ export async function handle(request, env, upstreamFetch = fetch) {
   response.headers.set('Referrer-Policy', 'no-referrer');
   response.headers.set('Vary', 'Origin');
   const origin = request.headers.get('Origin');
-  if (origin && origin === new URL(env.SITE_URL).origin) {
+  if (origin && allowedOrigin(env, origin)) {
     response.headers.set('Access-Control-Allow-Origin', origin);
     response.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');

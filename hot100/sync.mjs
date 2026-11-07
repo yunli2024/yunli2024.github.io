@@ -178,7 +178,8 @@ export async function login() {
     const verifier = base64(crypto.getRandomValues(new Uint8Array(32)));
     sessionStorage.setItem(verifierKey, verifier);
     const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
-    location.assign(api + '/auth/start?challenge=' + encodeURIComponent(base64(new Uint8Array(hash))));
+    const params = new URLSearchParams({ challenge: base64(new Uint8Array(hash)), return_to: location.origin + location.pathname });
+    location.assign(api + '/auth/start?' + params);
   } catch { message = '无法开始登录，请在启用浏览器存储的 HTTPS 页面重试'; emit(); }
 }
 

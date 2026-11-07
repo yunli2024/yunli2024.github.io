@@ -38,6 +38,16 @@ npx.cmd --yes wrangler@4.158.0 secret put GITHUB_CLIENT_SECRET
 
 电脑登录后收藏一道题、写备注，并在「我的顺序」拖动它。看到「已同步」后，用手机登录同一个 GitHub 账号检查三项记录。离线修改会在联网后重试。跨设备分别修改不同字段会合并，同一条备注的两个版本以服务端最后收到的编辑为准。页面回到前台时立即拉取，停留在前台时每 20 秒检查一次。
 
+## Cloudflare 页面入口
+
+Worker 的静态资源绑定同时提供 `https://hot100-sync.12410922.workers.dev/` 入口，资源来自仓库的 `hot100/` 目录。它与 GitHub Pages 使用同一个 D1 数据库，登录后读取相同的个人记录。`READER_SITE_URL` 和 `SITE_URL` 是登录返回地址的完整白名单，OAuth 回调地址仍为 Worker 的 `/auth/callback`。
+
+已部署旧版数据库时，先检查 `PRAGMA table_info(login_attempts)`，仅在缺少 `return_to` 列时执行一次下面的迁移，再部署 Worker：
+
+```powershell
+npx.cmd --yes wrangler@4.158.0 d1 execute hot100 --remote --command "ALTER TABLE login_attempts ADD COLUMN return_to TEXT;"
+```
+
 ## 中文题面
 
 登录后点开题目，可以在页内阅读完整中文题面，继续点「一句提示」才会显示复习提示。`catalog.mjs` 保存官方题号和中文标题，`statements.mjs` 固定 Doocs 上游提交并按题号对应来源文件。读取范围为源文件的 `description:start` 至 `description:end`，正文 HTML 保持原样。页面标注题面快照出处和 CC BY-SA 4.0 许可，并保留力扣官方链接。[Doocs 中文题面快照](https://github.com/doocs/leetcode/tree/8c8da55de17fd7ce04f0cc3f84cf82fc56e7e3d1) · [上游许可](https://github.com/doocs/leetcode/blob/8c8da55de17fd7ce04f0cc3f84cf82fc56e7e3d1/LICENSE)

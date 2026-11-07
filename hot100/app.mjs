@@ -1,6 +1,6 @@
 import { problems } from './catalog.mjs';
 import { maxNoteLength } from './state.mjs';
-import { current, edit, initialize, loadStatement, login, logout, onChange } from './sync.mjs?v=20261107-originals';
+import { current, edit, initialize, loadStatement, login, logout, onChange } from './sync.mjs?v=20261107-reader-entry';
 
 const list = document.querySelector('#problems');
 const template = document.querySelector('#problem-template');
