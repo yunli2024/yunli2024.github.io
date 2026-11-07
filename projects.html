@@ -12,6 +12,8 @@
     body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);transition:background-color .25s,color .25s}
     body.light,html[data-theme="light"] body{--bg1:#f5f7fb;--bg2:#fff;--surface:#fff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb;--card-border:rgba(2,6,23,0.06)}
     .wrap{max-width:1000px;margin:36px auto;padding:16px}
+    .hot100-entry{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:22px 0 6px;padding:18px 20px;border:1px solid var(--card-border);border-left:3px solid var(--accent);border-radius:10px;background:var(--surface);color:var(--text);text-decoration:none}
+    .hot100-entry strong,.hot100-entry small{display:block}.hot100-entry small{color:var(--muted);margin-top:4px}.hot100-entry:hover strong,.hot100-entry:focus-visible strong{color:var(--accent)}
     a{color:var(--accent)}
     footer{padding:28px;text-align:center;color:var(--muted)}
 
@@ -80,6 +82,8 @@
         'meta.title': 'Projects — Yunli',
         'meta.description': 'Selected course and research projects by Yunli.',
         'projects.title': 'Projects',
+        'projects.hot100.title': 'Hot 100 Review Notebook',
+        'projects.hot100.description': '100 LeetCode problems, recall hints, and your own review order.',
         'projects.intro': 'Mostly course projects, with a few experiments along the way.',
         'projects.score': 'Final Score:',
         'projects.repository': 'Code',
@@ -133,6 +137,8 @@
         'meta.title': '项目 — 云离',
         'meta.description': '云离的课程项目与研究项目精选。',
         'projects.title': '项目',
+        'projects.hot100.title': 'Hot 100 复习手记',
+        'projects.hot100.description': '100 道力扣题，一句话提示，按自己的顺序复习。',
         'projects.intro': '主要是一些课程项目啦。',
         'projects.score': '最终成绩：',
         'projects.repository': '代码',
@@ -217,6 +223,10 @@
   <main class="wrap">
     <h1 data-i18n="projects.title">Projects</h1>
     <p class="projects-type-note typewriter-line" data-typewriter data-typewriter-speed="72" data-typewriter-start="400" data-i18n="projects.intro">Mostly course projects, with a few experiments along the way.</p>
+    <a class="hot100-entry" href="hot100/">
+      <span><strong data-i18n="projects.hot100.title">Hot 100 Review Notebook</strong><small data-i18n="projects.hot100.description">100 LeetCode problems, recall hints, and your own review order.</small></span>
+      <span aria-hidden="true">→</span>
+    </a>
 
     
     <div class="projects-grid">

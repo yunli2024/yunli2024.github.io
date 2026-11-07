@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="云离的 Hot 100 复习手记，按题名回忆，整理个人笔记和练习顺序。">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Hot 100 复习手记 · 云离</title>
+  <link rel="icon" href="../source/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem('site-theme') || 'dark'; } catch { document.documentElement.dataset.theme = 'dark'; }</script>
+  <script defer src="vendor/Sortable.min.js"></script>
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <header class="site-bar">
+    <nav aria-label="站点导航"><a class="brand" href="../">云离</a><span aria-hidden="true">/</span><a href="../projects.html">Projects</a></nav>
+    <div class="account-tools">
+      <span id="sync-status" role="status">读取记录中</span>
+      <button id="account-button" type="button" disabled>GitHub 登录</button>
+    </div>
+  </header>
+  <main class="notebook">
+    <div class="heading">
+      <h1><span lang="en">Hot 100</span> <span class="chinese-title">复习手记</span></h1>
+      <a class="plan-link" href="https://leetcode.cn/studyplan/top-100-liked/" target="_blank" rel="noopener noreferrer">力扣官方题单 ↗</a>
+    </div>
+    <div class="views" role="group" aria-label="题目视图">
+      <button type="button" data-view="official" aria-pressed="true">题单原序</button>
+      <button type="button" data-view="personal" aria-pressed="false">我的顺序</button>
+      <button type="button" data-view="favorites" aria-pressed="false">收藏 <span id="star-count">0</span></button>
+    </div>
+    <div class="list-caption"><span id="list-count">100 道题</span><span id="drag-help" hidden>长按题目上下拖动<span class="keyboard-help"> · 键盘 Alt + ↑ / ↓</span></span></div>
+    <ol id="problems" aria-label="复习题目"></ol>
+    <p id="empty" hidden>还没有收藏。点亮题名旁的星标，就能在这里找到它。</p>
+    <p id="announcement" class="visually-hidden" role="status"></p>
+    <noscript>请启用 JavaScript 查看题单，或打开上方的力扣官方题单。</noscript>
+  </main>
+  <template id="problem-template">
+    <li class="problem">
+      <div class="row-head">
+        <button type="button" class="title-button" aria-expanded="false">
+          <span class="grip" aria-hidden="true">⠿</span><span class="problem-number"></span><span class="problem-name"></span><span class="chevron" aria-hidden="true">›</span>
+        </button>
+        <button class="star action" type="button" aria-pressed="false"><span aria-hidden="true">☆</span></button>
+        <a class="original" target="_blank" rel="noopener noreferrer">原题 <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="details" hidden>
+        <section class="statement" aria-label="中文题面"></section>
+        <div class="detail-actions">
+          <button class="hint-toggle" type="button" aria-expanded="false">一句提示</button>
+          <button class="notes-toggle" type="button" aria-expanded="false">我的备注</button>
+        </div>
+        <p class="hint" hidden></p>
+        <label class="notes" hidden><span>我的备注</span><textarea rows="3" placeholder="记下思路、边界条件，或上次卡住的地方"></textarea></label>
+      </div>
+    </li>
+  </template>
+</body>
+</html>

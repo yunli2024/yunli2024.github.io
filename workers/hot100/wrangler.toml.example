@@ -1,0 +1,14 @@
+name = "hot100-sync"
+main = "worker.mjs"
+compatibility_date = "2026-01-01"
+workers_dev = true
+
+[vars]
+SITE_URL = "https://yunli2024.github.io/hot100/"
+OWNER_GITHUB_ID = "189206900"
+GITHUB_CLIENT_ID = "replace-with-your-oauth-client-id"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hot100"
+database_id = "replace-with-your-d1-database-id"
